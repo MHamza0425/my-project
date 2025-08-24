@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Contact Us - All Tools Hub</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -10,9 +10,14 @@
   <!-- Header -->
   <header class="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
     <div class="max-w-6xl mx-auto flex justify-between items-center p-4">
-      <h1 class="text-xl font-bold">All Tools Hub</h1>
+      <div class="flex items-center space-x-2">
+        <img src="assets/logo.png" alt="Logo" class="w-10 h-10" />
+        <h1 class="text-xl font-bold">All Tools Hub</h1>
+      </div>
       <nav class="space-x-6">
         <a href="index.html" class="hover:text-blue-600">Home</a>
+        <a href="about.html" class="hover:text-blue-600">About</a>
+        <a href="contact.html" class="text-blue-600 font-semibold">Contact</a>
         <a href="privacy.html" class="hover:text-blue-600">Privacy</a>
         <a href="terms.html" class="hover:text-blue-600">Terms</a>
         <a href="disclaimer.html" class="hover:text-blue-600">Disclaimer</a>
@@ -21,50 +26,39 @@
   </header>
 
   <!-- Contact Section -->
-  <section class="pt-28 max-w-4xl mx-auto px-6">
-    <h2 class="text-3xl font-bold mb-6 text-center">Contact Us</h2>
-    <p class="text-center text-gray-600 mb-8">
-      Have questions or suggestions? Fill out the form below and we’ll get back to you.
+  <section class="pt-28 pb-20 max-w-3xl mx-auto px-6">
+    <h2 class="text-3xl font-bold text-center mb-6">Contact Us</h2>
+    <p class="text-center text-gray-600 mb-10">
+      Have questions or suggestions? Feel free to reach out using the form below or email us directly at 
+      <a href="mailto:saadkhan0425@gmail.com" class="text-blue-600 font-semibold">saadkhan0425@gmail.com</a>.
     </p>
 
-    <form name="submit-to-google-sheet" class="bg-white p-8 rounded-lg shadow-md space-y-4">
+    <!-- Contact Form -->
+    <form action="mailto:saadkhan0425@gmail.com" method="post" enctype="text/plain" class="bg-white p-8 rounded-lg shadow-md space-y-6">
       <div>
-        <label class="block mb-2 font-semibold">Name</label>
-        <input type="text" name="name" required class="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-300" />
+        <label class="block font-medium mb-2">Your Name</label>
+        <input type="text" name="name" required class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500" />
       </div>
       <div>
-        <label class="block mb-2 font-semibold">Email</label>
-        <input type="email" name="email" required class="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-300" />
+        <label class="block font-medium mb-2">Your Email</label>
+        <input type="email" name="email" required class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500" />
       </div>
       <div>
-        <label class="block mb-2 font-semibold">Message</label>
-        <textarea name="message" rows="4" required class="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"></textarea>
+        <label class="block font-medium mb-2">Message</label>
+        <textarea name="message" rows="5" required class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"></textarea>
       </div>
-      <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">Send</button>
-      <p id="success-msg" class="hidden text-green-600 font-semibold mt-3">✅ Your message has been sent!</p>
+      <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700">
+        Send Message
+      </button>
     </form>
   </section>
 
   <!-- Footer -->
-  <footer class="bg-gray-900 text-gray-300 py-6 mt-20 text-center">
-    <p>&copy; 2025 All Tools Hub. All rights reserved.</p>
+  <footer class="bg-gray-900 text-gray-300 py-10 mt-20">
+    <div class="max-w-6xl mx-auto text-center px-6">
+      <p>📧 Email: <a href="mailto:saadkhan0425@gmail.com" class="text-blue-400">saadkhan0425@gmail.com</a></p>
+      <p class="text-gray-500 mt-4 text-sm">© 2025 All Tools Hub. All rights reserved.</p>
+    </div>
   </footer>
-
-  <!-- Google Sheets Integration Script -->
-  <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbyYGkiR8eF2o9lhyu6vGOP69SaF0Aq7ghsyerL-7PDPpkBYinhGFujqeouL2E8MJiY/exec"; // Replace with your deployed Apps Script URL
-    const form = document.forms["submit-to-google-sheet"];
-    const successMsg = document.getElementById("success-msg");
-
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      fetch(scriptURL, { method: "POST", body: new FormData(form) })
-        .then(() => {
-          successMsg.classList.remove("hidden");
-          form.reset();
-        })
-        .catch((error) => console.error("Error!", error.message));
-    });
-  </script>
 </body>
 </html>
