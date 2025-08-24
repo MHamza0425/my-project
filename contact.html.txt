@@ -1,51 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contact Us - All Tools Hub</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <header>
-    <h1>Contact Us</h1>
-  </header>
+<form id="contact-form">
+  <input type="text" name="name" placeholder="Your Name" required>
+  <input type="email" name="email" placeholder="Your Email" required>
+  <textarea name="message" placeholder="Message" required></textarea>
+  <button type="submit">Send</button>
+</form>
 
-  <main>
-    <form id="contact-form">
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="name" required>
+<script>
+  document.getElementById("contact-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email" required>
+    const formData = {
+      name: e.target.name.value,
+      email: e.target.email.value,
+      message: e.target.message.value,
+    };
 
-      <label for="message">Message:</label>
-      <textarea id="message" name="message" rows="5" required></textarea>
-
-      <button type="submit">Send</button>
-    </form>
-
-    <p id="form-response" style="color: green; display: none;">Thank you! Your message has been sent.</p>
-  </main>
-
-  <footer>
-    <p>&copy; 2025 All Tools Hub | <a href="index.html">Back to Home</a></p>
-  </footer>
-
-  <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbzvAquaSouwrAL8IWWUGo7cNxvpwulhdn_m94Q3cZtqi5DZjc9Lvq6vHEy3bZ4C8sp3/exec";
-    const form = document.getElementById("contact-form");
-    const responseMsg = document.getElementById("form-response");
-
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      fetch(scriptURL, { method: "POST", body: new FormData(form)})
-        .then(response => {
-          responseMsg.style.display = "block";
-          form.reset();
-        })
-        .catch(error => alert("Error! " + error.message));
+    const response = await fetch("/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
     });
-  </script>
-</body>
-</html>
+
+    const result = await response.json();
+    alert(result.message);
+    e.target.reset();
+  });
+</script>
