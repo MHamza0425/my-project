@@ -1,86 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact Us - All Tools Hub</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 text-gray-800">
-  <!-- Header -->
-  <header class="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
-    <div class="max-w-6xl mx-auto flex justify-between items-center p-4">
-      <div class="flex items-center space-x-2">
-        <img src="assets/logo.png" alt="Logo" class="w-10 h-10" />
-        <h1 class="text-xl font-bold">All Tools Hub</h1>
-      </div>
-      <nav class="space-x-6">
-        <a href="index.html" class="hover:text-blue-600">Home</a>
-        <a href="about.html" class="hover:text-blue-600">About</a>
-        <a href="contact.html" class="text-blue-600 font-semibold">Contact</a>
-        <a href="privacy.html" class="hover:text-blue-600">Privacy</a>
-        <a href="terms.html" class="hover:text-blue-600">Terms</a>
-        <a href="disclaimer.html" class="hover:text-blue-600">Disclaimer</a>
-      </nav>
-    </div>
-  </header>
-
-  <!-- Contact Section -->
-  <section class="pt-28 pb-20 max-w-3xl mx-auto px-6">
-    <h2 class="text-3xl font-bold text-center mb-6">Contact Us</h2>
-    <p class="text-center text-gray-600 mb-10">
-      Have questions or suggestions? Feel free to reach out using the form below or email us directly at 
-      <a href="mailto:saadkhan0425@gmail.com" class="text-blue-600 font-semibold">saadkhan0425@gmail.com</a>.
-    </p>
-
-    <!-- Contact Form -->
-    <form id="contact-form" class="bg-white p-8 rounded-lg shadow-md space-y-6">
-      <div>
-        <label class="block font-medium mb-2">Your Name</label>
-        <input type="text" name="name" required class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500" />
-      </div>
-      <div>
-        <label class="block font-medium mb-2">Your Email</label>
-        <input type="email" name="email" required class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500" />
-      </div>
-      <div>
-        <label class="block font-medium mb-2">Message</label>
-        <textarea name="message" rows="5" required class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"></textarea>
-      </div>
-      <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700">
-        Send Message
-      </button>
-      <p id="form-status" class="text-center text-sm mt-4"></p>
-    </form>
-  </section>
-
-  <!-- Footer -->
-  <footer class="bg-gray-900 text-gray-300 py-10 mt-20">
-    <div class="max-w-6xl mx-auto text-center px-6">
-      <p>📧 Email: <a href="mailto:saadkhan0425@gmail.com" class="text-blue-400">saadkhan0425@gmail.com</a></p>
-      <p class="text-gray-500 mt-4 text-sm">© 2025 All Tools Hub. All rights reserved.</p>
-    </div>
-  </footer>
-
-  <!-- Script to send form data to Google Apps Script -->
-  <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbyYGkiR8eF2o9lhyu6vGOP69SaF0Aq7ghsyerL-7PDPpkBYinhGFujqeouL2E8MJiY/exec";
-    const form = document.getElementById("contact-form");
-    const status = document.getElementById("form-status");
-
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      fetch(scriptURL, { method: "POST", body: new FormData(form) })
-        .then(() => {
-          status.textContent = "✅ Thank you! Your message has been sent.";
-          status.classList.add("text-green-600");
-          form.reset();
-        })
-        .catch((error) => {
-          status.textContent = "❌ Oops! Something went wrong.";
-          status.classList.add("text-red-600");
-        });
-    });
-  </script>
-</body>
-</html>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f4f9;
+    }
+    header {
+      background: #007bff;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    main {
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .success-message {
+      display: none;
+      color: green;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    .error-me
