@@ -1,1 +1,60 @@
-<h1>Contact Us</h1><p>Email: saadkhan0425@gmail.com</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us - All Tools Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <!-- Header -->
+  <header class="bg-white shadow-md p-4">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+      <a href="index.html" class="text-blue-600 font-bold">← Back to Home</a>
+      <h1 class="text-xl font-bold">Contact Us</h1>
+    </div>
+  </header>
+
+  <!-- Contact Form Section -->
+  <main class="max-w-3xl mx-auto py-16 px-6">
+    <h2 class="text-3xl font-bold text-center mb-6 text-blue-600">Get in Touch</h2>
+    <p class="text-center text-gray-600 mb-10">
+      Have questions or feedback? Fill out the form below and we’ll get back to you soon.
+    </p>
+
+    <form action="https://formspree.io/f/your-form-id" method="POST" class="bg-white p-8 rounded-lg shadow-md space-y-6">
+      <!-- Name -->
+      <div>
+        <label for="name" class="block text-sm font-medium text-gray-700">Your Name</label>
+        <input type="text" id="name" name="name" required
+               class="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-700">Your Email</label>
+        <input type="email" id="email" name="_replyto" required
+               class="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+      </div>
+
+      <!-- Message -->
+      <div>
+        <label for="message" class="block text-sm font-medium text-gray-700">Your Message</label>
+        <textarea id="message" name="message" rows="5" required
+                  class="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit"
+              class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+        Send Message
+      </button>
+    </form>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-300 py-6 mt-16 text-center">
+    <p>© 2025 All Tools Hub. All rights reserved.</p>
+  </footer>
+</body>
+</html>
