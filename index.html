@@ -6,22 +6,17 @@
 <title>All Tools Hub - Free Online Tools</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-/* 3D Cube Styling */
-.cube-container { perspective: 1000px; }
-.cube { width: 200px; height: 200px; position: relative; transform-style: preserve-3d; animation: rotateCube 20s infinite linear; margin:auto; }
-.face { position: absolute; width: 200px; height: 200px; background: #4f46e5; color: white; display:flex; justify-content:center; align-items:center; font-weight:bold; font-size:1.2rem; cursor:pointer; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.2);}
-.face:hover{background:#4338ca;}
-.front  { transform: rotateY(0deg) translateZ(100px); }
-.back   { transform: rotateY(180deg) translateZ(100px); }
-.right  { transform: rotateY(90deg) translateZ(100px); }
-.left   { transform: rotateY(-90deg) translateZ(100px); }
-.top    { transform: rotateX(90deg) translateZ(100px); }
-.bottom { transform: rotateX(-90deg) translateZ(100px); }
-
-@keyframes rotateCube { 0%{ transform: rotateX(0deg) rotateY(0deg);} 100%{ transform: rotateX(360deg) rotateY(360deg);} }
-
-/* Hamburger menu for mobile */
-#mobileMenu { display: none; }
+body { margin:0; font-family:sans-serif; }
+.cube-container { perspective:1200px; width:300px; margin:100px auto; text-align:center; }
+.cube { width:200px; height:200px; position:relative; transform-style:preserve-3d; cursor:grab; margin:auto; transition: transform 0.2s ease-out; }
+.face { position:absolute; width:200px; height:200px; display:flex; justify-content:center; align-items:center; font-weight:bold; font-size:1.2rem; color:white; border:2px solid rgba(255,255,255,0.3); box-shadow:0 4px 15px rgba(0,0,0,0.3); transition:all 0.3s ease, background 1s ease; text-align:center; cursor:pointer; }
+.face:hover { transform: scale(1.05); box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
+.front  { transform: rotateY(0deg) translateZ(100px);}
+.back   { transform: rotateY(180deg) translateZ(100px);}
+.right  { transform: rotateY(90deg) translateZ(100px);}
+.left   { transform: rotateY(-90deg) translateZ(100px);}
+.top    { transform: rotateX(90deg) translateZ(100px);}
+.bottom { transform: rotateX(-90deg) translateZ(100px);}
 </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -30,84 +25,128 @@
 <header class="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
   <div class="max-w-6xl mx-auto flex justify-between items-center p-4">
     <div class="flex items-center space-x-2">
-      <img src="logo.png" alt="Logo" class="w-10 h-10 rounded-full border"/>
-      <h1 class="text-xl font-bold text-blue-600 cursor-pointer" onclick="window.location.href='#'">All Tools Hub</h1>
+      <img src="logo.png" alt="Logo" class="w-10 h-10 rounded-full border" />
+      <h1 class="text-xl font-bold text-blue-600 cursor-pointer" onclick="window.scrollTo({top:0,behavior:'smooth'})">All Tools Hub</h1>
     </div>
-    <nav class="hidden md:flex space-x-6 text-sm font-medium">
-      <a href="#about" class="hover:text-blue-600">About</a>
-      <a href="#tools" class="hover:text-blue-600">Tools</a>
-      <a href="privacy.html" class="hover:text-blue-600">Privacy</a>
-      <a href="terms.html" class="hover:text-blue-600">Terms</a>
-      <a href="contact.html" class="hover:text-blue-600">Contact</a>
-      <div>
-        <input type="text" id="desktopSearch" placeholder="Search..." class="px-2 py-1 border rounded"/>
-        <button onclick="doSearch('desktop')" class="bg-blue-600 text-white px-2 py-1 rounded ml-1">Search</button>
+    <div class="flex items-center space-x-4">
+      <nav class="hidden md:flex space-x-6 text-sm font-medium">
+        <a href="#about" class="hover:text-blue-600">About</a>
+        <a href="#services" class="hover:text-blue-600">Services</a>
+        <a href="#tools" class="hover:text-blue-600">Tools</a>
+        <a href="#privacy" class="hover:text-blue-600">Privacy</a>
+        <a href="#terms" class="hover:text-blue-600">Terms</a>
+        <a href="#disclaimer" class="hover:text-blue-600">Disclaimer</a>
+        <a href="#contact" class="hover:text-blue-600">Contact</a>
+      </nav>
+      <div class="hidden md:flex items-center space-x-1">
+        <input type="text" id="searchInput" placeholder="Search..." class="border rounded p-1"/>
+        <button id="searchBtn" class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700">Search</button>
       </div>
-    </nav>
-    <button class="md:hidden" onclick="toggleMobileMenu()">☰</button>
+      <button id="mobileMenuBtn" class="md:hidden px-3 py-2 border rounded">☰</button>
+    </div>
+  </div>
+  <!-- Mobile menu -->
+  <div id="mobileMenu" class="hidden bg-white w-full text-center py-2 space-y-2 border-t">
+    <a href="#about" class="block hover:text-blue-600">About</a>
+    <a href="#services" class="block hover:text-blue-600">Services</a>
+    <a href="#tools" class="block hover:text-blue-600">Tools</a>
+    <a href="#privacy" class="block hover:text-blue-600">Privacy</a>
+    <a href="#terms" class="block hover:text-blue-600">Terms</a>
+    <a href="#disclaimer" class="block hover:text-blue-600">Disclaimer</a>
+    <a href="#contact" class="block hover:text-blue-600">Contact</a>
+    <div class="flex justify-center mt-2">
+      <input type="text" id="mobileSearchInput" placeholder="Search..." class="border rounded p-1 w-2/3"/>
+      <button id="mobileSearchBtn" class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 ml-1">Search</button>
+    </div>
   </div>
 </header>
 
-<!-- Mobile Menu -->
-<div id="mobileMenu" class="bg-white shadow-md p-4 fixed top-16 w-full z-40 space-y-2">
-  <a href="#about" class="block hover:text-blue-600">About</a>
-  <a href="#tools" class="block hover:text-blue-600">Tools</a>
-  <a href="privacy.html" class="block hover:text-blue-600">Privacy</a>
-  <a href="terms.html" class="block hover:text-blue-600">Terms</a>
-  <a href="contact.html" class="block hover:text-blue-600">Contact</a>
-  <div class="flex mt-2">
-    <input type="text" id="mobileSearch" placeholder="Search..." class="px-2 py-1 border rounded flex-1"/>
-    <button onclick="doSearch('mobile')" class="bg-blue-600 text-white px-2 py-1 rounded ml-1">Search</button>
+<!-- Hero Section -->
+<section class="pt-28 text-center bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+  <div class="max-w-4xl mx-auto p-10">
+    <h2 class="text-4xl md:text-5xl font-extrabold mb-4">Welcome to All Tools Hub</h2>
+    <p class="text-lg md:text-xl mb-6">
+      Your one-stop solution for free online tools like calculators, calendars, converters, and more.
+    </p>
+  </div>
+</section>
+
+<!-- 3D Cube Section -->
+<div class="cube-container">
+  <div id="cubeTitle" style="text-align:center; font-size:24px; font-weight:bold; margin-bottom:10px; color:#3b82f6;">Welcome to All Tools Hub</div>
+  <div id="cube" class="cube">
+    <div class="face front" data-url="#tools" data-color="#3b82f6">Tools</div>
+    <div class="face back" data-url="#privacy" data-color="#2563eb">Privacy</div>
+    <div class="face right" data-url="#terms" data-color="#8b5cf6">Terms</div>
+    <div class="face left" data-url="#about" data-color="#7c3aed">About</div>
+    <div class="face top" data-url="#contact" data-color="#22c55e">Contact</div>
+    <div class="face bottom" data-url="#faq" data-color="#f59e0b">FAQ</div>
   </div>
 </div>
 
-<!-- Hero / 3D Cube Section -->
-<section class="pt-28 pb-16 text-center">
-  <h2 class="text-4xl md:text-5xl font-extrabold mb-4 text-blue-600">Welcome to All Tools Hub</h2>
-  <p class="text-lg md:text-xl mb-10 max-w-2xl mx-auto">Your one-stop solution for free online tools like calculators, converters, and more.</p>
-
-  <div class="cube-container">
-    <div class="cube">
-      <div class="face front" onclick="navigate('tools')">Tools</div>
-      <div class="face back" onclick="navigate('privacy.html')">Privacy</div>
-      <div class="face right" onclick="navigate('terms.html')">Terms</div>
-      <div class="face left" onclick="navigate('contact.html')">Contact</div>
-      <div class="face top" onclick="navigate('about')">About</div>
-      <div class="face bottom" onclick="navigate('home')">Home</div>
-    </div>
-  </div>
-</section>
-
-<!-- About / Intro Section -->
-<section id="about" class="max-w-4xl mx-auto p-6 text-center">
-  <h3 class="text-3xl font-bold mb-4">About All Tools Hub</h3>
-  <p class="text-gray-700">All Tools Hub is a platform where you can find a variety of online tools like calculators, converters, and other useful utilities. Everything is free and easy to use.</p>
-</section>
-
 <!-- Footer -->
-<footer class="bg-gray-900 text-gray-300 py-6 mt-16 text-center">
+<footer class="bg-gray-900 text-gray-300 py-6 mt-20 text-center">
   © 2025 All Tools Hub. All rights reserved.
 </footer>
 
 <script>
 // Mobile menu toggle
-function toggleMobileMenu(){
-  const menu = document.getElementById('mobileMenu');
-  menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-}
+const mobileMenuBtn=document.getElementById("mobileMenuBtn");
+const mobileMenu=document.getElementById("mobileMenu");
+mobileMenuBtn.addEventListener("click",()=>{mobileMenu.classList.toggle("hidden");});
 
-// Navigation from cube
-function navigate(page){
-  if(page === 'tools') window.location.href='#tools';
-  else if(page==='about') window.location.href='#about';
-  else if(page==='home') window.location.href='#';
-  else window.location.href=page;
-}
+// Search
+const searchBtn=document.getElementById("searchBtn");
+const searchInput=document.getElementById("searchInput");
+searchBtn.addEventListener("click",()=>{ alert("Search: "+searchInput.value); });
+const mobileSearchBtn=document.getElementById("mobileSearchBtn");
+const mobileSearchInput=document.getElementById("mobileSearchInput");
+mobileSearchBtn.addEventListener("click",()=>{ alert("Search: "+mobileSearchInput.value); });
 
-// Search function
-function doSearch(type){
-  const query = type==='desktop'?document.getElementById('desktopSearch').value.trim():document.getElementById('mobileSearch').value.trim();
-  if(query) alert(`Search for: ${query} (Implement your search logic here)`); // placeholder
+// Cube rotation
+const cube=document.getElementById("cube");
+const cubeTitle=document.getElementById("cubeTitle");
+let isDragging=false, prevX=0, prevY=0, rotX=-15, rotY=0, inertiaX=0, inertiaY=0, friction=0.95;
+const faces=Array.from(document.querySelectorAll(".face"));
+
+// Clickable faces
+faces.forEach(face=>{
+  face.addEventListener("click",()=>{
+    const url=face.getAttribute("data-url");
+    if(url.startsWith("#")){
+      const section=document.querySelector(url);
+      if(section) section.scrollIntoView({behavior:"smooth"});
+    } else { window.location.href=url; }
+  });
+});
+
+// Drag & touch functions
+function startDrag(e){isDragging=true; prevX=e.type.includes("touch")?e.touches[0].clientX:e.clientX; prevY=e.type.includes("touch")?e.touches[0].clientY:e.clientY; cube.style.transition="none";}
+function moveDrag(e){if(!isDragging) return; const currX=e.type.includes("touch")?e.touches[0].clientX:e.clientX; const currY=e.type.includes("touch")?e.touches[0].clientY:e.clientY; const dx=currX-prevX; const dy=currY-prevY; rotY+=dx*0.5; rotX-=dy*0.5; rotX=Math.max(-90,Math.min(90,rotX)); cube.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`; inertiaX=-dy*0.5; inertiaY=dx*0.5; prevX=currX; prevY=currY; updateFrontFace();}
+function endDrag(){isDragging=false; cube.style.transition="transform 0.2s ease-out";}
+cube.addEventListener("mousedown",startDrag); document.addEventListener("mousemove",moveDrag); document.addEventListener("mouseup",endDrag);
+cube.addEventListener("touchstart",startDrag); cube.addEventListener("touchmove",moveDrag); cube.addEventListener("touchend",endDrag);
+
+// Auto-spin + inertia
+function spinCube(){if(!isDragging){rotY+=inertiaY*0.1; rotX+=inertiaX*0.1; rotX=Math.max(-90,Math.min(90,rotX)); cube.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`; updateFrontFace(); inertiaX*=friction; inertiaY*=friction;} requestAnimationFrame(spinCube);}
+spinCube();
+
+// Update front face title dynamically
+function updateFrontFace(){
+  let minDiff=Infinity, frontFace=faces[0];
+  faces.forEach(f=>{
+    const matrix=window.getComputedStyle(f).transform;
+    const values=matrix.match(/matrix3d\((.+)\)/);
+    if(values){
+      const vals=values[1].split(',').map(Number);
+      // Forward z axis vector
+      const z = vals[10];
+      const diff = Math.abs(z-1); // closest to camera
+      if(diff<minDiff){minDiff=diff; frontFace=f;}
+    }
+  });
+  cubeTitle.textContent=frontFace.textContent;
+  faces.forEach(f=>f.style.background=f.getAttribute("data-color"));
 }
 </script>
 
