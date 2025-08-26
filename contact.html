@@ -1,51 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact Us - All Tools Hub</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 text-gray-800">
-
   <!-- Header -->
   <header class="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
     <div class="max-w-6xl mx-auto flex justify-between items-center p-4">
-      <h1 class="text-xl font-bold text-blue-600">All Tools Hub</h1>
-      <a href="index.html" class="text-gray-600 hover:text-blue-600">← Back to Home</a>
+      <a href="index.html" class="text-blue-600 font-bold">← Back</a>
+      <h1 class="text-xl font-bold">Contact Us</h1>
     </div>
   </header>
 
-  <!-- Contact Form -->
+  <!-- Contact Form Section -->
   <main class="pt-28 max-w-2xl mx-auto px-6">
-    <h2 class="text-3xl font-bold mb-6 text-center">Get in Touch</h2>
-    <p class="text-center text-gray-600 mb-10">
+    <h2 class="text-3xl font-bold text-center mb-6">Get in Touch</h2>
+    <p class="text-center text-gray-600 mb-8">
       Have questions or feedback? Fill out the form below and we’ll save it in our records.
     </p>
 
-    <form id="contact-form" class="bg-white p-6 rounded-lg shadow-md space-y-4">
+    <form id="contactForm" class="bg-white p-8 rounded-lg shadow-md space-y-6">
+      <!-- Name -->
       <div>
-        <label for="name" class="block font-semibold mb-1">Your Name</label>
+        <label class="block font-medium mb-2">Your Name</label>
         <input type="text" id="name" name="name" required
-          class="w-full border p-3 rounded focus:ring focus:ring-blue-300" />
+               class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
       </div>
+
+      <!-- Email -->
       <div>
-        <label for="email" class="block font-semibold mb-1">Your Email</label>
+        <label class="block font-medium mb-2">Your Email</label>
         <input type="email" id="email" name="email" required
-          class="w-full border p-3 rounded focus:ring focus:ring-blue-300" />
+               class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
       </div>
+
+      <!-- Message -->
       <div>
-        <label for="message" class="block font-semibold mb-1">Your Message</label>
+        <label class="block font-medium mb-2">Your Message</label>
         <textarea id="message" name="message" rows="4" required
-          class="w-full border p-3 rounded focus:ring focus:ring-blue-300"></textarea>
+                  class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"></textarea>
       </div>
+
+      <!-- Submit Button -->
       <button type="submit"
-        class="w-full bg-blue-600 text-white py-3 rounded hover:bg-blue-700">
+              class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
         Send Message
       </button>
-    </form>
 
-    <p id="response-message" class="text-center mt-6 text-lg font-medium"></p>
+      <!-- Response Message (auto-filled by JS) -->
+      <p id="responseMessage" class="text-center text-sm mt-4"></p>
+    </form>
   </main>
 
   <!-- Footer -->
@@ -54,36 +61,43 @@
   </footer>
 
   <script>
-    document.getElementById("contact-form").addEventListener("submit", async function(e) {
+    const form = document.getElementById("contactForm");
+    const responseMessage = document.getElementById("responseMessage");
+
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const message = document.getElementById("message").value.trim();
-      const responseMessage = document.getElementById("response-message");
+      const data = {
+        name: document.getElementById("name").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        message: document.getElementById("message").value.trim()
+      };
 
+      // Show loading text
       responseMessage.textContent = "⏳ Sending...";
+      responseMessage.className = "text-blue-600 text-center";
 
       try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbyEkRn8stwJM-cetq-ySs16ilKTZVOn9cDY0mNHYyBXEPZHzw0Tp1nE5D0Q1P-3aHFZkg/exec", {
+        const res = await fetch("https://script.google.com/macros/s/AKfycbxG-Yik9oXUzcPZ4cAAfb6NCujbZR0PZFvnkD7Wk3BH2793gjNFfKYlA4Tpz7firVPAmw/exec", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, email, message })
+          body: JSON.stringify(data),
+          headers: { "Content-Type": "application/json" }
         });
 
-        const result = await response.json();
+        const result = await res.json();
 
         if (result.result === "success") {
-          responseMessage.textContent = "✅ Thank you! Your message has been saved.";
-          responseMessage.className = "text-center mt-6 text-green-600 font-medium";
-          document.getElementById("contact-form").reset();
+          // ✅ Fixed success message
+          responseMessage.textContent = "✅ Message sent successfully! Thanks for contacting us.";
+          responseMessage.className = "text-green-600 text-center font-medium";
+          form.reset();
         } else {
-          throw new Error(result.error || "Unknown error");
+          responseMessage.textContent = "❌ Error: " + result.error;
+          responseMessage.className = "text-red-600 text-center font-medium";
         }
       } catch (err) {
-        responseMessage.textContent = "❌ Error saving your message. Try again.";
-        responseMessage.className = "text-center mt-6 text-red-600 font-medium";
-        console.error("Error:", err);
+        responseMessage.textContent = "❌ Network error. Please try again.";
+        responseMessage.className = "text-red-600 text-center font-medium";
       }
     });
   </script>
