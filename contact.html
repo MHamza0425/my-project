@@ -1,85 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact Us - All Tools Hub</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 text-gray-800">
+
   <!-- Header -->
-  <header class="bg-white shadow-md p-4">
-    <div class="max-w-6xl mx-auto flex justify-between items-center">
-      <a href="index.html" class="text-blue-600 font-bold">← Back to Home</a>
+  <header class="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
+    <div class="max-w-6xl mx-auto flex justify-between items-center p-4">
+      <a href="index.html" class="text-blue-600 font-bold">← Back</a>
       <h1 class="text-xl font-bold">Contact Us</h1>
     </div>
   </header>
 
-  <!-- Contact Form Section -->
-  <main class="max-w-3xl mx-auto py-16 px-6">
-    <h2 class="text-3xl font-bold text-center mb-6 text-blue-600">Get in Touch</h2>
-    <p class="text-center text-gray-600 mb-10">
+  <!-- Contact Section -->
+  <main class="max-w-lg mx-auto pt-28 px-6">
+    <h2 class="text-3xl font-bold text-center mb-6">Get in Touch</h2>
+    <p class="text-center text-gray-600 mb-8">
       Have questions or feedback? Fill out the form below and we’ll save it in our records.
     </p>
 
-    <form id="contact-form" class="bg-white p-8 rounded-lg shadow-md space-y-6">
+    <form id="contactForm" class="bg-white p-6 rounded-lg shadow space-y-4">
       <div>
-        <label class="block text-sm font-medium text-gray-700">Your Name</label>
-        <input type="text" name="name" required class="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+        <label class="block font-semibold mb-1">Your Name</label>
+        <input type="text" name="name" required class="w-full border p-3 rounded" />
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700">Your Email</label>
-        <input type="email" name="email" required class="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+        <label class="block font-semibold mb-1">Your Email</label>
+        <input type="email" name="email" required class="w-full border p-3 rounded" />
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700">Your Message</label>
-        <textarea name="message" rows="5" required class="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
+        <label class="block font-semibold mb-1">Your Message</label>
+        <textarea name="message" required rows="4" class="w-full border p-3 rounded"></textarea>
       </div>
 
-      <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+      <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded hover:bg-blue-700">
         Send Message
       </button>
     </form>
 
-    <p id="response" class="text-center mt-6 text-green-600 font-semibold hidden"></p>
+    <p id="responseMsg" class="text-center mt-4 font-semibold"></p>
   </main>
 
   <!-- Footer -->
-  <footer class="bg-gray-900 text-gray-300 py-6 mt-16 text-center">
-    <p>© 2025 All Tools Hub. All rights reserved.</p>
+  <footer class="text-center text-gray-500 py-6 mt-10">
+    <p>&copy; 2025 All Tools Hub</p>
   </footer>
 
-  <!-- Script -->
   <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbw2GwkV4znsYcnOu67MzUF7Pd8uhA7s-RJ6iSL-9zZTszpGBJTXbUt6j5KHU9EFjjJ7/exec";
-    const form = document.getElementById("contact-form");
-    const responseEl = document.getElementById("response");
-
-    form.addEventListener("submit", (e) => {
+    document.getElementById("contactForm").addEventListener("submit", async function(e) {
       e.preventDefault();
-      const formData = {
+
+      const form = e.target;
+      const data = {
         name: form.name.value,
         email: form.email.value,
         message: form.message.value
       };
 
-      fetch(scriptURL, {
-        method: "POST",
-        body: JSON.stringify(formData)
-      })
-      .then(res => res.json())
-      .then(data => {
-        responseEl.textContent = "✅ Thank you! Your message has been saved.";
-        responseEl.classList.remove("hidden");
-        form.reset();
-      })
-      .catch(err => {
-        responseEl.textContent = "❌ Error saving your message. Try again.";
-        responseEl.classList.remove("hidden");
-      });
+      try {
+        const res = await fetch("https://script.google.com/macros/s/AKfycbxetQiIW4sjI-RdLPixqqPOH_-IMX60eUAxeFEdDtF43AMbkf9gifoFK2j2MpQ0DaBSSA/exec", {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: { "Content-Type": "application/json" }
+        });
+
+        const result = await res.json();
+        if (result.result === "success") {
+          document.getElementById("responseMsg").textContent = "✅ Message saved successfully!";
+          document.getElementById("responseMsg").className = "text-green-600 text-center mt-4 font-semibold";
+          form.reset();
+        } else {
+          throw new Error(result.error || "Something went wrong.");
+        }
+      } catch (err) {
+        document.getElementById("responseMsg").textContent = "❌ Error saving your message. Try again.";
+        document.getElementById("responseMsg").className = "text-red-600 text-center mt-4 font-semibold";
+      }
     });
   </script>
+
 </body>
 </html>
