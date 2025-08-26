@@ -279,3 +279,34 @@ form.addEventListener("submit", function(e){
   renderVisitorTable();
 });
 </script>
+const adminPassword = "abdullah@0425"; // صرف آپ جانیں
+const adminLoginPrompt = document.getElementById("adminLoginPrompt");
+const loginBtn = document.getElementById("loginBtn");
+const loginError = document.getElementById("loginError");
+const adminSection = document.getElementById("adminSection");
+
+// Check if password is saved in localStorage
+if(localStorage.getItem("adminLoggedIn") === "true"){
+  adminLoginPrompt.style.display = "none";
+  adminSection.style.display = "block";
+  renderMessages();
+}
+
+// Login button click
+loginBtn.addEventListener("click", function(){
+  const entered = document.getElementById("adminPassword").value;
+  if(entered === adminPassword){
+    localStorage.setItem("adminLoggedIn","true"); // save login
+    adminLoginPrompt.style.display = "none";
+    adminSection.style.display = "block";
+    renderMessages();
+  } else {
+    loginError.innerText = "Incorrect password!";
+  }
+});
+
+// Optional: Logout function
+function adminLogout(){
+  localStorage.removeItem("adminLoggedIn");
+  location.reload();
+}
