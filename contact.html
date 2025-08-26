@@ -7,162 +7,110 @@
 <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 text-gray-800">
-
 <!-- Header -->
 <header class="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
-  <div class="max-w-6xl mx-auto flex justify-between items-center p-4">
-    <h1 class="text-xl font-bold">All Tools Hub</h1>
-    <nav class="space-x-6">
-      <a href="index.html" class="hover:text-blue-600">Home</a>
-      <a href="privacy.html" class="hover:text-blue-600">Privacy</a>
-      <a href="terms.html" class="hover:text-blue-600">Terms</a>
-      <a href="disclaimer.html" class="hover:text-blue-600">Disclaimer</a>
-    </nav>
-  </div>
+<div class="max-w-6xl mx-auto flex justify-between items-center p-4">
+<h1 class="text-xl font-bold">All Tools Hub</h1>
+<nav class="space-x-6">
+<a href="index.html" class="hover:text-blue-600">Home</a>
+<a href="privacy.html" class="hover:text-blue-600">Privacy</a>
+<a href="terms.html" class="hover:text-blue-600">Terms</a>
+<a href="disclaimer.html" class="hover:text-blue-600">Disclaimer</a>
+</nav>
+</div>
 </header>
-
 <!-- Visitor Contact Form -->
 <section class="pt-28 max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-  <h2 class="text-3xl font-bold mb-2 text-center">Get in Touch</h2>
-  <p class="text-center text-gray-600 mb-6">
-    Have questions or feedback? Fill out the form below and we’ll save it.
-  </p>
-
-  <form id="contactForm" class="space-y-4">
-    <div>
-      <label for="name" class="block font-semibold">Your Name</label>
-      <input type="text" id="name" required class="w-full border rounded p-2" />
-    </div>
-    <div>
-      <label for="email" class="block font-semibold">Your Email</label>
-      <input type="email" id="email" required class="w-full border rounded p-2" />
-    </div>
-    <div>
-      <label for="message" class="block font-semibold">Your Message</label>
-      <textarea id="message" required rows="4" class="w-full border rounded p-2"></textarea>
-    </div>
-    <button type="submit" class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-      Send Message
-    </button>
-  </form>
-
-  <p id="responseMessage" class="mt-4 text-center font-semibold"></p>
+<h2 class="text-3xl font-bold mb-2 text-center">Get in Touch</h2>
+<p class="text-center text-gray-600 mb-6">
+Have questions or feedback? Fill out the form below and we’ll save it.
+</p>
+<form id="contactForm" class="space-y-4">
+<div>
+<label for="name" class="block font-semibold">Your Name</label>
+<input type="text" id="name" required class="w-full border rounded p-2" />
+</div>
+<div>
+<label for="email" class="block font-semibold">Your Email</label>
+<input type="email" id="email" required class="w-full border rounded p-2" />
+</div>
+<div>
+<label for="message" class="block font-semibold">Your Message</label>
+<textarea id="message" required rows="4" class="w-full border rounded p-2"></textarea>
+</div>
+<button type="submit" class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+Send Message
+</button>
+</form>
+<p id="responseMessage" class="mt-4 text-center font-semibold"></p>
 </section>
-
-<!-- Visitor Messages Table -->
-<section class="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-6">
-  <h2 class="text-2xl font-bold mb-4 text-center">Visitor Messages</h2>
-  <div class="overflow-x-auto max-h-96 overflow-y-auto" id="visitorTableWrapper">
-    <table class="w-full border-collapse border border-gray-300 table-auto" id="visitorTable">
-      <thead class="bg-gray-200 sticky top-0 z-10">
-        <tr>
-          <th class="border border-gray-300 p-2">Name</th>
-          <th class="border border-gray-300 p-2">Email</th>
-          <th class="border border-gray-300 p-2">Message</th>
-          <th class="border border-gray-300 p-2">Time</th>
-        </tr>
-      </thead>
-      <tbody id="visitorTableBody"></tbody>
-    </table>
-  </div>
-</section>
-
 <!-- Admin Section -->
 <section class="max-w-5xl mx-auto p-6 bg-gray-50 shadow-lg rounded-lg mt-10" id="adminSection" style="display:none;">
-  <h2 class="text-2xl font-bold mb-4 text-center">Admin Panel</h2>
-  <p class="text-center mb-4">Manage all saved messages.</p>
-
-  <div class="mb-4 text-center">
-    <input type="text" id="searchInput" placeholder="Search messages..." class="w-1/2 p-2 border rounded" />
-  </div>
-
-  <div class="overflow-x-auto max-h-96 overflow-y-auto">
-    <table class="w-full border-collapse border border-gray-300 table-auto" id="messagesTable">
-      <thead class="bg-gray-200 sticky top-0 z-10">
-        <tr>
-          <th class="border border-gray-300 p-2">Name</th>
-          <th class="border border-gray-300 p-2">Email</th>
-          <th class="border border-gray-300 p-2">Message</th>
-          <th class="border border-gray-300 p-2">Time</th>
-          <th class="border border-gray-300 p-2">Actions</th>
-        </tr>
-      </thead>
-      <tbody id="messagesTableBody"></tbody>
-    </table>
-  </div>
-
-  <div class="mt-4 text-center space-x-2">
-    <button id="downloadCSV" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Download CSV</button>
-    <button id="deleteAll" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Delete All</button>
-  </div>
+<h2 class="text-2xl font-bold mb-4 text-center">Admin Panel</h2>
+<p class="text-center mb-4">Manage all saved messages.</p>
+<div class="mb-4 text-center">
+<input type="text" id="searchInput" placeholder="Search messages..." class="w-1/2 p-2 border rounded" />
+</div>
+<div class="overflow-x-auto max-h-96 overflow-y-auto">
+<table class="w-full border-collapse border border-gray-300 table-auto" id="messagesTable">
+<thead class="bg-gray-200 sticky top-0 z-10">
+<tr>
+<th class="border border-gray-300 p-2">Name</th>
+<th class="border border-gray-300 p-2">Email</th>
+<th class="border border-gray-300 p-2">Message</th>
+<th class="border border-gray-300 p-2">Time</th>
+<th class="border border-gray-300 p-2">Actions</th>
+</tr>
+</thead>
+<tbody id="messagesTableBody"></tbody>
+</table>
+</div>
+<div class="mt-4 text-center space-x-2">
+<button id="downloadCSV" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Download CSV</button>
+<button id="deleteAll" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Delete All</button>
+</div>
 </section>
-
 <!-- Admin Password Prompt -->
 <div id="adminLoginPrompt" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
-  <div class="bg-white p-6 rounded shadow-lg text-center">
-    <h2 class="text-xl font-bold mb-4">Admin Login</h2>
-    <input type="password" id="adminPassword" placeholder="Enter password" class="border p-2 rounded w-full mb-2" />
-    <div class="mb-4 text-left">
-      <input type="checkbox" id="showPassword" /> <label for="showPassword">Show Password</label>
-    </div>
-    <button id="loginBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Login</button>
-    <p id="loginError" class="text-red-600 mt-2"></p>
-  </div>
+<div class="bg-white p-6 rounded shadow-lg text-center">
+<h2 class="text-xl font-bold mb-4">Admin Login</h2>
+<input type="password" id="adminPassword" placeholder="Enter password" class="border p-2 rounded w-full mb-2" />
+<div class="mb-4 text-left">
+<input type="checkbox" id="showPassword" /> <label for="showPassword">Show Password</label>
 </div>
-
+<button id="loginBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Login</button>
+<p id="loginError" class="text-red-600 mt-2"></p>
+</div>
+</div>
 <footer class="bg-gray-900 text-gray-300 py-6 mt-20 text-center">
-  © 2025 All Tools Hub. All rights reserved.
+© 2025 All Tools Hub. All rights reserved.
 </footer>
-
 <script>
-// ==================== Visitor messages ====================
+// Visitor messages
+const form = document.getElementById("contactForm");
 const responseEl = document.getElementById("responseMessage");
 let messages = JSON.parse(localStorage.getItem("messages") || "[]");
-const visitorTableBody = document.getElementById("visitorTableBody");
-const visitorTableWrapper = document.getElementById("visitorTableWrapper");
-const form = document.getElementById("contactForm");
-
-// Escape HTML
-function escapeHTML(str){
-  return str.replace(/[&<>"']/g, function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];});
-}
-
-// Render visitor messages with auto-scroll
-function renderVisitorTable(){
-  visitorTableBody.innerHTML = "";
-  messages.forEach(msg=>{
-    const tr = document.createElement("tr");
-    tr.className = "bg-gray-50 hover:bg-gray-100";
-    tr.innerHTML = `
-      <td class="border border-gray-300 p-2">${escapeHTML(msg.name)}</td>
-      <td class="border border-gray-300 p-2">${escapeHTML(msg.email)}</td>
-      <td class="border border-gray-300 p-2 break-words">${escapeHTML(msg.message)}</td>
-      <td class="border border-gray-300 p-2">${msg.time}</td>
-    `;
-    visitorTableBody.appendChild(tr);
-  });
-  visitorTableWrapper.scrollTop = visitorTableWrapper.scrollHeight;
-}
-renderVisitorTable();
-
-// Submit visitor message
 form.addEventListener("submit", function(e){
-  e.preventDefault();
-  const name = document.getElementById("name").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const message = document.getElementById("message").value.trim();
-  if(!name || !email || !message) return;
-  const time = new Date().toLocaleString();
-  messages.push({name,email,message,time});
-  localStorage.setItem("messages", JSON.stringify(messages));
-  responseEl.innerText = `✅ Thanks for contacting us, ${name}! Your message has been saved.`;
-  responseEl.classList.remove("text-red-600");
-  responseEl.classList.add("text-green-600");
-  form.reset();
-  renderVisitorTable(); // Live update & auto-scroll
+e.preventDefault();
+const name = document.getElementById("name").value.trim();
+const email = document.getElementById("email").value.trim();
+const message = document.getElementById("message").value.trim();
+if(!name || !email || !message) return;
+const time = new Date().toLocaleString();
+messages.push({name,email,message,time});
+localStorage.setItem("messages", JSON.stringify(messages));
+responseEl.innerText = `✅ Thanks for contacting us, ${name}! Your message has been saved.`;
+responseEl.classList.remove("text-red-600");
+responseEl.classList.add("text-green-600");
+form.reset();
 });
-
-// ==================== Admin login ====================
+// Show/hide password
+const pwCheckbox = document.getElementById("showPassword");
+pwCheckbox.addEventListener("change", function(){
+const pwField = document.getElementById("adminPassword");
+pwField.type = this.checked ? "text" : "password";
+});
+// Admin login
 const adminPassword = "abdullah@0425";
 const adminLoginPrompt = document.getElementById("adminLoginPrompt");
 const loginBtn = document.getElementById("loginBtn");
@@ -172,6 +120,135 @@ const tableBody = document.getElementById("messagesTableBody");
 const searchInput = document.getElementById("searchInput");
 const downloadBtn = document.getElementById("downloadCSV");
 const deleteAllBtn = document.getElementById("deleteAll");
-const showPassword = document.getElementById("showPassword");
-
-// Show/hide
+loginBtn.addEventListener("click", function(){
+const entered = document.getElementById("adminPassword").value;
+if(entered === adminPassword){
+adminLoginPrompt.style.display = "none";
+adminSection.style.display = "block";
+renderMessages();
+} else {
+loginError.innerText = "Incorrect password!";
+}
+});
+function escapeHTML(str) {
+return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+}
+function renderMessages(filtered=null){
+const data = filtered || messages;
+tableBody.innerHTML = "";
+data.forEach((msg,index)=>{
+const tr = document.createElement("tr");
+tr.className = index%2===0?"bg-white hover:bg-gray-100":"bg-gray-50 hover:bg-gray-200";
+tr.innerHTML = `
+<td class="border border-gray-300 p-2">${escapeHTML(msg.name)}</td>
+<td class="border border-gray-300 p-2">${escapeHTML(msg.email)}</td>
+<td class="border border-gray-300 p-2 break-words">${escapeHTML(msg.message)}</td>
+<td class="border border-gray-300 p-2">${msg.time}</td>
+<td class="border border-gray-300 p-2 text-center">
+<button data-index="${index}" class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 deleteBtn">Delete</button>
+</td>
+`;
+tableBody.appendChild(tr);
+});
+document.querySelectorAll(".deleteBtn").forEach(btn=>{
+btn.addEventListener("click", function(){
+const idx = parseInt(this.dataset.index);
+messages.splice(idx,1);
+localStorage.setItem("messages", JSON.stringify(messages));
+renderMessages();
+applySearch();
+});
+});
+}
+// Search functionality
+searchInput.addEventListener("input", applySearch);
+function applySearch(){
+const query = searchInput.value.toLowerCase();
+const filtered = messages.filter(msg=>
+msg.name.toLowerCase().includes(query) ||
+msg.email.toLowerCase().includes(query) ||
+msg.message.toLowerCase().includes(query) ||
+msg.time.toLowerCase().includes(query)
+);
+renderMessages(filtered);
+}
+// Download CSV
+downloadBtn.addEventListener("click",()=>{
+if(messages.length===0){ alert("No messages to download"); return; }
+const csvHeader = "Name,Email,Message,Time\n";
+const csvRows = messages.map(msg=>`"${msg.name}","${msg.email}","${msg.message}","${msg.time}"`);
+const csvContent = csvHeader + csvRows.join("\n");
+const blob = new Blob([csvContent], {type:"text/csv;charset=utf-8;"});
+const link = document.createElement("a");
+link.href = URL.createObjectURL(blob);
+link.download = "messages.csv";
+link.click();
+});
+// Delete all messages
+deleteAllBtn.addEventListener("click",()=>{
+if(confirm("Delete all messages?")){
+messages=[];
+localStorage.removeItem("messages");
+renderMessages();
+applySearch();
+}
+});
+</script>
+</body>
+</
+<!-- Visitor Messages Table -->
+<section class="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-6">
+<h2 class="text-2xl font-bold mb-4 text-center">Visitor Messages</h2>
+<div class="overflow-x-auto max-h-96 overflow-y-auto">
+<table class="w-full border-collapse border border-gray-300 table-auto" id="visitorTable">
+<thead class="bg-gray-200 sticky top-0 z-10">
+<tr>
+<th class="border border-gray-300 p-2">Name</th>
+<th class="border border-gray-300 p-2">Email</th>
+<th class="border border-gray-300 p-2">Message</th>
+<th class="border border-gray-300 p-2">Time</th>
+</tr>
+</thead>
+<tbody id="visitorTableBody"></tbody>
+</table>
+</div>
+</section>
+<script>
+// Visitor messages (existing)
+const visitorTableBody = document.getElementById("visitorTableBody");
+// Render visitor table
+function renderVisitorTable() {
+visitorTableBody.innerHTML = "";
+messages.forEach((msg) => {
+const tr = document.createElement("tr");
+tr.className = "bg-gray-50 hover:bg-gray-100";
+tr.innerHTML = `
+<td class="border border-gray-300 p-2">${escapeHTML(msg.name)}</td>
+<td class="border border-gray-300 p-2">${escapeHTML(msg.email)}</td>
+<td class="border border-gray-300 p-2 break-words">${escapeHTML(msg.message)}</td>
+<td class="border border-gray-300 p-2">${msg.time}</td>
+`;
+visitorTableBody.appendChild(tr);
+});
+}
+// Call renderVisitorTable after page load
+renderVisitorTable();
+// Update visitor table when a new message is submitted
+form.addEventListener("submit", function(e){
+e.preventDefault();
+const name = document.getElementById("name").value.trim();
+const email = document.getElementById("email").value.trim();
+const message = document.getElementById("message").value.trim();
+if(!name || !email || !message) return;
+const time = new Date().toLocaleString();
+messages.push({name,email,message,time});
+localStorage.setItem("messages", JSON.stringify(messages));
+responseEl.innerText = `✅ Thanks for contacting us, ${name}! Your message has been saved.`;
+responseEl.classList.remove("text-red-600");
+responseEl.classList.add("text-green-600");
+form.reset();
+// Update visitor table live
+renderVisitorTable();
+});
+</script>
