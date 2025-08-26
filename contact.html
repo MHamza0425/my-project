@@ -179,6 +179,7 @@ togglePassword.addEventListener("change", function(){
 if(localStorage.getItem("adminLoggedIn")==="true"){
   adminLoginPrompt.style.display="none";
   adminSection.style.display="block";
+  renderAdminMessages();
 }
 
 // Login button
@@ -194,7 +195,7 @@ loginBtn.addEventListener("click", function(){
   }
 });
 
-// Admin functionalities
+// Render Admin messages
 const tableBody = document.getElementById("messagesTableBody");
 const searchInput = document.getElementById("searchInput");
 const downloadBtn = document.getElementById("downloadCSV");
@@ -233,4 +234,42 @@ function renderAdminMessages(filtered=null){
 searchInput.addEventListener("input", applySearch);
 function applySearch(){
   const query = searchInput.value.toLowerCase();
-  const filtered =
+  const filtered = messages.filter(msg=>
+    msg.name.toLowerCase().includes(query) ||
+    msg.email.toLowerCase().includes(query) ||
+    msg.message.toLowerCase().includes(query) ||
+    msg.time.toLowerCase().includes(query)
+  );
+  renderAdminMessages(filtered);
+}
+
+// Download CSV
+downloadBtn.addEventListener("click",()=>{
+  if(messages.length===0){ alert("No messages to download"); return; }
+  const csvHeader = "Name,Email,Message,Time\n";
+  const csvRows = messages.map(msg=>`"${msg.name}","${msg.email}","${msg.message}","${msg.time}"`);
+  const csvContent = csvHeader+csvRows.join("\n");
+  const blob = new Blob([csvContent], {type:"text/csv;charset=utf-8;"});
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "messages.csv";
+  link.click();
+});
+
+// Delete all
+deleteAllBtn.addEventListener("click",()=>{
+  if(confirm("Delete all messages?")){
+    messages=[];
+    localStorage.removeItem("messages");
+    renderAdminMessages();
+    renderVisitorTable();
+    applySearch();
+  }
+});
+
+// Logout
+function adminLogout(){
+  localStorage.removeItem("adminLoggedIn");
+  adminSection.style.display="none";
+  adminLoginPrompt.style.display="flex";
+ 
