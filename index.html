@@ -8,26 +8,21 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { margin: 0; font-family: 'Inter', sans-serif; }
-    .cube-container { perspective: 1500px; width: 350px; margin: 120px auto; text-align: center; }
-    .cube { width: 250px; height: 250px; position: relative; transform-style: preserve-3d; cursor: grab; margin: auto; transition: transform 0.3s ease-out; }
-    .face { position: absolute; width: 250px; height: 250px; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 1.5rem; color: white; border: 2px solid rgba(255,255,255,0.4); box-shadow: 0 6px 20px rgba(0,0,0,0.4); transition: all 0.4s ease, background 1.2s ease; text-align: center; cursor: pointer; border-radius: 8px; }
-    .face:hover { transform: scale(1.08); box-shadow: 0 10px 25px rgba(0,0,0,0.6); }
-    .front  { transform: rotateY(0deg) translateZ(125px); background: #3b82f6; }
-    .back   { transform: rotateY(180deg) translateZ(125px); background: #2563eb; }
-    .right  { transform: rotateY(90deg) translateZ(125px); background: #8b5cf6; }
-    .left   { transform: rotateY(-90deg) translateZ(125px); background: #7c3aed; }
-    .top    { transform: rotateX(90deg) translateZ(125px); background: #22c55e; }
-    .bottom { transform: rotateX(-90deg) translateZ(125px); background: #f59e0b; }
-    /* Add gradient for more design */
-    .face { background: linear-gradient(135deg, var(--color-start), var(--color-end)); }
-    .front { --color-start: #3b82f6; --color-end: #1d4ed8; }
-    .back { --color-start: #2563eb; --color-end: #1e40af; }
-    .right { --color-start: #8b5cf6; --color-end: #6d28d9; }
-    .left { --color-start: #7c3aed; --color-end: #5b21b6; }
-    .top { --color-start: #22c55e; --color-end: #15803d; }
-    .bottom { --color-start: #f59e0b; --color-end: #d97706; }
-    /* Smooth scroll behavior */
+    .cube-container { perspective: 1500px; width: 300px; margin: 80px auto; text-align: center; }
+    .cube { width: 220px; height: 220px; position: relative; transform-style: preserve-3d; cursor: grab; margin: auto; transition: transform 0.3s ease-out; user-select: none; }
+    .face { position: absolute; width: 220px; height: 220px; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 1.4rem; color: white; border: 2px solid rgba(255,255,255,0.5); box-shadow: 0 6px 20px rgba(0,0,0,0.4); transition: all 0.3s ease; text-align: center; cursor: pointer; border-radius: 10px; }
+    .face:hover { transform: scale(1.1); box-shadow: 0 8px 25px rgba(0,0,0,0.5); }
+    .front  { transform: rotateY(0deg) translateZ(110px); background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+    .back   { transform: rotateY(180deg) translateZ(110px); background: linear-gradient(135deg, #2563eb, #1e40af); }
+    .right  { transform: rotateY(90deg) translateZ(110px); background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+    .left   { transform: rotateY(-90deg) translateZ(110px); background: linear-gradient(135deg, #7c3aed, #5b21b6); }
+    .top    { transform: rotateX(90deg) translateZ(110px); background: linear-gradient(135deg, #22c55e, #15803d); }
+    .bottom { transform: rotateX(-90deg) translateZ(110px); background: linear-gradient(135deg, #f59e0b, #d97706); }
     html { scroll-behavior: smooth; }
+    /* Prevent text selection during drag */
+    .cube.dragging { user-select: none; }
+    /* Touch feedback */
+    .face:active { opacity: 0.9; }
   </style>
 </head>
 <body class="bg-gray-100 text-gray-900">
@@ -36,7 +31,7 @@
   <header class="bg-white shadow-lg fixed top-0 left-0 right-0 z-50">
     <div class="max-w-7xl mx-auto flex justify-between items-center p-4">
       <div class="flex items-center space-x-3">
-        <img src="logo.png" alt="All Tools Hub Logo" class="w-12 h-12 rounded-full border-2 border-blue-600" loading="lazy" />
+        <img src="logo.png" alt="All Tools Hub Logo" class="w-12 h-12 rounded-full border-2 border-blue-600" loading="lazy" onerror="this.src='https://via.placeholder.com/48'" />
         <h1 class="text-2xl font-bold text-blue-600 cursor-pointer" onclick="window.scrollTo({top:0,behavior:'smooth'})">All Tools Hub</h1>
       </div>
       <div class="flex items-center space-x-6">
@@ -47,6 +42,7 @@
           <a href="#privacy" class="hover:text-blue-600 transition-colors">Privacy</a>
           <a href="#terms" class="hover:text-blue-600 transition-colors">Terms</a>
           <a href="#disclaimer" class="hover:text-blue-600 transition-colors">Disclaimer</a>
+          <a href="#faq" class="hover:text-blue-600 transition-colors">FAQ</a>
           <a href="#contact" class="hover:text-blue-600 transition-colors">Contact</a>
         </nav>
         <div class="hidden md:flex items-center space-x-2">
@@ -64,6 +60,7 @@
       <a href="#privacy" class="block text-lg hover:text-blue-600 transition-colors">Privacy</a>
       <a href="#terms" class="block text-lg hover:text-blue-600 transition-colors">Terms</a>
       <a href="#disclaimer" class="block text-lg hover:text-blue-600 transition-colors">Disclaimer</a>
+      <a href="#faq" class="block text-lg hover:text-blue-600 transition-colors">FAQ</a>
       <a href="#contact" class="block text-lg hover:text-blue-600 transition-colors">Contact</a>
       <div class="flex justify-center mt-4 space-x-2">
         <input type="text" id="mobileSearchInput" placeholder="Search tools..." class="border border-gray-300 rounded-lg p-2 w-2/3 focus:outline-none focus:ring-2 focus:ring-blue-600" aria-label="Search tools"/>
@@ -77,7 +74,7 @@
     <div class="max-w-5xl mx-auto px-4">
       <h2 class="text-4xl md:text-5xl font-extrabold mb-6">Welcome to All Tools Hub</h2>
       <p class="text-lg md:text-xl mb-8 max-w-3xl mx-auto">
-        Your one-stop solution for free online tools like calculators, calendars, converters, and more. Simplify your tasks with our easy-to-use platform.
+        Your one-stop solution for free online tools like calculators, calendars, converters, and more. Simplify your tasks with our intuitive platform.
       </p>
       <a href="#tools" class="inline-block bg-white text-blue-600 font-semibold px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors">Explore Tools</a>
     </div>
@@ -88,12 +85,12 @@
     <div class="cube-container">
       <div id="cubeTitle" class="text-3xl font-bold text-blue-600 mb-6">Welcome to All Tools Hub</div>
       <div id="cube" class="cube">
-        <div class="face front" data-url="#tools" data-color="#3b82f6">Tools</div>
-        <div class="face back" data-url="#privacy" data-color="#2563eb">Privacy</div>
-        <div class="face right" data-url="#terms" data-color="#8b5cf6">Terms</div>
-        <div class="face left" data-url="#about" data-color="#7c3aed">About</div>
-        <div class="face top" data-url="#contact" data-color="#22c55e">Contact</div>
-        <div class="face bottom" data-url="#faq" data-color="#f59e0b">FAQ</div>
+        <div class="face front" data-url="#tools">Tools</div>
+        <div class="face back" data-url="#privacy">Privacy</div>
+        <div class="face right" data-url="#terms">Terms</div>
+        <div class="face left" data-url="#about">About</div>
+        <div class="face top" data-url="#contact">Contact</div>
+        <div class="face bottom" data-url="#faq">FAQ</div>
       </div>
     </div>
   </section>
@@ -213,11 +210,11 @@
       <p class="text-lg text-gray-600 mb-8 max-w-3xl mx-auto">
         Have questions or feedback? Reach out to us, and we'll get back to you as soon as possible.
       </p>
-      <div class="max-w-md mx-auto">
-        <input type="email" placeholder="Your email" class="w-full border border-gray-300 rounded-lg p-3 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-600" aria-label="Email address"/>
-        <textarea placeholder="Your message" class="w-full border border-gray-300 rounded-lg p-3 mb-4 h-32 focus:outline-none focus:ring-2 focus:ring-blue-600" aria-label="Message"></textarea>
-        <button class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors w-full">Send Message</button>
-      </div>
+      <form id="contactForm" class="max-w-md mx-auto">
+        <input type="email" name="email" placeholder="Your email" class="w-full border border-gray-300 rounded-lg p-3 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-600" aria-label="Email address" required/>
+        <textarea name="message" placeholder="Your message" class="w-full border border-gray-300 rounded-lg p-3 mb-4 h-32 focus:outline-none focus:ring-2 focus:ring-blue-600" aria-label="Message" required></textarea>
+        <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors w-full">Send Message</button>
+      </form>
     </div>
   </section>
 
@@ -242,13 +239,9 @@
       mobileMenu.classList.toggle("hidden");
     });
 
-    // Search functionality (placeholder)
-    const searchBtn = document.getElementById("searchBtn");
-    const searchInput = document.getElementById("searchInput");
-    searchBtn.addEventListener("click", () => {
-      const query = searchInput.value.trim().toLowerCase();
+    // Search functionality
+    function performSearch(query, inputElement) {
       if (query) {
-        // Simple client-side search simulation
         const sections = document.querySelectorAll('section');
         let found = false;
         sections.forEach(section => {
@@ -263,28 +256,36 @@
         }
       } else {
         alert("Please enter a search term.");
+        inputElement.focus();
+      }
+    }
+    const searchBtn = document.getElementById("searchBtn");
+    const searchInput = document.getElementById("searchInput");
+    searchBtn.addEventListener("click", () => {
+      performSearch(searchInput.value.trim().toLowerCase(), searchInput);
+    });
+    searchInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        performSearch(searchInput.value.trim().toLowerCase(), searchInput);
       }
     });
     const mobileSearchBtn = document.getElementById("mobileSearchBtn");
     const mobileSearchInput = document.getElementById("mobileSearchInput");
     mobileSearchBtn.addEventListener("click", () => {
-      const query = mobileSearchInput.value.trim().toLowerCase();
-      if (query) {
-        const sections = document.querySelectorAll('section');
-        let found = false;
-        sections.forEach(section => {
-          if (section.textContent.toLowerCase().includes(query)) {
-            section.scrollIntoView({ behavior: "smooth" });
-            found = true;
-            return;
-          }
-        });
-        if (!found) {
-          alert("No results found for: " + query);
-        }
-      } else {
-        alert("Please enter a search term.");
+      performSearch(mobileSearchInput.value.trim().toLowerCase(), mobileSearchInput);
+    });
+    mobileSearchInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        performSearch(mobileSearchInput.value.trim().toLowerCase(), mobileSearchInput);
       }
+    });
+
+    // Contact form submission (placeholder)
+    const contactForm = document.getElementById("contactForm");
+    contactForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      alert("Thank you for your message! We'll get back to you soon.");
+      contactForm.reset();
     });
 
     // Cube rotation
@@ -293,41 +294,36 @@
     let isDragging = false, prevX = 0, prevY = 0, rotX = -20, rotY = 0, inertiaX = 0, inertiaY = 0, friction = 0.96;
     const faces = Array.from(document.querySelectorAll(".face"));
 
-    // Set initial backgrounds from data-color
-    faces.forEach(f => f.style.background = `linear-gradient(135deg, ${f.getAttribute("data-color")}, ${darkenColor(f.getAttribute("data-color"))})`);
-
-    function darkenColor(color) {
-      const rgb = parseInt(color.slice(1), 16);
-      const r = Math.max(0, (rgb >> 16) - 50);
-      const g = Math.max(0, ((rgb >> 8) & 0xff) - 50);
-      const b = Math.max(0, (rgb & 0xff) - 50);
-      return `#${(r << 16 | g << 8 | b).toString(16).padStart(6, '0')}`;
-    }
-
-    // Clickable faces
+    // Clickable faces with debounce
+    let clickTimeout = null;
     faces.forEach(face => {
-      face.addEventListener("click", () => {
-        const url = face.getAttribute("data-url");
-        if (url.startsWith("#")) {
-          const section = document.querySelector(url);
-          if (section) {
-            section.scrollIntoView({ behavior: "smooth" });
+      face.addEventListener("click", (e) => {
+        if (isDragging) return; // Prevent click during drag
+        if (clickTimeout) clearTimeout(clickTimeout);
+        clickTimeout = setTimeout(() => {
+          const url = face.getAttribute("data-url");
+          if (url.startsWith("#")) {
+            const section = document.querySelector(url);
+            if (section) {
+              section.scrollIntoView({ behavior: "smooth" });
+            } else {
+              console.warn("Section not found: " + url);
+            }
           } else {
-            console.warn("Section not found: " + url);
+            window.location.href = url;
           }
-        } else {
-          window.location.href = url;
-        }
+        }, 200); // Debounce to prevent rapid clicks
       });
     });
 
     // Drag & touch functions
     function startDrag(e) {
       isDragging = true;
+      cube.classList.add("dragging");
       prevX = e.type.includes("touch") ? e.touches[0].clientX : e.clientX;
       prevY = e.type.includes("touch") ? e.touches[0].clientY : e.clientY;
       cube.style.transition = "none";
-      e.preventDefault(); // Prevent scrolling on touch
+      e.preventDefault();
     }
     function moveDrag(e) {
       if (!isDragging) return;
@@ -335,8 +331,8 @@
       const currY = e.type.includes("touch") ? e.touches[0].clientY : e.clientY;
       const dx = currX - prevX;
       const dy = currY - prevY;
-      rotY += dx * 0.6;
-      rotX -= dy * 0.6;
+      rotY += dx * 0.8;
+      rotX -= dy * 0.8;
       rotX = Math.max(-90, Math.min(90, rotX));
       cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
       inertiaX = -dy * 0.05;
@@ -344,10 +340,11 @@
       prevX = currX;
       prevY = currY;
       updateFrontFace();
-      e.preventDefault(); // Prevent scrolling on touch
+      e.preventDefault();
     }
     function endDrag() {
       isDragging = false;
+      cube.classList.remove("dragging");
       cube.style.transition = "transform 0.3s ease-out";
     }
     cube.addEventListener("mousedown", startDrag);
@@ -382,8 +379,8 @@
         const values = matrix.match(/matrix3d\((.+)\)/);
         if (values) {
           const vals = values[1].split(',').map(Number);
-          const z = vals[10]; // Forward z axis vector
-          const diff = Math.abs(z - 1); // Closest to camera
+          const z = vals[10];
+          const diff = Math.abs(z - 1);
           if (diff < minDiff) {
             minDiff = diff;
             frontFace = f;
@@ -391,11 +388,16 @@
         }
       });
       cubeTitle.textContent = frontFace.textContent;
-      // No need to set backgrounds again since set initially and gradients are in CSS
     }
 
     // Initial update
     updateFrontFace();
+
+    // Handle window resize for cube responsiveness
+    window.addEventListener("resize", () => {
+      const cubeContainer = document.querySelector(".cube-container");
+      cubeContainer.style.width = window.innerWidth < 640 ? "250px" : "300px";
+    });
   </script>
 </body>
 </html>
