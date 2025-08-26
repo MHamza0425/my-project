@@ -218,3 +218,64 @@ deleteAllBtn.addEventListener("click",()=>{
 </script>
 </body>
 </
+<!-- Visitor Messages Table -->
+<section class="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-6">
+  <h2 class="text-2xl font-bold mb-4 text-center">Visitor Messages</h2>
+  <div class="overflow-x-auto max-h-96 overflow-y-auto">
+    <table class="w-full border-collapse border border-gray-300 table-auto" id="visitorTable">
+      <thead class="bg-gray-200 sticky top-0 z-10">
+        <tr>
+          <th class="border border-gray-300 p-2">Name</th>
+          <th class="border border-gray-300 p-2">Email</th>
+          <th class="border border-gray-300 p-2">Message</th>
+          <th class="border border-gray-300 p-2">Time</th>
+        </tr>
+      </thead>
+      <tbody id="visitorTableBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<script>
+// Visitor messages (existing)
+const visitorTableBody = document.getElementById("visitorTableBody");
+
+// Render visitor table
+function renderVisitorTable() {
+  visitorTableBody.innerHTML = "";
+  messages.forEach((msg) => {
+    const tr = document.createElement("tr");
+    tr.className = "bg-gray-50 hover:bg-gray-100";
+    tr.innerHTML = `
+      <td class="border border-gray-300 p-2">${escapeHTML(msg.name)}</td>
+      <td class="border border-gray-300 p-2">${escapeHTML(msg.email)}</td>
+      <td class="border border-gray-300 p-2 break-words">${escapeHTML(msg.message)}</td>
+      <td class="border border-gray-300 p-2">${msg.time}</td>
+    `;
+    visitorTableBody.appendChild(tr);
+  });
+}
+
+// Call renderVisitorTable after page load
+renderVisitorTable();
+
+// Update visitor table when a new message is submitted
+form.addEventListener("submit", function(e){
+  e.preventDefault();
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const message = document.getElementById("message").value.trim();
+  if(!name || !email || !message) return;
+  const time = new Date().toLocaleString();
+  messages.push({name,email,message,time});
+  localStorage.setItem("messages", JSON.stringify(messages));
+
+  responseEl.innerText = `✅ Thanks for contacting us, ${name}! Your message has been saved.`;
+  responseEl.classList.remove("text-red-600");
+  responseEl.classList.add("text-green-600");
+  form.reset();
+
+  // Update visitor table live
+  renderVisitorTable();
+});
+</script>
