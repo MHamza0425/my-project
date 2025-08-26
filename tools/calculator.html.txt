@@ -47,7 +47,9 @@
   </footer>
 
   <script>
-    function calcInput(v){ document.getElementById("calc-display").value += v; }
+    function calcInput(v){ 
+      document.getElementById("calc-display").value += v; 
+    }
     function calcEqual(){ 
       try { 
         document.getElementById("calc-display").value = eval(document.getElementById("calc-display").value); 
@@ -55,11 +57,19 @@
         alert("Invalid Expression"); 
       } 
     }
-    function calcClear(){ document.getElementById("calc-display").value = ""; }
+    function calcClear(){ 
+      document.getElementById("calc-display").value = ""; 
+    }
   </script>
 
   <style>
-    .btn { padding: 15px; background:#f1f5f9; border-radius:8px; font-size:18px; }
+    .btn {
+      padding: 15px;
+      background:#f1f5f9;
+      border-radius:8px;
+      font-size:18px;
+      font-weight:bold;
+    }
     .btn:hover { background:#e2e8f0; }
   </style>
 </body>
