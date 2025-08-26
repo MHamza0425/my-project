@@ -1,218 +1,209 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contact Us - All Tools Hub</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Us - All Tools Hub</title>
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 text-gray-800">
 
-  <!-- Header -->
-  <header class="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
-    <div class="max-w-6xl mx-auto flex justify-between items-center p-4">
-      <h1 class="text-xl font-bold">All Tools Hub</h1>
-      <nav class="space-x-6">
-        <a href="index.html" class="hover:text-blue-600">Home</a>
-        <a href="privacy.html" class="hover:text-blue-600">Privacy</a>
-        <a href="terms.html" class="hover:text-blue-600">Terms</a>
-        <a href="disclaimer.html" class="hover:text-blue-600">Disclaimer</a>
-      </nav>
+<!-- Header -->
+<header class="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
+  <div class="max-w-6xl mx-auto flex justify-between items-center p-4">
+    <h1 class="text-xl font-bold">All Tools Hub</h1>
+    <nav class="space-x-6">
+      <a href="index.html" class="hover:text-blue-600">Home</a>
+      <a href="privacy.html" class="hover:text-blue-600">Privacy</a>
+      <a href="terms.html" class="hover:text-blue-600">Terms</a>
+      <a href="disclaimer.html" class="hover:text-blue-600">Disclaimer</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Contact Section -->
+<section class="pt-28 max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+  <h2 class="text-3xl font-bold mb-2 text-center">Get in Touch</h2>
+  <p class="text-center text-gray-600 mb-4">
+    Have questions or feedback? Fill out the form below and we’ll save it.
+  </p>
+  <p class="text-center text-blue-700 mb-6">
+    You can also email directly: <a href="mailto:saadkhan0425@gmail.com" class="underline">saadkhan0425@gmail.com</a>
+  </p>
+
+  <form id="contactForm" class="space-y-4">
+    <div>
+      <label for="name" class="block font-semibold">Your Name</label>
+      <input type="text" id="name" required class="w-full border rounded p-2" />
     </div>
-  </header>
-
-  <!-- Contact Section -->
-  <section class="pt-28 max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-    <h2 class="text-3xl font-bold mb-2 text-center">Get in Touch</h2>
-    <p class="text-center text-gray-600 mb-4">
-      Have questions or feedback? Fill out the form below and we’ll save it locally.
-    </p>
-    <p class="text-center text-blue-700 mb-6">
-      You can also email directly: <a href="mailto:saadkhan0425@gmail.com" class="underline">saadkhan0425@gmail.com</a>
-    </p>
-
-    <form id="contactForm" class="space-y-4">
-      <div>
-        <label for="name" class="block font-semibold">Your Name</label>
-        <input type="text" id="name" required class="w-full border rounded p-2" />
-      </div>
-
-      <div>
-        <label for="email" class="block font-semibold">Your Email</label>
-        <input type="email" id="email" required class="w-full border rounded p-2" />
-      </div>
-
-      <div>
-        <label for="message" class="block font-semibold">Your Message</label>
-        <textarea id="message" required rows="4" class="w-full border rounded p-2"></textarea>
-      </div>
-
-      <button type="submit" class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-        Send Message
-      </button>
-    </form>
-
-    <p id="responseMessage" class="mt-4 text-center font-semibold"></p>
-
-    <!-- Buttons -->
-    <div class="mt-4 text-center space-x-2">
-      <button id="downloadCSV" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-        Download Messages CSV
-      </button>
-      <button id="deleteAll" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
-        Delete All Messages
-      </button>
+    <div>
+      <label for="email" class="block font-semibold">Your Email</label>
+      <input type="email" id="email" required class="w-full border rounded p-2" />
     </div>
-
-    <!-- Search box -->
-    <div class="mt-6 text-center">
-      <input type="text" id="searchInput" placeholder="Search messages..." class="w-full p-2 border rounded" />
+    <div>
+      <label for="message" class="block font-semibold">Your Message</label>
+      <textarea id="message" required rows="4" class="w-full border rounded p-2"></textarea>
     </div>
+    <button type="submit" class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+      Send Message
+    </button>
+  </form>
 
-    <!-- Messages Table -->
-    <div class="mt-4 overflow-x-auto max-h-96">
-      <table class="w-full border-collapse border border-gray-300 table-auto" id="messagesTable">
-        <thead class="bg-gray-200 sticky top-0 z-10">
-          <tr>
-            <th class="border border-gray-300 p-2 cursor-pointer" data-column="name">Name</th>
-            <th class="border border-gray-300 p-2 cursor-pointer" data-column="email">Email</th>
-            <th class="border border-gray-300 p-2 cursor-pointer" data-column="message">Message</th>
-            <th class="border border-gray-300 p-2 cursor-pointer" data-column="time">Time</th>
-            <th class="border border-gray-300 p-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody id="messagesTableBody"></tbody>
-      </table>
-    </div>
-  </section>
+  <p id="responseMessage" class="mt-4 text-center font-semibold"></p>
+</section>
 
-  <!-- Footer -->
-  <footer class="bg-gray-900 text-gray-300 py-6 mt-20 text-center">
-    © 2025 All Tools Hub. All rights reserved.
-  </footer>
+<!-- Admin Section (Password Protected) -->
+<section class="max-w-5xl mx-auto p-6 bg-gray-50 shadow-lg rounded-lg mt-10" id="adminSection" style="display:none;">
+  <h2 class="text-2xl font-bold mb-4 text-center">Admin Panel</h2>
+  <p class="text-center mb-4">Manage all saved messages.</p>
 
-  <script>
-    const form = document.getElementById("contactForm");
-    const responseEl = document.getElementById("responseMessage");
-    const tableBody = document.getElementById("messagesTableBody");
-    const downloadBtn = document.getElementById("downloadCSV");
-    const deleteAllBtn = document.getElementById("deleteAll");
-    const searchInput = document.getElementById("searchInput");
-    const table = document.getElementById("messagesTable");
+  <div class="mb-4 text-center">
+    <input type="text" id="searchInput" placeholder="Search messages..." class="w-1/2 p-2 border rounded" />
+  </div>
 
-    // Load messages and UI state from localStorage
-    let messages = JSON.parse(localStorage.getItem("messages") || "[]");
-    let savedSort = JSON.parse(localStorage.getItem("sortState") || "{}");
-    let savedSearch = localStorage.getItem("searchQuery") || "";
-    searchInput.value = savedSearch;
+  <div class="overflow-x-auto max-h-96">
+    <table class="w-full border-collapse border border-gray-300 table-auto" id="messagesTable">
+      <thead class="bg-gray-200 sticky top-0 z-10">
+        <tr>
+          <th class="border border-gray-300 p-2">Name</th>
+          <th class="border border-gray-300 p-2">Email</th>
+          <th class="border border-gray-300 p-2">Message</th>
+          <th class="border border-gray-300 p-2">Time</th>
+          <th class="border border-gray-300 p-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="messagesTableBody"></tbody>
+    </table>
+  </div>
 
-    let sortDirection = savedSort || {};
+  <div class="mt-4 text-center space-x-2">
+    <button id="downloadCSV" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Download CSV</button>
+    <button id="deleteAll" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Delete All</button>
+  </div>
+</section>
 
-    function renderMessages(filteredMessages = null) {
-      const data = filteredMessages || messages;
-      tableBody.innerHTML = "";
+<!-- Admin Password Prompt -->
+<div id="adminLoginPrompt" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
+  <div class="bg-white p-6 rounded shadow-lg text-center">
+    <h2 class="text-xl font-bold mb-4">Admin Login</h2>
+    <input type="password" id="adminPassword" placeholder="Enter password" class="border p-2 rounded w-full mb-4" />
+    <button id="loginBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Login</button>
+    <p id="loginError" class="text-red-600 mt-2"></p>
+  </div>
+</div>
 
-      data.forEach((msg, index) => {
-        const tr = document.createElement("tr");
-        tr.className = index % 2 === 0 ? "bg-white hover:bg-gray-100" : "bg-gray-50 hover:bg-gray-200";
-        tr.innerHTML = `
-          <td class="border border-gray-300 p-2">${msg.name}<br><button data-index="${index}" data-field="name" class="text-xs bg-blue-600 text-white px-1 py-0.5 rounded hover:bg-blue-700 copyFieldBtn mt-1">Copy</button></td>
-          <td class="border border-gray-300 p-2">${msg.email}<br><button data-index="${index}" data-field="email" class="text-xs bg-blue-600 text-white px-1 py-0.5 rounded hover:bg-blue-700 copyFieldBtn mt-1">Copy</button></td>
-          <td class="border border-gray-300 p-2 break-words max-w-xs">${msg.message}<br><button data-index="${index}" data-field="message" class="text-xs bg-blue-600 text-white px-1 py-0.5 rounded hover:bg-blue-700 copyFieldBtn mt-1">Copy</button></td>
-          <td class="border border-gray-300 p-2">${msg.time}<br><button data-index="${index}" data-field="time" class="text-xs bg-blue-600 text-white px-1 py-0.5 rounded hover:bg-blue-700 copyFieldBtn mt-1">Copy</button></td>
-          <td class="border border-gray-300 p-2 text-center space-x-1">
-            <button data-index="${index}" class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 deleteBtn">Delete</button>
-          </td>
-        `;
-        tableBody.appendChild(tr);
-      });
+<footer class="bg-gray-900 text-gray-300 py-6 mt-20 text-center">
+  © 2025 All Tools Hub. All rights reserved.
+</footer>
 
-      document.querySelectorAll(".deleteBtn").forEach(btn => {
-        btn.addEventListener("click", function() {
-          const idx = parseInt(this.dataset.index);
-          messages.splice(idx, 1);
-          localStorage.setItem("messages", JSON.stringify(messages));
-          renderMessages();
-          applySearch();
-        });
-      });
+<script>
+const form = document.getElementById("contactForm");
+const responseEl = document.getElementById("responseMessage");
+let messages = JSON.parse(localStorage.getItem("messages") || "[]");
 
-      document.querySelectorAll(".copyFieldBtn").forEach(btn => {
-        btn.addEventListener("click", function() {
-          const idx = parseInt(this.dataset.index);
-          const field = this.dataset.field;
-          const text = messages[idx][field];
-          navigator.clipboard.writeText(text)
-            .then(() => alert(`${field.charAt(0).toUpperCase() + field.slice(1)} copied!`))
-            .catch(err => alert("Copy failed: " + err));
-        });
-      });
-    }
+// Visitor submits message
+form.addEventListener("submit", function(e){
+  e.preventDefault();
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const message = document.getElementById("message").value.trim();
+  if(!name || !email || !message) return;
 
-    function applySearch() {
-      const query = searchInput.value.toLowerCase();
-      localStorage.setItem("searchQuery", searchInput.value);
-      const filtered = messages.filter(msg =>
-        msg.name.toLowerCase().includes(query) ||
-        msg.email.toLowerCase().includes(query) ||
-        msg.message.toLowerCase().includes(query) ||
-        msg.time.toLowerCase().includes(query)
-      );
-      renderMessages(filtered);
-    }
+  const time = new Date().toLocaleString();
+  messages.push({name,email,message,time});
+  localStorage.setItem("messages", JSON.stringify(messages));
 
+  responseEl.innerText = `✅ Thanks for contacting us, ${name}! Your message has been received.`;
+  responseEl.classList.remove("text-red-600");
+  responseEl.classList.add("text-green-600");
+  form.reset();
+});
+
+// Admin login
+const adminPassword = "yourStrongPassword"; // set your own password
+const adminLoginPrompt = document.getElementById("adminLoginPrompt");
+const loginBtn = document.getElementById("loginBtn");
+const loginError = document.getElementById("loginError");
+const adminSection = document.getElementById("adminSection");
+
+loginBtn.addEventListener("click", function(){
+  const entered = document.getElementById("adminPassword").value;
+  if(entered === adminPassword){
+    adminLoginPrompt.style.display = "none";
+    adminSection.style.display = "block";
     renderMessages();
-    applySearch();
+  } else {
+    loginError.innerText = "Incorrect password!";
+  }
+});
 
-    form.addEventListener("submit", function(e) {
-      e.preventDefault();
-      const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const message = document.getElementById("message").value.trim();
+// Admin functionalities
+const tableBody = document.getElementById("messagesTableBody");
+const searchInput = document.getElementById("searchInput");
+const downloadBtn = document.getElementById("downloadCSV");
+const deleteAllBtn = document.getElementById("deleteAll");
 
-      if (!name || !email || !message) {
-        responseEl.innerText = "❌ Please fill all fields.";
-        responseEl.classList.add("text-red-600");
-        return;
-      }
+function renderMessages(filtered=null){
+  const data = filtered || messages;
+  tableBody.innerHTML = "";
+  data.forEach((msg,index)=>{
+    const tr = document.createElement("tr");
+    tr.className = index%2===0?"bg-white hover:bg-gray-100":"bg-gray-50 hover:bg-gray-200";
+    tr.innerHTML = `
+      <td class="border border-gray-300 p-2">${msg.name}</td>
+      <td class="border border-gray-300 p-2">${msg.email}</td>
+      <td class="border border-gray-300 p-2 break-words">${msg.message}</td>
+      <td class="border border-gray-300 p-2">${msg.time}</td>
+      <td class="border border-gray-300 p-2 text-center">
+        <button data-index="${index}" class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 deleteBtn">Delete</button>
+      </td>
+    `;
+    tableBody.appendChild(tr);
+  });
 
-      const time = new Date().toLocaleString();
-      const newMsg = { name, email, message, time };
-      messages.push(newMsg);
-      localStorage.setItem("messages", JSON.stringify(messages));
-
+  document.querySelectorAll(".deleteBtn").forEach(btn=>{
+    btn.addEventListener("click",function(){
+      const idx = parseInt(this.dataset.index);
+      messages.splice(idx,1);
+      localStorage.setItem("messages",JSON.stringify(messages));
       renderMessages();
       applySearch();
-
-      // ✅ Show thank-you notification
-      responseEl.innerText = `✅ Thanks for contacting us, ${name}! Your message has been received.`;
-      responseEl.classList.remove("text-red-600");
-      responseEl.classList.add("text-green-600");
-
-      form.reset();
     });
+  });
+}
 
-    downloadBtn.addEventListener("click", function() {
-      if (messages.length === 0) { alert("No messages to download!"); return; }
-      const csvHeader = "Name,Email,Message,Time\n";
-      const csvRows = messages.map(msg =>
-        `"${msg.name.replace(/"/g,'""')}","${msg.email.replace(/"/g,'""')}","${msg.message.replace(/"/g,'""')}","${msg.time}"`
-      );
-      const csvContent = csvHeader + csvRows.join("\n");
-      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = "messages.csv";
-      link.click();
-    });
+searchInput.addEventListener("input", applySearch);
+function applySearch(){
+  const query = searchInput.value.toLowerCase();
+  const filtered = messages.filter(msg=>
+    msg.name.toLowerCase().includes(query) ||
+    msg.email.toLowerCase().includes(query) ||
+    msg.message.toLowerCase().includes(query) ||
+    msg.time.toLowerCase().includes(query)
+  );
+  renderMessages(filtered);
+}
 
-    deleteAllBtn.addEventListener("click", function() {
-      if (confirm("Are you sure you want to delete all messages?")) {
-        messages = [];
-        localStorage.removeItem("messages");
-        renderMessages();
-        applySearch();
-      }
-    });
+downloadBtn.addEventListener("click",()=>{
+  if(messages.length===0){ alert("No messages to download"); return; }
+  const csvHeader = "Name,Email,Message,Time\n";
+  const csvRows = messages.map(msg=>`"${msg.name}","${msg.email}","${msg.message}","${msg.time}"`);
+  const csvContent = csvHeader+csvRows.join("\n");
+  const blob = new Blob([csvContent], {type:"text/csv;charset=utf-8;"});
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "messages.csv";
+  link.click();
+});
 
-    searchInput.addEventListener("
+deleteAllBtn.addEventListener("click",()=>{
+  if(confirm("Delete all messages?")){
+    messages=[];
+    localStorage.removeItem("messages");
+    renderMessages();
+    applySearch();
+  }
+});
+</script>
+</body>
+</html>
