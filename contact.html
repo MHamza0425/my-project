@@ -67,7 +67,7 @@
   </div>
 </section>
 
-<!-- Admin Section (Password Protected) -->
+<!-- Admin Section -->
 <section class="max-w-5xl mx-auto p-6 bg-gray-50 shadow-lg rounded-lg mt-10" id="adminSection" style="display:none;">
   <h2 class="text-2xl font-bold mb-4 text-center">Admin Panel</h2>
   <p class="text-center mb-4">Manage all saved messages.</p>
@@ -141,8 +141,6 @@ function renderVisitorTable(){
     `;
     visitorTableBody.appendChild(tr);
   });
-
-  // Auto-scroll to bottom
   visitorTableWrapper.scrollTop = visitorTableWrapper.scrollHeight;
 }
 renderVisitorTable();
@@ -157,36 +155,82 @@ form.addEventListener("submit", function(e){
   const time = new Date().toLocaleString();
   messages.push({name,email,message,time});
   localStorage.setItem("messages", JSON.stringify(messages));
-
   responseEl.innerText = `✅ Thanks for contacting us, ${name}! Your message has been saved.`;
   responseEl.classList.remove("text-red-600");
   responseEl.classList.add("text-green-600");
   form.reset();
-
   renderVisitorTable(); // Update visitor table live
 });
 
 // Admin login
-const adminPassword = "abdullah@0425"; // صرف آپ جانیں
+const adminPassword = "abdullah@0425";
 const adminLoginPrompt = document.getElementById("adminLoginPrompt");
 const loginBtn = document.getElementById("loginBtn");
 const loginError = document.getElementById("loginError");
 const adminSection = document.getElementById("adminSection");
 const togglePassword = document.getElementById("togglePassword");
 
+// Show/hide password
 togglePassword.addEventListener("change", function(){
-  const pwdInput = document.getElementById("adminPassword");
-  pwdInput.type = this.checked ? "text" : "password";
+  document.getElementById("adminPassword").type = this.checked ? "text" : "password";
 });
 
 // Check saved login
 if(localStorage.getItem("adminLoggedIn")==="true"){
   adminLoginPrompt.style.display="none";
   adminSection.style.display="block";
-  renderMessages();
 }
 
 // Login button
 loginBtn.addEventListener("click", function(){
   const entered = document.getElementById("adminPassword").value;
-  if(entered === adminPassword
+  if(entered === adminPassword){
+    localStorage.setItem("adminLoggedIn","true");
+    adminLoginPrompt.style.display="none";
+    adminSection.style.display="block";
+    renderAdminMessages();
+  } else {
+    loginError.innerText = "Incorrect password!";
+  }
+});
+
+// Admin functionalities
+const tableBody = document.getElementById("messagesTableBody");
+const searchInput = document.getElementById("searchInput");
+const downloadBtn = document.getElementById("downloadCSV");
+const deleteAllBtn = document.getElementById("deleteAll");
+
+function renderAdminMessages(filtered=null){
+  const data = filtered || messages;
+  tableBody.innerHTML = "";
+  data.forEach((msg,index)=>{
+    const tr = document.createElement("tr");
+    tr.className = index%2===0?"bg-white hover:bg-gray-100":"bg-gray-50 hover:bg-gray-200";
+    tr.innerHTML = `
+      <td class="border border-gray-300 p-2">${escapeHTML(msg.name)}</td>
+      <td class="border border-gray-300 p-2">${escapeHTML(msg.email)}</td>
+      <td class="border border-gray-300 p-2 break-words">${escapeHTML(msg.message)}</td>
+      <td class="border border-gray-300 p-2">${msg.time}</td>
+      <td class="border border-gray-300 p-2 text-center">
+        <button data-index="${index}" class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 deleteBtn">Delete</button>
+      </td>
+    `;
+    tableBody.appendChild(tr);
+  });
+
+  document.querySelectorAll(".deleteBtn").forEach(btn=>{
+    btn.addEventListener("click",function(){
+      const idx = parseInt(this.dataset.index);
+      messages.splice(idx,1);
+      localStorage.setItem("messages",JSON.stringify(messages));
+      renderAdminMessages();
+      renderVisitorTable();
+      applySearch();
+    });
+  });
+}
+
+searchInput.addEventListener("input", applySearch);
+function applySearch(){
+  const query = searchInput.value.toLowerCase();
+  const filtered =
