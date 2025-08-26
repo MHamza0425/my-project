@@ -22,10 +22,13 @@
   </header>
 
   <!-- Contact Section -->
-  <section class="pt-28 max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-    <h2 class="text-3xl font-bold mb-4 text-center">Get in Touch</h2>
-    <p class="text-center text-gray-600 mb-6">
-      Have questions or feedback? Fill out the form below and we’ll save it in our records.
+  <section class="pt-28 max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+    <h2 class="text-3xl font-bold mb-2 text-center">Get in Touch</h2>
+    <p class="text-center text-gray-600 mb-4">
+      Have questions or feedback? Fill out the form below and we’ll save it locally.
+    </p>
+    <p class="text-center text-blue-700 mb-6">
+      You can also email directly: <a href="mailto:saadkhan0425@gmail.com" class="underline">saadkhan0425@gmail.com</a>
     </p>
 
     <form id="contactForm" class="space-y-4">
@@ -50,6 +53,37 @@
     </form>
 
     <p id="responseMessage" class="mt-4 text-center font-semibold"></p>
+
+    <!-- Buttons -->
+    <div class="mt-4 text-center space-x-2">
+      <button id="downloadCSV" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+        Download Messages CSV
+      </button>
+      <button id="deleteAll" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+        Delete All Messages
+      </button>
+    </div>
+
+    <!-- Search box -->
+    <div class="mt-6 text-center">
+      <input type="text" id="searchInput" placeholder="Search messages..." class="w-full p-2 border rounded" />
+    </div>
+
+    <!-- Messages Table -->
+    <div class="mt-4 overflow-x-auto max-h-96">
+      <table class="w-full border-collapse border border-gray-300 table-auto" id="messagesTable">
+        <thead class="bg-gray-200 sticky top-0 z-10">
+          <tr>
+            <th class="border border-gray-300 p-2 cursor-pointer" data-column="name">Name</th>
+            <th class="border border-gray-300 p-2 cursor-pointer" data-column="email">Email</th>
+            <th class="border border-gray-300 p-2 cursor-pointer" data-column="message">Message</th>
+            <th class="border border-gray-300 p-2 cursor-pointer" data-column="time">Time</th>
+            <th class="border border-gray-300 p-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="messagesTableBody"></tbody>
+      </table>
+    </div>
   </section>
 
   <!-- Footer -->
@@ -57,41 +91,128 @@
     © 2025 All Tools Hub. All rights reserved.
   </footer>
 
-  <!-- Form Script -->
   <script>
-    document.getElementById("contactForm").addEventListener("submit", async function (e) {
+    const form = document.getElementById("contactForm");
+    const responseEl = document.getElementById("responseMessage");
+    const tableBody = document.getElementById("messagesTableBody");
+    const downloadBtn = document.getElementById("downloadCSV");
+    const deleteAllBtn = document.getElementById("deleteAll");
+    const searchInput = document.getElementById("searchInput");
+    const table = document.getElementById("messagesTable");
+
+    // Load messages and UI state from localStorage
+    let messages = JSON.parse(localStorage.getItem("messages") || "[]");
+    let savedSort = JSON.parse(localStorage.getItem("sortState") || "{}");
+    let savedSearch = localStorage.getItem("searchQuery") || "";
+    searchInput.value = savedSearch;
+
+    let sortDirection = savedSort || {};
+
+    function renderMessages(filteredMessages = null) {
+      const data = filteredMessages || messages;
+      tableBody.innerHTML = "";
+
+      data.forEach((msg, index) => {
+        const tr = document.createElement("tr");
+        tr.className = index % 2 === 0 ? "bg-white hover:bg-gray-100" : "bg-gray-50 hover:bg-gray-200";
+        tr.innerHTML = `
+          <td class="border border-gray-300 p-2">${msg.name}<br><button data-index="${index}" data-field="name" class="text-xs bg-blue-600 text-white px-1 py-0.5 rounded hover:bg-blue-700 copyFieldBtn mt-1">Copy</button></td>
+          <td class="border border-gray-300 p-2">${msg.email}<br><button data-index="${index}" data-field="email" class="text-xs bg-blue-600 text-white px-1 py-0.5 rounded hover:bg-blue-700 copyFieldBtn mt-1">Copy</button></td>
+          <td class="border border-gray-300 p-2 break-words max-w-xs">${msg.message}<br><button data-index="${index}" data-field="message" class="text-xs bg-blue-600 text-white px-1 py-0.5 rounded hover:bg-blue-700 copyFieldBtn mt-1">Copy</button></td>
+          <td class="border border-gray-300 p-2">${msg.time}<br><button data-index="${index}" data-field="time" class="text-xs bg-blue-600 text-white px-1 py-0.5 rounded hover:bg-blue-700 copyFieldBtn mt-1">Copy</button></td>
+          <td class="border border-gray-300 p-2 text-center space-x-1">
+            <button data-index="${index}" class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 deleteBtn">Delete</button>
+          </td>
+        `;
+        tableBody.appendChild(tr);
+      });
+
+      document.querySelectorAll(".deleteBtn").forEach(btn => {
+        btn.addEventListener("click", function() {
+          const idx = parseInt(this.dataset.index);
+          messages.splice(idx, 1);
+          localStorage.setItem("messages", JSON.stringify(messages));
+          renderMessages();
+          applySearch();
+        });
+      });
+
+      document.querySelectorAll(".copyFieldBtn").forEach(btn => {
+        btn.addEventListener("click", function() {
+          const idx = parseInt(this.dataset.index);
+          const field = this.dataset.field;
+          const text = messages[idx][field];
+          navigator.clipboard.writeText(text)
+            .then(() => alert(`${field.charAt(0).toUpperCase() + field.slice(1)} copied!`))
+            .catch(err => alert("Copy failed: " + err));
+        });
+      });
+    }
+
+    function applySearch() {
+      const query = searchInput.value.toLowerCase();
+      localStorage.setItem("searchQuery", searchInput.value);
+      const filtered = messages.filter(msg =>
+        msg.name.toLowerCase().includes(query) ||
+        msg.email.toLowerCase().includes(query) ||
+        msg.message.toLowerCase().includes(query) ||
+        msg.time.toLowerCase().includes(query)
+      );
+      renderMessages(filtered);
+    }
+
+    renderMessages();
+    applySearch();
+
+    form.addEventListener("submit", function(e) {
       e.preventDefault();
-      
       const name = document.getElementById("name").value.trim();
       const email = document.getElementById("email").value.trim();
       const message = document.getElementById("message").value.trim();
 
-      const responseEl = document.getElementById("responseMessage");
-      responseEl.innerText = "";
-      responseEl.classList.remove("text-green-600", "text-red-600");
-
-      try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbxG-Yik9oXUzcPZ4cAAfb6NCujbZR0PZFvnkD7Wk3BH2793gjNFfKYlA4Tpz7firVPAmw/exec", {
-          method: "POST",
-          body: JSON.stringify({ name, email, message })
-        });
-
-        const result = await response.json();
-
-        if (result.result === "success") {
-          responseEl.innerText = "✅ Thanks for contacting us, " + name + "! We’ve received your message.";
-          responseEl.classList.add("text-green-600");
-          document.getElementById("contactForm").reset();
-        } else {
-          responseEl.innerText = "❌ Error: " + result.error;
-          responseEl.classList.add("text-red-600");
-        }
-      } catch (err) {
-        responseEl.innerText = "❌ Network error. Please try again.";
+      if (!name || !email || !message) {
+        responseEl.innerText = "❌ Please fill all fields.";
         responseEl.classList.add("text-red-600");
-        console.error("Fetch error:", err);
+        return;
+      }
+
+      const time = new Date().toLocaleString();
+      const newMsg = { name, email, message, time };
+      messages.push(newMsg);
+      localStorage.setItem("messages", JSON.stringify(messages));
+
+      renderMessages();
+      applySearch();
+
+      // ✅ Show thank-you notification
+      responseEl.innerText = `✅ Thanks for contacting us, ${name}! Your message has been received.`;
+      responseEl.classList.remove("text-red-600");
+      responseEl.classList.add("text-green-600");
+
+      form.reset();
+    });
+
+    downloadBtn.addEventListener("click", function() {
+      if (messages.length === 0) { alert("No messages to download!"); return; }
+      const csvHeader = "Name,Email,Message,Time\n";
+      const csvRows = messages.map(msg =>
+        `"${msg.name.replace(/"/g,'""')}","${msg.email.replace(/"/g,'""')}","${msg.message.replace(/"/g,'""')}","${msg.time}"`
+      );
+      const csvContent = csvHeader + csvRows.join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "messages.csv";
+      link.click();
+    });
+
+    deleteAllBtn.addEventListener("click", function() {
+      if (confirm("Are you sure you want to delete all messages?")) {
+        messages = [];
+        localStorage.removeItem("messages");
+        renderMessages();
+        applySearch();
       }
     });
-  </script>
-</body>
-</html>
+
+    searchInput.addEventListener("
