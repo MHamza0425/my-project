@@ -49,7 +49,7 @@
   <p id="responseMessage" class="mt-4 text-center font-semibold"></p>
 </section>
 
-<!-- Admin Section (Password Protected) -->
+<!-- Admin Section -->
 <section class="max-w-5xl mx-auto p-6 bg-gray-50 shadow-lg rounded-lg mt-10" id="adminSection" style="display:none;">
   <h2 class="text-2xl font-bold mb-4 text-center">Admin Panel</h2>
   <p class="text-center mb-4">Manage all saved messages.</p>
@@ -84,7 +84,7 @@
   <div class="bg-white p-6 rounded shadow-lg text-center">
     <h2 class="text-xl font-bold mb-4">Admin Login</h2>
     <input type="password" id="adminPassword" placeholder="Enter password" class="border p-2 rounded w-full mb-2" />
-    <div class="mb-4">
+    <div class="mb-4 text-left">
       <input type="checkbox" id="showPassword" /> <label for="showPassword">Show Password</label>
     </div>
     <button id="loginBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Login</button>
@@ -97,22 +97,20 @@
 </footer>
 
 <script>
+// Visitor messages
 const form = document.getElementById("contactForm");
 const responseEl = document.getElementById("responseMessage");
 let messages = JSON.parse(localStorage.getItem("messages") || "[]");
 
-// Visitor submits message
 form.addEventListener("submit", function(e){
   e.preventDefault();
   const name = document.getElementById("name").value.trim();
   const email = document.getElementById("email").value.trim();
   const message = document.getElementById("message").value.trim();
   if(!name || !email || !message) return;
-
   const time = new Date().toLocaleString();
   messages.push({name,email,message,time});
   localStorage.setItem("messages", JSON.stringify(messages));
-
   responseEl.innerText = `✅ Thanks for contacting us, ${name}! Your message has been saved.`;
   responseEl.classList.remove("text-red-600");
   responseEl.classList.add("text-green-600");
@@ -120,7 +118,8 @@ form.addEventListener("submit", function(e){
 });
 
 // Show/hide password
-document.getElementById("showPassword").addEventListener("change", function() {
+const pwCheckbox = document.getElementById("showPassword");
+pwCheckbox.addEventListener("change", function(){
   const pwField = document.getElementById("adminPassword");
   pwField.type = this.checked ? "text" : "password";
 });
@@ -131,6 +130,10 @@ const adminLoginPrompt = document.getElementById("adminLoginPrompt");
 const loginBtn = document.getElementById("loginBtn");
 const loginError = document.getElementById("loginError");
 const adminSection = document.getElementById("adminSection");
+const tableBody = document.getElementById("messagesTableBody");
+const searchInput = document.getElementById("searchInput");
+const downloadBtn = document.getElementById("downloadCSV");
+const deleteAllBtn = document.getElementById("deleteAll");
 
 loginBtn.addEventListener("click", function(){
   const entered = document.getElementById("adminPassword").value;
@@ -142,12 +145,6 @@ loginBtn.addEventListener("click", function(){
     loginError.innerText = "Incorrect password!";
   }
 });
-
-// Admin functionalities
-const tableBody = document.getElementById("messagesTableBody");
-const searchInput = document.getElementById("searchInput");
-const downloadBtn = document.getElementById("downloadCSV");
-const deleteAllBtn = document.getElementById("deleteAll");
 
 function escapeHTML(str) {
   return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
@@ -173,16 +170,17 @@ function renderMessages(filtered=null){
   });
 
   document.querySelectorAll(".deleteBtn").forEach(btn=>{
-    btn.addEventListener("click",function(){
+    btn.addEventListener("click", function(){
       const idx = parseInt(this.dataset.index);
       messages.splice(idx,1);
-      localStorage.setItem("messages",JSON.stringify(messages));
+      localStorage.setItem("messages", JSON.stringify(messages));
       renderMessages();
       applySearch();
     });
   });
 }
 
+// Search functionality
 searchInput.addEventListener("input", applySearch);
 function applySearch(){
   const query = searchInput.value.toLowerCase();
@@ -195,8 +193,28 @@ function applySearch(){
   renderMessages(filtered);
 }
 
+// Download CSV
 downloadBtn.addEventListener("click",()=>{
   if(messages.length===0){ alert("No messages to download"); return; }
   const csvHeader = "Name,Email,Message,Time\n";
   const csvRows = messages.map(msg=>`"${msg.name}","${msg.email}","${msg.message}","${msg.time}"`);
-  const csvContent = csvHeader+csvRows.join("\
+  const csvContent = csvHeader + csvRows.join("\n");
+  const blob = new Blob([csvContent], {type:"text/csv;charset=utf-8;"});
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "messages.csv";
+  link.click();
+});
+
+// Delete all messages
+deleteAllBtn.addEventListener("click",()=>{
+  if(confirm("Delete all messages?")){
+    messages=[];
+    localStorage.removeItem("messages");
+    renderMessages();
+    applySearch();
+  }
+});
+</script>
+</body>
+</
