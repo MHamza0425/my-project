@@ -116,13 +116,14 @@
 </footer>
 
 <script>
-const form = document.getElementById("contactForm");
-const responseEl = document.getElementById("responseMessage");
 let messages = JSON.parse(localStorage.getItem("messages") || "[]");
+
 const visitorTableBody = document.getElementById("visitorTableBody");
 const visitorTableWrapper = document.getElementById("visitorTableWrapper");
+const form = document.getElementById("contactForm");
+const responseEl = document.getElementById("responseMessage");
 
-// Escape HTML to prevent XSS
+// Escape HTML
 function escapeHTML(str){
   return str.replace(/[&<>"']/g, function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];});
 }
@@ -158,118 +159,4 @@ form.addEventListener("submit", function(e){
   responseEl.innerText = `✅ Thanks for contacting us, ${name}! Your message has been saved.`;
   responseEl.classList.remove("text-red-600");
   responseEl.classList.add("text-green-600");
-  form.reset();
-  renderVisitorTable(); // Update visitor table live
-});
-
-// Admin login
-const adminPassword = "abdullah@0425";
-const adminLoginPrompt = document.getElementById("adminLoginPrompt");
-const loginBtn = document.getElementById("loginBtn");
-const loginError = document.getElementById("loginError");
-const adminSection = document.getElementById("adminSection");
-const togglePassword = document.getElementById("togglePassword");
-
-// Show/hide password
-togglePassword.addEventListener("change", function(){
-  document.getElementById("adminPassword").type = this.checked ? "text" : "password";
-});
-
-// Check saved login
-if(localStorage.getItem("adminLoggedIn")==="true"){
-  adminLoginPrompt.style.display="none";
-  adminSection.style.display="block";
-  renderAdminMessages();
-}
-
-// Login button
-loginBtn.addEventListener("click", function(){
-  const entered = document.getElementById("adminPassword").value;
-  if(entered === adminPassword){
-    localStorage.setItem("adminLoggedIn","true");
-    adminLoginPrompt.style.display="none";
-    adminSection.style.display="block";
-    renderAdminMessages();
-  } else {
-    loginError.innerText = "Incorrect password!";
-  }
-});
-
-// Render Admin messages
-const tableBody = document.getElementById("messagesTableBody");
-const searchInput = document.getElementById("searchInput");
-const downloadBtn = document.getElementById("downloadCSV");
-const deleteAllBtn = document.getElementById("deleteAll");
-
-function renderAdminMessages(filtered=null){
-  const data = filtered || messages;
-  tableBody.innerHTML = "";
-  data.forEach((msg,index)=>{
-    const tr = document.createElement("tr");
-    tr.className = index%2===0?"bg-white hover:bg-gray-100":"bg-gray-50 hover:bg-gray-200";
-    tr.innerHTML = `
-      <td class="border border-gray-300 p-2">${escapeHTML(msg.name)}</td>
-      <td class="border border-gray-300 p-2">${escapeHTML(msg.email)}</td>
-      <td class="border border-gray-300 p-2 break-words">${escapeHTML(msg.message)}</td>
-      <td class="border border-gray-300 p-2">${msg.time}</td>
-      <td class="border border-gray-300 p-2 text-center">
-        <button data-index="${index}" class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 deleteBtn">Delete</button>
-      </td>
-    `;
-    tableBody.appendChild(tr);
-  });
-
-  document.querySelectorAll(".deleteBtn").forEach(btn=>{
-    btn.addEventListener("click",function(){
-      const idx = parseInt(this.dataset.index);
-      messages.splice(idx,1);
-      localStorage.setItem("messages",JSON.stringify(messages));
-      renderAdminMessages();
-      renderVisitorTable();
-      applySearch();
-    });
-  });
-}
-
-searchInput.addEventListener("input", applySearch);
-function applySearch(){
-  const query = searchInput.value.toLowerCase();
-  const filtered = messages.filter(msg=>
-    msg.name.toLowerCase().includes(query) ||
-    msg.email.toLowerCase().includes(query) ||
-    msg.message.toLowerCase().includes(query) ||
-    msg.time.toLowerCase().includes(query)
-  );
-  renderAdminMessages(filtered);
-}
-
-// Download CSV
-downloadBtn.addEventListener("click",()=>{
-  if(messages.length===0){ alert("No messages to download"); return; }
-  const csvHeader = "Name,Email,Message,Time\n";
-  const csvRows = messages.map(msg=>`"${msg.name}","${msg.email}","${msg.message}","${msg.time}"`);
-  const csvContent = csvHeader+csvRows.join("\n");
-  const blob = new Blob([csvContent], {type:"text/csv;charset=utf-8;"});
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "messages.csv";
-  link.click();
-});
-
-// Delete all
-deleteAllBtn.addEventListener("click",()=>{
-  if(confirm("Delete all messages?")){
-    messages=[];
-    localStorage.removeItem("messages");
-    renderAdminMessages();
-    renderVisitorTable();
-    applySearch();
-  }
-});
-
-// Logout
-function adminLogout(){
-  localStorage.removeItem("adminLoggedIn");
-  adminSection.style.display="none";
-  adminLoginPrompt.style.display="flex";
- 
+  form.reset
