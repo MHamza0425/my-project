@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    { "source": "/tools/(.*)", "destination": "/tools/$1" }
-  ],
-  "static": {
-    "tools": "tools"
-  }
-}
