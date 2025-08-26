@@ -3,56 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="All Tools Hub - Free online tools for productivity, conversion, and more." />
+  <title>All Tools Hub</title>
+  <meta name="description" content="Free online tools for productivity, conversion, and more." />
   <meta name="keywords" content="tools, calculators, converters, free online tools" />
   <meta name="author" content="All Tools Hub" />
-  <title>All Tools Hub - Free Online Tools</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    .cube-container { perspective: 1200px; }
-    .cube {
-      width: 200px; height: 200px;
-      position: relative;
-      transform-style: preserve-3d;
-      cursor: grab;
-      transition: transform 0.2s ease-out;
-    }
-    .face {
-      position: absolute;
-      width: 200px; height: 200px;
-      display: flex; flex-direction: column;
-      justify-content: center; align-items: center;
-      font-weight: bold; font-size: 1rem; color: white;
-      border: 2px solid rgba(255,255,255,0.3);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-      transition: all 0.3s ease;
-      text-align: center;
-      padding: 10px;
-    }
-    .face:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-    }
-    .front  { transform: rotateY(0deg) translateZ(100px); }
-    .back   { transform: rotateY(180deg) translateZ(100px); }
-    .right  { transform: rotateY(90deg) translateZ(100px); }
-    .left   { transform: rotateY(-90deg) translateZ(100px); }
-    .top    { transform: rotateX(90deg) translateZ(100px); }
-    .bottom { transform: rotateX(-90deg) translateZ(100px); }
-  </style>
 </head>
 <body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 font-sans">
 
 <!-- Header -->
 <header class="bg-white dark:bg-gray-800 shadow fixed w-full z-50">
   <div class="max-w-7xl mx-auto flex justify-between items-center p-4">
-    <div class="flex items-center space-x-3">
-      <img src="logo.png" alt="Logo" class="w-10 h-10 rounded-full border" />
-      <h1 class="text-2xl font-bold text-blue-600 dark:text-blue-400 cursor-pointer" onclick="window.scrollTo({top:0,behavior:'smooth'})">All Tools Hub</h1>
-    </div>
+    <h1 class="text-2xl font-bold text-blue-600 dark:text-blue-400">All Tools Hub</h1>
     <nav class="hidden md:flex space-x-6 text-sm font-medium">
-      <a href="#about" class="hover:text-blue-600 dark:hover:text-blue-400">About</a>
-      <a href="#services" class="hover:text-blue-600 dark:hover:text-blue-400">Services</a>
+      <a href="#features" class="hover:text-blue-600 dark:hover:text-blue-400">Features</a>
       <a href="#tools" class="hover:text-blue-600 dark:hover:text-blue-400">Tools</a>
       <a href="#contact" class="hover:text-blue-600 dark:hover:text-blue-400">Contact</a>
     </nav>
@@ -62,65 +26,49 @@
     </div>
   </div>
   <div id="mobileMenu" class="hidden md:hidden bg-white dark:bg-gray-800 border-t text-center py-2 space-y-2">
-    <a href="#about" class="block hover:text-blue-600 dark:hover:text-blue-400">About</a>
-    <a href="#services" class="block hover:text-blue-600 dark:hover:text-blue-400">Services</a>
+    <a href="#features" class="block hover:text-blue-600 dark:hover:text-blue-400">Features</a>
     <a href="#tools" class="block hover:text-blue-600 dark:hover:text-blue-400">Tools</a>
     <a href="#contact" class="block hover:text-blue-600 dark:hover:text-blue-400">Contact</a>
   </div>
 </header>
 
 <!-- Hero Section -->
-<section class="pt-28 text-center bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-16 px-4">
+<section class="pt-28 text-center bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-20 px-4">
   <div class="max-w-4xl mx-auto">
-    <h2 class="text-4xl md:text-5xl font-extrabold mb-4 animate-pulse">Welcome to All Tools Hub</h2>
-    <p class="text-lg md:text-xl mb-6">Your one-stop solution for free online tools like calculators, calendars, converters, and more.</p>
-    <div class="flex justify-center space-x-4">
-      <a href="#tools" class="bg-white text-indigo-600 font-semibold px-6 py-2 rounded hover:bg-gray-100">Explore Tools</a>
-      <a href="#contact" class="border border-white px-6 py-2 rounded hover:bg-white hover:text-indigo-600">Contact Us</a>
+    <h2 class="text-4xl md:text-5xl font-extrabold mb-4">Welcome to All Tools Hub</h2>
+    <p class="text-lg md:text-xl mb-6">Your free online toolkit for productivity, conversion, and more.</p>
+    <a href="#tools" class="bg-white text-indigo-600 font-semibold px-6 py-2 rounded hover:bg-gray-100">Explore Tools</a>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="py-16 bg-white dark:bg-gray-800 px-4">
+  <div class="max-w-6xl mx-auto text-center mb-10">
+    <h2 class="text-3xl font-bold text-blue-600 dark:text-blue-400">Why Choose Us</h2>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow hover:shadow-lg transition">
+      <div class="text-3xl mb-2">⚡</div>
+      <h3 class="text-lg font-semibold mb-1">Fast & Reliable</h3>
+      <p class="text-sm text-gray-600 dark:text-gray-300">Tools that work instantly and accurately.</p>
+    </div>
+    <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow hover:shadow-lg transition">
+      <div class="text-3xl mb-2">🔒</div>
+      <h3 class="text-lg font-semibold mb-1">Secure</h3>
+      <p class="text-sm text-gray-600 dark:text-gray-300">We respect your privacy and data.</p>
+    </div>
+    <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow hover:shadow-lg transition">
+      <div class="text-3xl mb-2">🎯</div>
+      <h3 class="text-lg font-semibold mb-1">Focused</h3>
+      <p class="text-sm text-gray-600 dark:text-gray-300">Built for productivity and simplicity.</p>
     </div>
   </div>
 </section>
 
-<!-- Cube Section -->
-<section class="cube-container w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto mt-16 px-4">
-  <h3 id="cubeTitle" class="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-4 text-center">Explore Sections</h3>
-  <div id="cube" class="cube mx-auto">
-    <div class="face front" data-url="#tools" data-color="#3b82f6">
-      <span class="text-3xl">🔧</span>
-      <p class="mt-2 font-semibold">Tools</p>
-      <small class="text-sm opacity-80">Calculators & converters</small>
-    </div>
-    <div class="face back" data-url="#privacy" data-color="#2563eb">
-      <span class="text-3xl">🔒</span>
-      <p class="mt-2 font-semibold">Privacy</p>
-      <small class="text-sm opacity-80">Your data is safe</small>
-    </div>
-    <div class="face right" data-url="#terms" data-color="#8b5cf6">
-      <span class="text-3xl">📜</span>
-      <p class="mt-2 font-semibold">Terms</p>
-      <small class="text-sm opacity-80">Usage policies</small>
-    </div>
-    <div class="face left" data-url="#about" data-color="#7c3aed">
-      <span class="text-3xl">ℹ️</span>
-      <p class="mt-2 font-semibold">About</p>
-      <small class="text-sm opacity-80">Who we are</small>
-    </div>
-    <div class="face top" data-url="#contact" data-color="#22c55e">
-      <span class="text-3xl">📞</span>
-      <p class="mt-2 font-semibold">Contact</p>
-      <small class="text-sm opacity-80">Get in touch</small>
-    </div>
-    <div class="face bottom" data-url="#faq" data-color="#f59e0b">
-      <span class="text-3xl">❓</span>
-      <p class="mt-2 font-semibold">FAQ</p>
-      <small class="text-sm opacity-80">Common questions</small>
-    </div>
-  </div>
-</section>
-<section id="tools" class="py-16 bg-white dark:bg-gray-800 px-4">
+<!-- Tool Showcase -->
+<section id="tools" class="py-16 bg-gray-100 dark:bg-gray-900 px-4">
   <div class="max-w-6xl mx-auto text-center mb-10">
     <h2 class="text-3xl font-bold text-blue-600 dark:text-blue-400">Popular Tools</h2>
-    <p class="text-gray-600 dark:text-gray-300 mt-2">Explore our most used utilities</p>
   </div>
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
     <div class="bg-white dark:bg-gray-700 rounded-lg shadow p-6 hover:shadow-xl transition">
@@ -140,60 +88,33 @@
     </div>
   </div>
 </section>
-<section class="py-16 bg-gray-100 dark:bg-gray-900 px-4">
-  <div class="max-w-6xl mx-auto text-center mb-10">
-    <h2 class="text-3xl font-bold text-blue-600 dark:text-blue-400">Why Choose Us</h2>
-  </div>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow hover:shadow-lg transition">
-      <div class="text-3xl mb-2">⚡</div>
-      <h3 class="text-lg font-semibold mb-1">Fast & Reliable</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-300">Tools that work instantly and accurately.</p>
-    </div>
-    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow hover:shadow-lg transition">
-      <div class="text-3xl mb-2">🔒</div>
-      <h3 class="text-lg font-semibold mb-1">Secure</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-300">We respect your privacy and data.</p>
-    </div>
-    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow hover:shadow-lg transition">
-      <div class="text-3xl mb-2">🎯</div>
-      <h3 class="text-lg font-semibold mb-1">Focused</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-300">Built for productivity and simplicity.</p>
-    </div>
-  </div>
-</section>
-<section id="about" class="py-16 bg-white dark:bg-gray-800 px-4">
-  <div class="max-w-6xl mx-auto text-center mb-10">
-    <h2 class="text-3xl font-bold text-blue-600 dark:text-blue-400">About Us</h2>
-    <p class="text-gray-600 dark:text-gray-300 mt-2">Empowering users with free online tools</p>
-  </div>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div class="bg-white dark:bg-gray-700 backdrop-blur-md bg-opacity-80 p-6 rounded-lg shadow">
-      <h3 class="text-xl font-semibold mb-2">Our Mission</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-300">To make productivity tools accessible to everyone, everywhere.</p>
-    </div>
-    <div class="bg-white dark:bg-gray-700 backdrop-blur-md bg-opacity-80 p-6 rounded-lg shadow">
-      <h3 class="text-xl font-semibold mb-2">Our Services</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-300">We offer calculators, converters, calendars, and more—all free to use.</p>
-    </div>
-  </div>
-</section>
-<section id="contact" class="py-16 bg-gray-100 dark:bg-gray-900 px-4">
+
+<!-- Contact Section -->
+<section id="contact" class="py-16 bg-white dark:bg-gray-800 px-4">
   <div class="max-w-4xl mx-auto text-center mb-10">
     <h2 class="text-3xl font-bold text-blue-600 dark:text-blue-400">Contact Us</h2>
     <p class="text-gray-600 dark:text-gray-300 mt-2">We’d love to hear from you</p>
   </div>
-  <form class="max-w-xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow space-y-4">
+  <form class="max-w-xl mx-auto bg-gray-100 dark:bg-gray-900 p-6 rounded-lg shadow space-y-4">
     <input type="text" placeholder="Your Name" class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600" />
     <input type="email" placeholder="Your Email" class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600" />
     <textarea rows="4" placeholder="Your Message" class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600"></textarea>
     <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Send Message</button>
   </form>
 </section>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-gray-300 py-6 text-center">
+  © 2025 All Tools Hub. All rights reserved.
+</footer>
+
+<!-- Scroll-to-Top Button -->
 <button onclick="window.scrollTo({top:0,behavior:'smooth'})"
   class="fixed bottom-6 right-6 bg-blue-600 text-white px-3 py-2 rounded-full shadow-lg hover:bg-blue-700 z-50">
   ↑ Top
 </button>
+
+<!-- Scripts -->
 <script>
   // Mobile menu toggle
   document.getElementById("mobileMenuBtn").addEventListener("click", () => {
@@ -202,45 +123,4 @@
 
   // Dark mode toggle
   document.getElementById("darkToggle").addEventListener("click", () => {
-    document.documentElement.classList.toggle("dark");
-  });
-
-  // Cube rotation logic (same as before)
-  const cube = document.getElementById("cube");
-  const cubeTitle = document.getElementById("cubeTitle");
-  let isDragging = false, prevX = 0, prevY = 0, rotX = -15, rotY = 0, inertiaX = 0, inertiaY = 0, friction = 0.95;
-  const faces = Array.from(document.querySelectorAll(".face"));
-
-  faces.forEach(face => {
-    face.addEventListener("click", () => {
-      const url = face.getAttribute("data-url");
-      if (url.startsWith("#")) {
-        const section = document.querySelector(url);
-        if (section) section.scrollIntoView({ behavior: "smooth" });
-      } else {
-        window.location.href = url;
-      }
-    });
-  });
-
-  function startDrag(e) {
-    isDragging = true;
-    prevX = e.type.includes("touch") ? e.touches[0].clientX : e.clientX;
-    prevY = e.type.includes("touch") ? e.touches[0].clientY : e.clientY;
-    cube.style.transition = "none";
-  }
-  function moveDrag(e) {
-    if (!isDragging) return;
-    const currX = e.type.includes("touch") ? e.touches[0].clientX : e.clientX;
-    const currY = e.type.includes("touch") ? e.touches[0].clientY : e.clientY;
-    const dx = currX - prevX;
-    const dy = currY - prevY;
-    rotY += dx * 0.5;
-    rotX -= dy * 0.5;
-    rotX = Math.max(-90, Math.min(90, rotX));
-    cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
-    inertiaX = -dy * 0.5;
-    inertiaY = dx * 0.5;
-    prevX = currX;
-    prevY = currY;
-    updateFront
+    document.documentElement.classList.toggle("dark
