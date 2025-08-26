@@ -21,7 +21,7 @@
   </div>
 </header>
 
-<!-- Contact Section (Visitor) -->
+<!-- Visitor Contact Form -->
 <section class="pt-28 max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg">
   <h2 class="text-3xl font-bold mb-2 text-center">Get in Touch</h2>
   <p class="text-center text-gray-600 mb-6">
@@ -83,7 +83,10 @@
 <div id="adminLoginPrompt" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
   <div class="bg-white p-6 rounded shadow-lg text-center">
     <h2 class="text-xl font-bold mb-4">Admin Login</h2>
-    <input type="password" id="adminPassword" placeholder="Enter password" class="border p-2 rounded w-full mb-4" />
+    <input type="password" id="adminPassword" placeholder="Enter password" class="border p-2 rounded w-full mb-2" />
+    <div class="mb-4">
+      <input type="checkbox" id="showPassword" /> <label for="showPassword">Show Password</label>
+    </div>
     <button id="loginBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Login</button>
     <p id="loginError" class="text-red-600 mt-2"></p>
   </div>
@@ -114,6 +117,12 @@ form.addEventListener("submit", function(e){
   responseEl.classList.remove("text-red-600");
   responseEl.classList.add("text-green-600");
   form.reset();
+});
+
+// Show/hide password
+document.getElementById("showPassword").addEventListener("change", function() {
+  const pwField = document.getElementById("adminPassword");
+  pwField.type = this.checked ? "text" : "password";
 });
 
 // Admin login
@@ -186,4 +195,8 @@ function applySearch(){
   renderMessages(filtered);
 }
 
-downloadBtn.addEventListener
+downloadBtn.addEventListener("click",()=>{
+  if(messages.length===0){ alert("No messages to download"); return; }
+  const csvHeader = "Name,Email,Message,Time\n";
+  const csvRows = messages.map(msg=>`"${msg.name}","${msg.email}","${msg.message}","${msg.time}"`);
+  const csvContent = csvHeader+csvRows.join("\
