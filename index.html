@@ -1,271 +1,148 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="All Tools Hub - Free online tools for productivity, conversion, and more.">
-  <title>All Tools Hub</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body { margin: 0; font-family: 'Inter', sans-serif; }
-    /* Cube Styles */
-    .cube-container { perspective: 1500px; width: 100%; max-width: 300px; margin: 40px auto; text-align: center; }
-    .cube { width: 200px; height: 200px; position: relative; transform-style: preserve-3d; cursor: grab; margin: auto; transition: transform 0.3s ease-out; }
-    .face { position: absolute; width: 200px; height: 200px; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 1.2rem; color: white; border: 2px solid rgba(255,255,255,0.5); box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: all 0.3s ease; text-align: center; cursor: pointer; border-radius: 8px; }
-    .face:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
-    .front  { transform: rotateY(0deg) translateZ(100px); background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
-    .back   { transform: rotateY(180deg) translateZ(100px); background: linear-gradient(135deg, #2563eb, #1e40af); }
-    .right  { transform: rotateY(90deg) translateZ(100px); background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
-    .left   { transform: rotateY(-90deg) translateZ(100px); background: linear-gradient(135deg, #7c3aed, #5b21b6); }
-    .top    { transform: rotateX(90deg) translateZ(100px); background: linear-gradient(135deg, #22c55e, #15803d); }
-    .bottom { transform: rotateX(-90deg) translateZ(100px); background: linear-gradient(135deg, #f59e0b, #d97706); }
-    html { scroll-behavior: smooth; }
-    @media (max-width: 640px) {
-      .cube-container { width: 250px; }
-      .cube { width: 180px; height: 180px; }
-      .face { width: 180px; height: 180px; font-size: 1rem; }
-      .front  { transform: rotateY(0deg) translateZ(90px); }
-      .back   { transform: rotateY(180deg) translateZ(90px); }
-      .right  { transform: rotateY(90deg) translateZ(90px); }
-      .left   { transform: rotateY(-90deg) translateZ(90px); }
-      .top    { transform: rotateX(90deg) translateZ(90px); }
-      .bottom { transform: rotateX(-90deg) translateZ(90px); }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All Tools Hub - Free Online Tools</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+/* Cube container and cube */
+.cube-container { position: relative; width: 300px; height: 300px; margin: 50px auto; perspective: 1200px; }
+.cube { width: 200px; height: 200px; position: relative; transform-style: preserve-3d; cursor: grab; margin: auto; transition: transform 0.2s ease-out; }
+.face { position: absolute; width: 200px; height: 200px; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 1.2rem; color: white; border: 2px solid rgba(255,255,255,0.3); box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: all 0.3s ease, background 1s ease; text-align:center; cursor:pointer; }
+.face:hover { transform: scale(1.05); box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
+/* Cube faces positions */
+.front  { transform: rotateY(0deg) translateZ(100px);}
+.back   { transform: rotateY(180deg) translateZ(100px);}
+.right  { transform: rotateY(90deg) translateZ(100px);}
+.left   { transform: rotateY(-90deg) translateZ(100px);}
+.top    { transform: rotateX(90deg) translateZ(100px);}
+.bottom { transform: rotateX(-90deg) translateZ(100px);}
+</style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans">
+<body class="bg-gray-50 text-gray-800">
 
-  <!-- Header -->
-  <header class="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-      <div class="flex items-center space-x-3">
-        <img src="logo.png" alt="All Tools Hub Logo" class="w-10 h-10 rounded-full border-2 border-blue-600" loading="lazy" onerror="this.src='https://via.placeholder.com/40'" />
-        <h1 class="text-xl md:text-2xl font-bold text-blue-600 cursor-pointer" onclick="window.scrollTo({top:0,behavior:'smooth'})">All Tools Hub</h1>
-      </div>
-      <div class="flex items-center space-x-4">
-        <nav class="hidden md:flex space-x-6 text-sm md:text-base font-medium">
-          <a href="#about" class="hover:text-blue-600 transition-colors">About</a>
-          <a href="#tools" class="hover:text-blue-600 transition-colors">Tools</a>
-          <a href="#privacy" class="hover:text-blue-600 transition-colors">Privacy</a>
-          <a href="#terms" class="hover:text-blue-600 transition-colors">Terms</a>
-          <a href="#disclaimer" class="hover:text-blue-600 transition-colors">Disclaimer</a>
-          <a href="#contact" class="hover:text-blue-600 transition-colors">Contact</a>
-        </nav>
-        <div class="hidden md:flex items-center space-x-2">
-          <input type="text" id="searchInput" placeholder="Search..." class="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-600" aria-label="Search tools"/>
-          <button id="searchBtn" class="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition-colors">Search</button>
-        </div>
-        <button id="mobileMenuBtn" class="md:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-md">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-        </button>
-      </div>
+<!-- Header -->
+<header class="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
+  <div class="max-w-6xl mx-auto flex justify-between items-center p-4">
+    <div class="flex items-center space-x-2">
+      <img src="logo.png" alt="Logo" class="w-10 h-10 rounded-full border" />
+      <h1 class="text-xl font-bold text-blue-600 cursor-pointer" onclick="window.scrollTo({top:0,behavior:'smooth'})">All Tools Hub</h1>
     </div>
-    <div id="mobileMenu" class="hidden bg-white w-full text-center py-4 border-t border-gray-200">
-      <nav class="space-y-3">
-        <a href="#about" class="block text-base hover:text-blue-600 transition-colors">About</a>
-        <a href="#tools" class="block text-base hover:text-blue-600 transition-colors">Tools</a>
-        <a href="#privacy" class="block text-base hover:text-blue-600 transition-colors">Privacy</a>
-        <a href="#terms" class="block text-base hover:text-blue-600 transition-colors">Terms</a>
-        <a href="#disclaimer" class="block text-base hover:text-blue-600 transition-colors">Disclaimer</a>
-        <a href="#contact" class="block text-base hover:text-blue-600 transition-colors">Contact</a>
+    <div class="flex items-center space-x-4">
+      <nav class="hidden md:flex space-x-6 text-sm font-medium">
+        <a href="#about" class="hover:text-blue-600">About</a>
+        <a href="#services" class="hover:text-blue-600">Services</a>
+        <a href="#tools" class="hover:text-blue-600">Tools</a>
+        <a href="#privacy" class="hover:text-blue-600">Privacy</a>
+        <a href="#terms" class="hover:text-blue-600">Terms</a>
+        <a href="#disclaimer" class="hover:text-blue-600">Disclaimer</a>
+        <a href="#contact" class="hover:text-blue-600">Contact</a>
       </nav>
-      <div class="flex justify-center mt-4 space-x-2 px-4">
-        <input type="text" id="mobileSearchInput" placeholder="Search..." class="border border-gray-300 rounded-md p-2 w-2/3 focus:outline-none focus:ring-2 focus:ring-blue-600" aria-label="Search tools"/>
-        <button id="mobileSearchBtn" class="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition-colors">Search</button>
+      <div class="hidden md:flex items-center space-x-1">
+        <input type="text" id="searchInput" placeholder="Search..." class="border rounded p-1"/>
+        <button id="searchBtn" class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700">Search</button>
       </div>
+      <button id="mobileMenuBtn" class="md:hidden px-3 py-2 border rounded">☰</button>
     </div>
-  </header>
-
-  <!-- Hero Section -->
-  <section class="pt-24 pb-12 text-center bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
-    <div class="max-w-4xl mx-auto px-4">
-      <h2 class="text-3xl md:text-4xl font-extrabold mb-4">Welcome to All Tools Hub</h2>
-      <p class="text-base md:text-lg mb-6 max-w-2xl mx-auto">
-        Your one-stop destination for free online tools like calculators, converters, calendars, and more. Explore our tools and make your tasks easier, faster, and fun.
-      </p>
-      <a href="#tools" class="inline-block bg-white text-blue-600 font-semibold px-6 py-2 rounded-md hover:bg-gray-100 transition-colors">Explore Tools</a>
+  </div>
+  <!-- Mobile menu -->
+  <div id="mobileMenu" class="hidden bg-white w-full text-center py-2 space-y-2 border-t">
+    <a href="#about" class="block hover:text-blue-600">About</a>
+    <a href="#services" class="block hover:text-blue-600">Services</a>
+    <a href="#tools" class="block hover:text-blue-600">Tools</a>
+    <a href="#privacy" class="block hover:text-blue-600">Privacy</a>
+    <a href="#terms" class="block hover:text-blue-600">Terms</a>
+    <a href="#disclaimer" class="block hover:text-blue-600">Disclaimer</a>
+    <a href="#contact" class="block hover:text-blue-600">Contact</a>
+    <div class="flex justify-center mt-2">
+      <input type="text" id="mobileSearchInput" placeholder="Search..." class="border rounded p-1 w-2/3"/>
+      <button id="mobileSearchBtn" class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 ml-1">Search</button>
     </div>
-  </section>
+  </div>
+</header>
 
-  <!-- 3D Cube Section -->
-  <section class="py-12 bg-gray-50">
-    <div class="cube-container">
-      <div id="cubeTitle" class="text-2xl font-bold text-blue-600 mb-4">Explore Our Features</div>
-      <div id="cube" class="cube">
-        <div class="face front" data-url="#tools">Tools</div>
-        <div class="face back" data-url="#privacy">Privacy</div>
-        <div class="face right" data-url="#terms">Terms</div>
-        <div class="face left" data-url="#about">About</div>
-        <div class="face top" data-url="#contact">Contact</div>
-        <div class="face bottom" data-url="#faq">FAQ</div>
-      </div>
-    </div>
-  </section>
+<!-- Hero Section -->
+<section class="pt-28 text-center bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+  <div class="max-w-4xl mx-auto p-10">
+    <h2 class="text-4xl md:text-5xl font-extrabold mb-4">Welcome to All Tools Hub</h2>
+    <p class="text-lg md:text-xl mb-6">
+      Your one-stop solution for free online tools like calculators, calendars, converters, and more.
+    </p>
+  </div>
+</section>
 
-  <!-- About Section -->
-  <section id="about" class="py-12 bg-white text-center">
-    <div class="max-w-4xl mx-auto px-4">
-      <h2 class="text-2xl md:text-3xl font-bold mb-4">About Us</h2>
-      <p class="text-base md:text-lg max-w-2xl mx-auto">
-        All Tools Hub is dedicated to providing free, high-quality online tools to simplify your tasks. Our platform is user-friendly and accessible to all.
-      </p>
-    </div>
-  </section>
+<!-- 3D Cube Section -->
+<div class="cube-container">
+  <div id="cubeTitle" style="text-align:center; font-size:24px; font-weight:bold; margin-bottom:10px; color:#3b82f6;">Welcome to All Tools Hub</div>
+  <div id="cube" class="cube">
+    <div class="face front" data-url="#tools" data-color="#3b82f6">Tools</div>
+    <div class="face back" data-url="#privacy" data-color="#2563eb">Privacy</div>
+    <div class="face right" data-url="#terms" data-color="#8b5cf6">Terms</div>
+    <div class="face left" data-url="#about" data-color="#7c3aed">About</div>
+    <div class="face top" data-url="#contact" data-color="#22c55e">Contact</div>
+    <div class="face bottom" data-url="#faq" data-color="#f59e0b">FAQ</div>
+  </div>
+</div>
 
-  <!-- Tools Section -->
-  <section id="tools" class="py-12 bg-gray-50 text-center">
-    <div class="max-w-4xl mx-auto px-4">
-      <h2 class="text-2xl md:text-3xl font-bold mb-4">Our Tools</h2>
-      <p class="text-base md:text-lg mb-6 max-w-2xl mx-auto">
-        Discover our collection of free tools designed to boost productivity.
-      </p>
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        <a href="#tool1" class="bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700 transition-colors">Calculator</a>
-        <a href="#tool2" class="bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700 transition-colors">Converter</a>
-        <a href="#tool3" class="bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700 transition-colors">Calendar</a>
-        <a href="#tool4" class="bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700 transition-colors">Planner</a>
-      </div>
-    </div>
-  </section>
+<!-- Footer -->
+<footer class="bg-gray-900 text-gray-300 py-6 mt-20 text-center">
+  © 2025 All Tools Hub. All rights reserved.
+</footer>
 
-  <!-- Privacy, Terms, Disclaimer, FAQ, Contact Sections (as in your original code) -->
-  <section id="privacy" class="py-12 bg-white text-center">
-    <div class="max-w-4xl mx-auto px-4">
-      <h2 class="text-2xl md:text-3xl font-bold mb-4">Privacy Policy</h2>
-      <p class="text-base md:text-lg max-w-2xl mx-auto">
-        We value your privacy. We collect minimal data to enhance your experience and do not share it without consent.
-      </p>
-    </div>
-  </section>
-  <section id="terms" class="py-12 bg-gray-50 text-center">
-    <div class="max-w-4xl mx-auto px-4">
-      <h2 class="text-2xl md:text-3xl font-bold mb-4">Terms of Service</h2>
-      <p class="text-base md:text-lg max-w-2xl mx-auto">
-        By using our tools, you agree to use them responsibly. We are not liable for misuse.
-      </p>
-    </div>
-  </section>
-  <section id="disclaimer" class="py-12 bg-white text-center">
-    <div class="max-w-4xl mx-auto px-4">
-      <h2 class="text-2xl md:text-3xl font-bold mb-4">Disclaimer</h2>
-      <p class="text-base md:text-lg max-w-2xl mx-auto">
-        Our tools are provided for informational purposes. Use them at your own risk.
-      </p>
-    </div>
-  </section>
-  <section id="faq" class="py-12 bg-gray-50 text-center">
-    <div class="max-w-4xl mx-auto px-4">
-      <h2 class="text-2xl md:text-3xl font-bold mb-4">Frequently Asked Questions</h2>
-      <div class="space-y-4 max-w-2xl mx-auto text-left">
-        <div>
-          <h3 class="text-lg font-semibold text-blue-600">Are the tools free?</h3>
-          <p class="text-base text-gray-600">Yes, all tools are free to use.</p>
-        </div>
-        <div>
-          <h3 class="text-lg font-semibold text-blue-600">Do I need an account?</h3>
-          <p class="text-base text-gray-600">No account is required.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-  <section id="contact" class="py-12 bg-white text-center">
-    <div class="max-w-4xl mx-auto px-4">
-      <h2 class="text-2xl md:text-3xl font-bold mb-4">Contact Us</h2>
-      <p class="text-base md:text-lg mb-6 max-w-2xl mx-auto">
-        Have questions or feedback? Reach out to us.
-      </p>
-      <form id="contactForm" class="max-w-md mx-auto">
-        <input type="email" name="email" placeholder="Your email" class="w-full border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-600" aria-label="Email" required/>
-        <textarea name="message" placeholder="Your message" class="w-full border border-gray-300 rounded-md p-2 mb-4 h-24 focus:outline-none focus:ring-2 focus:ring-blue-600" aria-label="Message" required></textarea>
-        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors w-full">Send Message</button>
-      </form>
-    </div>
-  </section>
+<script>
+// Mobile menu toggle
+const mobileMenuBtn=document.getElementById("mobileMenuBtn");
+const mobileMenu=document.getElementById("mobileMenu");
+mobileMenuBtn.addEventListener("click",()=>{mobileMenu.classList.toggle("hidden");});
 
-  <!-- Footer -->
-  <footer class="bg-gray-900 text-gray-300 py-6 text-center">
-    <div class="max-w-4xl mx-auto px-4">
-      <p>© 2025 All Tools Hub. All rights reserved.</p>
-    </div>
-  </footer>
+// Search
+const searchBtn=document.getElementById("searchBtn");
+const searchInput=document.getElementById("searchInput");
+searchBtn.addEventListener("click",()=>{ alert("Search: "+searchInput.value); });
+const mobileSearchBtn=document.getElementById("mobileSearchBtn");
+const mobileSearchInput=document.getElementById("mobileSearchInput");
+mobileSearchBtn.addEventListener("click",()=>{ alert("Search: "+mobileSearchInput.value); });
 
-  <!-- Scripts -->
-  <script>
-    // Mobile Menu
-    const mobileMenuBtn=document.getElementById("mobileMenuBtn");
-    const mobileMenu=document.getElementById("mobileMenu");
-    mobileMenuBtn.addEventListener("click",()=>{mobileMenu.classList.toggle("hidden");});
+// Cube rotation
+const cube=document.getElementById("cube");
+const cubeTitle=document.getElementById("cubeTitle");
+let isDragging=false,prevX,prevY,rotX=-15,rotY=0,inertiaX=0,inertiaY=0,friction=0.95;
+const faces=Array.from(document.querySelectorAll(".face"));
 
-    // Search
-    function performSearch(query,input){
-      if(!query){alert("Please enter a search term."); input.focus(); return;}
-      const sections=document.querySelectorAll('section'); let found=false;
-      for(const section of sections){
-        if(section.textContent.toLowerCase().includes(query)){
-          section.scrollIntoView({behavior:"smooth"}); found=true; break;
-        }
-      }
-      if(!found) alert("No results found for: "+query);
-    }
-    const searchBtn=document.getElementById("searchBtn"), searchInput=document.getElementById("searchInput");
-    searchBtn.addEventListener("click",()=>performSearch(searchInput.value.trim().toLowerCase(),searchInput));
-    searchInput.addEventListener("keypress",(e)=>{if(e.key==="Enter") performSearch(searchInput.value.trim().toLowerCase(),searchInput);});
-    const mobileSearchBtn=document.getElementById("mobileSearchBtn"), mobileSearchInput=document.getElementById("mobileSearchInput");
-    mobileSearchBtn.addEventListener("click",()=>performSearch(mobileSearchInput.value.trim().toLowerCase(),mobileSearchInput));
-    mobileSearchInput.addEventListener("keypress",(e)=>{if(e.key==="Enter") performSearch(mobileSearchInput.value.trim().toLowerCase(),mobileSearchInput);});
+// Clickable faces
+faces.forEach(face=>{
+  face.addEventListener("click",()=>{
+    const url=face.getAttribute("data-url");
+    if(url.startsWith("#")){
+      const section=document.querySelector(url);
+      if(section) section.scrollIntoView({behavior:"smooth"});
+    } else { window.location.href=url; }
+  });
+});
 
-    // Contact Form
-    const contactForm=document.getElementById("contactForm");
-    contactForm.addEventListener("submit",(e)=>{e.preventDefault(); alert("Thank you for your message! We'll get back to you soon."); contactForm.reset();});
+// Drag & touch
+function startDrag(e){isDragging=true; prevX=e.type.includes("touch")?e.touches[0].clientX:e.clientX; prevY=e.type.includes("touch")?e.touches[0].clientY:e.clientY; cube.style.transition="none";}
+function moveDrag(e){if(!isDragging) return; const currX=e.type.includes("touch")?e.touches[0].clientX:e.clientX; const currY=e.type.includes("touch")?e.touches[0].clientY:e.clientY; const dx=currX-prevX; const dy=currY-prevY; rotY+=dx*0.5; rotX-=dy*0.5; rotX=Math.max(-90,Math.min(90,rotX)); cube.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`; prevX=currX; prevY=currY; inertiaX=-dy*0.5; inertiaY=dx*0.5; updateFrontFace();}
+function endDrag(){isDragging=false; cube.style.transition="transform 0.2s ease-out";}
+cube.addEventListener("mousedown",startDrag); document.addEventListener("mousemove",moveDrag); document.addEventListener("mouseup",endDrag);
+cube.addEventListener("touchstart",startDrag); cube.addEventListener("touchmove",moveDrag); cube.addEventListener("touchend",endDrag);
 
-    // 3D Cube
-    const cube=document.getElementById("cube");
-    const faces=document.querySelectorAll(".face");
-    const cubeTitle=document.getElementById("cubeTitle");
-    let isDragging=false, prevX=0, prevY=0, rotX=-15, rotY=0, inertiaX=0, inertiaY=0, friction=0.95;
+// Auto-spin + inertia
+function spinCube(){if(!isDragging){rotY+=inertiaY*0.1; rotX+=inertiaX*0.1; rotX=Math.max(-90,Math.min(90,rotX)); cube.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`; updateFrontFace();} requestAnimationFrame(spinCube);}
+spinCube();
 
-    function startDrag(e){
-      isDragging=true; 
-      prevX=e.type.includes("touch")?e.touches[0].clientX:e.clientX;
-      prevY=e.type.includes("touch")?e.touches[0].clientY:e.clientY;
-      cube.style.transition="none"; e.preventDefault();
-    }
-    function moveDrag(e){
-      if(!isDragging) return;
-      const currX=e.type.includes("touch")?e.touches[0].clientX:e.clientX;
-      const currY=e.type.includes("touch")?e.touches[0].clientY:e.clientY;
-      const dx=currX-prevX, dy=currY-prevY;
-      rotY+=dx*0.5; rotX-=dy*0.5; rotX=Math.max(-90,Math.min(90,rotX));
-      cube.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`;
-      inertiaX=-dy*0.03; inertiaY=dx*0.03; prevX=currX; prevY=currY;
-      updateFrontFace(); e.preventDefault();
-    }
-    function endDrag(){ isDragging=false; cube.style.transition="transform 0.3s ease-out"; }
-
-    cube.addEventListener("mousedown",startDrag);
-    document.addEventListener("mousemove",moveDrag);
-    document.addEventListener("mouseup",endDrag);
-    cube.addEventListener("touchstart",startDrag,{passive:false});
-    cube.addEventListener("touchmove",moveDrag,{passive:false});
-    cube.addEventListener("touchend",endDrag);
-
-    function spinCube(){
-      if(!isDragging){ rotY+=inertiaY; rotX+=inertiaX; rotX=Math.max(-90,Math.min(90,rotX)); cube.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`; inertiaX*=friction; inertiaY*=friction;}
-      updateFrontFace(); requestAnimationFrame(spinCube);
-    }
-    spinCube();
-
-    function updateFrontFace(){
-      let frontFace=faces[0]; let maxZ=-Infinity;
-      faces.forEach(f=>{
-        const rect=f.getBoundingClientRect(); const z=rect.top+rect.bottom;
-        if(z>maxZ){ maxZ=z; frontFace=f; }
-      });
-      cubeTitle.textContent=frontFace.textContent;
-    }
-
-    faces.forEach(face=>{face.addEventListener("click",()=>{if(isDragging) return; const url=face.getAttribute("data-url"); if(url.startsWith("#")){const sec=document.querySelector(url); if(sec) sec.scrollIntoView({behavior:"smooth"});} else window.location.href=url;});});
-  </script>
+// Update front face
+function updateFrontFace(){
+  let minAngle=360, frontFace=faces[0];
+  faces.forEach(face=>{
+    const transform=face.style.transform;
+    if(transform.includes("rotateY(0deg)")) frontFace=face;
+  });
+  cubeTitle.textContent=frontFace.textContent;
+  faces.forEach((f,i)=>f.style.background=f.getAttribute("data-color"));
+}
+</script>
 
 </body>
 </html>
