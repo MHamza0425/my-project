@@ -4,199 +4,255 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>All Tools Hub - Futuristic Calculator</title>
+<meta name="description" content="Futuristic Scientific Calculator with Neon Theme, History, Memory, CSV Download, and Advanced Functions Panel.">
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-body { font-family:'Segoe UI',sans-serif; background:#0f172a; color:#fff; transition:0.3s; }
-.calculator-container { max-width:550px; margin:2rem auto; background:#111827; border-radius:1rem; box-shadow:0 0 20px #4f46e5,0 0 40px #6366f1; padding:25px; }
-.display { background:rgba(255,255,255,0.05); padding:20px; border-radius:0.75rem; font-size:2rem; text-align:right; min-height:60px; margin-bottom:10px; word-wrap:break-word; box-shadow: inset 0 0 10px #6366f1; }
-.memory-display { font-size:0.9rem; color:#facc15; text-align:left; margin-bottom:5px; min-height:20px; }
-.history-panel { background:rgba(255,255,255,0.05); max-height:180px; overflow-y:auto; border-radius:0.5rem; padding:10px; font-size:0.85rem; margin-bottom:10px; color:#9ca3af; box-shadow: inset 0 0 10px #4f46e5; }
-.button-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-top:10px; }
-.button-grid button { padding:18px; border:none; border-radius:0.75rem; font-size:1rem; font-weight:bold; cursor:pointer; transition:all 0.3s ease; background:rgba(255,255,255,0.05); color:#fff; box-shadow:0 4px #00000020,0 0 8px #6366f1; }
-.button-grid button:hover { background:#4f46e5; box-shadow:0 6px #1e3a8a,0 0 12px #a5b4fc; transform:translateY(-3px); }
-.operator { background:#f59e0b; box-shadow:0 4px #b45309,0 0 8px #facc15; }
-.operator:hover { background:#d97706; box-shadow:0 6px #b45309,0 0 12px #facc15; }
-.equal { background:#10b981; grid-column:span 2; box-shadow:0 4px #047857,0 0 8px #34d399; }
-.equal:hover { background:#059669; box-shadow:0 6px #047857,0 0 12px #34d399; }
-.clear { background:#ef4444; box-shadow:0 4px #b91c1c,0 0 8px #f87171; }
-.clear:hover { background:#b91c1c; box-shadow:0 6px #7f1d1d,0 0 12px #fca5a5; }
-.download-btn, .advanced-btn, .rad-deg-toggle, .theme-btn { margin-top:5px; padding:6-10px; border-radius:0.5rem; font-weight:bold; cursor:pointer; transition:all 0.2s ease; }
-.neon-input { border:2px solid #6366f1; box-shadow:0 0 5px #6366f1,0 0 15px #4f46e5,0 0 30px #a5b4fc; transition:0.2s; color:#fff; background:#1f2937; text-align:center; font-weight:bold; }
-.neon-input:focus { outline:none; border-color:#f59e0b; box-shadow:0 0 5px #f59e0b,0 0 15px #fbbf24,0 0 30px #facc15; animation:flicker 1.5s infinite alternate; }
-.neon-cell { display:inline-block; padding:2px 6px; margin:2px; border-radius:4px; font-weight:bold; animation:flickerRainbow 2s infinite alternate; }
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #fff; }
+.calculator-container { max-width: 480px; margin: 2rem auto; background: #111827; border-radius: 1rem; box-shadow: 0 0 20px #4f46e5, 0 0 40px #6366f1; padding: 25px; }
+.display { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 0.75rem; font-size: 2rem; text-align: right; min-height: 60px; margin-bottom: 10px; word-wrap: break-word; box-shadow: inset 0 0 10px #6366f1; }
+.memory-display { font-size: 0.9rem; color: #facc15; text-align: left; margin-bottom: 5px; min-height: 20px; }
+.history-panel { background: rgba(255,255,255,0.05); max-height: 180px; overflow-y: auto; border-radius: 0.5rem; padding: 10px; font-size: 0.85rem; margin-bottom: 10px; color: #9ca3af; box-shadow: inset 0 0 10px #4f46e5; }
+.button-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.button-grid button { padding: 18px; border: none; border-radius: 0.75rem; font-size: 1rem; font-weight: bold; cursor: pointer; transition: all 0.3s ease; background: rgba(255,255,255,0.05); color: #fff; box-shadow: 0 4px #00000020, 0 0 8px #6366f1; }
+.button-grid button:hover { background: #4f46e5; box-shadow: 0 6px #1e3a8a, 0 0 12px #a5b4fc; transform: translateY(-3px); }
+.button-grid .operator { background: #f59e0b; box-shadow: 0 4px #b45309, 0 0 8px #facc15; }
+.button-grid .operator:hover { background: #d97706; box-shadow: 0 6px #b45309, 0 0 12px #facc15; }
+.button-grid .equal { background: #10b981; grid-column: span 2; box-shadow: 0 4px #047857, 0 0 8px #34d399; }
+.button-grid .equal:hover { background: #059669; box-shadow: 0 6px #047857, 0 0 12px #34d399; }
+.button-grid .clear { background: #ef4444; box-shadow:0 4px #b91c1c,0 0 8px #f87171; }
+.button-grid .clear:hover { background: #b91c1c; box-shadow:0 6px #7f1d1d,0 0 12px #fca5a5; }
+.download-btn { background:#6366f1; padding: 10px 18px; border-radius: 0.75rem; font-weight:bold; margin-top:5px; cursor:pointer; transition:all 0.2s ease; box-shadow:0 4px #4f46e5; }
+.download-btn:hover { background:#4f46e5; box-shadow:0 6px #312e81; }
+.rad-deg-toggle { background:#14b8a6; padding:6px 10px; border-radius:0.5rem; font-weight:bold; cursor:pointer; margin-bottom:10px; transition:all 0.2s ease; }
+.rad-deg-toggle:hover { background:#0d9488; }
 .advanced-panel { background: rgba(255,255,255,0.05); margin-top: 15px; border-radius: 0.75rem; padding: 15px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease; box-shadow: inset 0 0 10px #6366f1; }
-.advanced-panel.show { max-height: 1200px; }
+.advanced-panel.show { max-height: 800px; }
+.advanced-btn { background:#8b5cf6; padding:8px 12px; border-radius:0.5rem; margin-top:10px; cursor:pointer; font-weight:bold; transition:all 0.2s ease; }
+.advanced-btn:hover { background:#7c3aed; }
+.advanced-panel input { width: 50px; padding: 5px; margin: 2px; border-radius: 0.25rem; background: #1f2937; color: #fff; text-align:center; border:1px solid #4f46e5; box-shadow:0 0 6px #6366f1; transition: all 0.2s ease; }
+.advanced-panel input:focus { outline:none; border-color:#10b981; box-shadow:0 0 10px #10b981; }
+.neon-input { border: 2px solid #6366f1; box-shadow: 0 0 5px #6366f1,0 0 15px #4f46e5,0 0 30px #a5b4fc; transition: all 0.2s ease-in-out; color:#fff; background:#1f2937; text-align:center; font-weight:bold; }
+.neon-input:focus { outline:none; border-color:#f59e0b; box-shadow:0 0 5px #f59e0b,0 0 15px #fbbf24,0 0 30px #facc15; animation:flicker 1.5s infinite alternate; }
 @keyframes flicker { 0%,19%,21%,23%,25%,54%,56%,100%{opacity:1;} 20%,24%,55%{opacity:0.4;} }
-@keyframes flickerRainbow { 0%{color:#ff0000;} 16%{color:#ff7f00;} 32%{color:#ffff00;} 48%{color:#00ff00;} 64%{color:#0000ff;} 80%{color:#4b0082;} 100%{color:#8f00ff;} }
+.neon-cell { display:inline-block; padding:2px 6px; margin:2px; border-radius:4px; font-weight:bold; animation:flickerRainbow 2s infinite alternate; }
+@keyframes flickerRainbow {
+  0%{color:#ff0000; text-shadow:0 0 5px #ff0000,0 0 10px #ff0000; opacity:1;}
+  16%{color:#ff7f00; text-shadow:0 0 5px #ff7f00,0 0 10px #ff7f00;}
+  32%{color:#ffff00; text-shadow:0 0 5px #ffff00,0 0 10px #ffff00;}
+  48%{color:#00ff00; text-shadow:0 0 5px #00ff00,0 0 10px #00ff00;}
+  64%{color:#0000ff; text-shadow:0 0 5px #0000ff,0 0 10px #0000ff;}
+  80%{color:#4b0082; text-shadow:0 0 5px #4b0082,0 0 10px #4b0082;}
+  100%{color:#8f00ff; text-shadow:0 0 5px #8f00ff,0 0 10px #8f00ff;}
+}
 </style>
 </head>
 <body>
 <header class="bg-gray-900 shadow fixed w-full z-50">
-<div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
-<h1 class="text-2xl font-bold text-indigo-600 cursor-pointer" onclick="window.location.href='index.html'">All Tools Hub</h1>
-<button class="theme-btn" onclick="switchTheme()">Switch Theme</button>
-</div>
+  <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+    <h1 class="text-2xl font-bold text-indigo-600 cursor-pointer" onclick="window.location.href='index.html'">All Tools Hub</h1>
+  </div>
 </header>
 
 <main class="pt-32 px-6 text-center">
-<h2 class="text-4xl font-bold text-indigo-500 mb-6">Futuristic Scientific Calculator</h2>
+<h2 class="text-4xl font-bold text-indigo-500 mb-6">Neon Futuristic Scientific Calculator</h2>
 
 <div class="calculator-container">
-<div class="memory-display" id="memoryDisplay">M: 0</div>
-<div class="display" id="calcDisplay">0</div>
-<div class="history-panel" id="historyPanel"></div>
-<button class="download-btn" onclick="downloadCSV()">Download History CSV</button>
-<div class="flex justify-between mt-2">
-<button class="rad-deg-toggle" onclick="toggleRadDeg()">RAD</button>
-<input type="text" id="searchHistory" placeholder="Search History" class="neon-input" oninput="searchHistory()" />
-<button onclick="clearHistory()" class="advanced-btn">Clear History</button>
+  <div class="memory-display" id="memoryDisplay">M: 0</div>
+  <div class="display" id="calcDisplay">0</div>
+  <div class="history-panel" id="historyPanel"></div>
+  <button class="download-btn" onclick="downloadCSV()">Download History CSV</button>
+  <div><button class="rad-deg-toggle" onclick="toggleRadDeg()">RAD</button></div>
+
+  <div class="button-grid mt-2">
+    <button class="clear" onclick="clearAll()">C</button>
+    <button onclick="backspace()">⌫</button>
+    <button onclick="appendOperator('(')">(</button>
+    <button onclick="appendOperator(')')">)</button>
+    <button class="operator" onclick="appendOperator('/')">÷</button>
+
+    <button onclick="appendNumber('7')">7</button>
+    <button onclick="appendNumber('8')">8</button>
+    <button onclick="appendNumber('9')">9</button>
+    <button class="operator" onclick="appendOperator('*')">×</button>
+    <button onclick="memoryRecall()">MR</button>
+
+    <button onclick="appendNumber('4')">4</button>
+    <button onclick="appendNumber('5')">5</button>
+    <button onclick="appendNumber('6')">6</button>
+    <button class="operator" onclick="appendOperator('-')">−</button>
+    <button onclick="memoryAdd()">M+</button>
+
+    <button onclick="appendNumber('1')">1</button>
+    <button onclick="appendNumber('2')">2</button>
+    <button onclick="appendNumber('3')">3</button>
+    <button class="operator" onclick="appendOperator('+')">+</button>
+    <button onclick="memorySubtract()">M-</button>
+
+    <button onclick="appendNumber('0')">0</button>
+    <button onclick="appendNumber('.')">.</button>
+    <button class="equal" onclick="calculateResult()">=</button>
+    <button onclick="appendOperator('%')">%</button>
+    <button onclick="appendConstant('Math.PI')">π</button>
+
+    <button onclick="appendFunction('Math.sin')">sin</button>
+    <button onclick="appendFunction('Math.asin')">asin</button>
+    <button onclick="appendFunction('Math.cos')">cos</button>
+    <button onclick="appendFunction('Math.acos')">acos</button>
+    <button onclick="appendFunction('Math.tan')">tan</button>
+    <button onclick="appendFunction('Math.atan')">atan</button>
+    <button onclick="appendFunction('Math.sinh')">sinh</button>
+    <button onclick="appendFunction('Math.cosh')">cosh</button>
+    <button onclick="appendFunction('Math.tanh')">tanh</button>
+    <button onclick="appendFunction('Math.log10')">log</button>
+    <button onclick="appendFunction('Math.log')">ln</button>
+    <button onclick="appendFunction('Math.sqrt')">√</button>
+    <button onclick="appendOperator('**2')">x²</button>
+    <button onclick="appendOperator('**3')">x³</button>
+    <button onclick="appendOperator('**')">x^y</button>
+    <button onclick="appendConstant('Math.E')">e</button>
+    <button onclick="factorial()">x!</button>
+    <button onclick="appendOperator('**-1')">1/x</button>
+  </div>
+
+  <button class="advanced-btn" onclick="toggleAdvanced()">Advanced Functions ⬇</button>
+  <div class="advanced-panel" id="advancedPanel">
+    <h3 class="text-lg font-bold mb-2">Matrix Operations (2x2)</h3>
+    <div class="grid grid-cols-2 gap-4 text-center mb-2">
+      <div><input type="number" id="a11" placeholder="A11" class="neon-input"><input type="number" id="a12" placeholder="A12" class="neon-input"><br>
+           <input type="number" id="a21" placeholder="A21" class="neon-input"><input type="number" id="a22" placeholder="A22" class="neon-input"></div>
+      <div><input type="number" id="b11" placeholder="B11" class="neon-input"><input type="number" id="b12" placeholder="B12" class="neon-input"><br>
+           <input type="number" id="b21" placeholder="B21" class="neon-input"><input type="number" id="b22" placeholder="B22" class="neon-input"></div>
+    </div>
+    <div class="grid grid-cols-2 gap-2 text-center mb-2">
+      <button class="advanced-btn" onclick="matrixAdd()">Add Matrices</button>
+      <button class="advanced-btn" onclick="matrixMultiply()">Multiply Matrices</button>
+      <button class="advanced-btn" onclick="matrixDeterminant('A')">Determinant A</button>
+      <button class="advanced-btn" onclick="matrixDeterminant('B')">Determinant B</button>
+      <button class="advanced-btn" onclick="matrixInverse('A')">Inverse A</button>
+      <button class="advanced-btn" onclick="matrixInverse('B')">Inverse B</button>
+    </div>
+    <div id="matrixResult" class="mt-2 text-left font-mono text-indigo-400"></div>
+  </div>
 </div>
 
-<div class="button-grid">
-<!-- Numeric and operator buttons (same as before, omitted for brevity) -->
-</div>
-
-<button class="advanced-btn" onclick="toggleAdvanced()">Advanced Functions ⬇</button>
-<div class="advanced-panel" id="advancedPanel">
-<h3 class="text-lg font-bold mb-2">Scientific Constants</h3>
-<div class="grid grid-cols-3 gap-2 mb-2">
-<button class="advanced-btn" onclick="appendConstant('Math.PI')">π</button>
-<button class="advanced-btn" onclick="appendConstant('Math.E')">e</button>
-<button class="advanced-btn" onclick="appendConstant('6.67430e-11')">G</button>
-<button class="advanced-btn" onclick="appendConstant('2.99792458e8')">c</button>
-<button class="advanced-btn" onclick="appendConstant('6.62607015e-34')">h</button>
-</div>
-
-<h3 class="text-lg font-bold mb-2">Matrix Operations (2x2 & 3x3)</h3>
-<div class="grid grid-cols-3 gap-2 mb-2">
-<p>Enter 2x2 or 3x3 matrices</p>
-</div>
-<div class="grid grid-cols-3 gap-1 mb-2">
-<!-- 3x3 Matrix inputs A -->
-<div>
-<input type="number" id="a11" class="neon-input" placeholder="A11"><input type="number" id="a12" class="neon-input" placeholder="A12"><input type="number" id="a13" class="neon-input" placeholder="A13"><br>
-<input type="number" id="a21" class="neon-input" placeholder="A21"><input type="number" id="a22" class="neon-input" placeholder="A22"><input type="number" id="a23" class="neon-input" placeholder="A23"><br>
-<input type="number" id="a31" class="neon-input" placeholder="A31"><input type="number" id="a32" class="neon-input" placeholder="A32"><input type="number" id="a33" class="neon-input" placeholder="A33">
-</div>
-<!-- 3x3 Matrix inputs B -->
-<div>
-<input type="number" id="b11" class="neon-input" placeholder="B11"><input type="number" id="b12" class="neon-input" placeholder="B12"><input type="number" id="b13" class="neon-input" placeholder="B13"><br>
-<input type="number" id="b21" class="neon-input" placeholder="B21"><input type="number" id="b22" class="neon-input" placeholder="B22"><input type="number" id="b23" class="neon-input" placeholder="B23"><br>
-<input type="number" id="b31" class="neon-input" placeholder="B31"><input type="number" id="b32" class="neon-input" placeholder="B32"><input type="number" id="b33" class="neon-input" placeholder="B33">
-</div>
-</div>
-<div class="grid grid-cols-2 gap-2 mb-2">
-<button class="advanced-btn" onclick="matrixAdd()">Add Matrices</button>
-<button class="advanced-btn" onclick="matrixMultiply()">Multiply Matrices</button>
-<button class="advanced-btn" onclick="matrixDeterminant('A')">Determinant A</button>
-<button class="advanced-btn" onclick="matrixDeterminant('B')">Determinant B</button>
-<button class="advanced-btn" onclick="matrixInverse('A')">Inverse A</button>
-<button class="advanced-btn" onclick="matrixInverse('B')">Inverse B</button>
-</div>
-<div id="matrixResult" class="mt-2 text-left font-mono text-indigo-400"></div>
-
-<h3 class="text-lg font-bold mb-2">Unit Converter</h3>
-<div class="grid grid-cols-2 gap-2 mb-2">
-<input type="number" id="unitInput" placeholder="Value" class="neon-input">
-<select id="unitType" class="neon-input">
-<option value="length">Length (m↔km)</option>
-<option value="weight">Weight (kg↔g)</option>
-<option value="temperature">Temperature (°C↔°F)</option>
-</select>
-<button class="advanced-btn" onclick="convertUnit()">Convert</button>
-</div>
-<div id="unitResult" class="text-indigo-400 font-mono mt-1"></div>
-</div>
-
+<div class="mt-6">
+<button onclick="window.location.href='index.html'" class="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 transition">Back to Home</button>
 </div>
 </main>
 
+<footer class="bg-gray-900 text-gray-300 py-6 text-center">
+© 2025 All Tools Hub. All rights reserved. | Contact: saadkhan0425@gmail.com
+</footer>
+
 <script>
-let display=document.getElementById("calcDisplay");
-let historyPanel=document.getElementById("historyPanel");
-let memoryDisplay=document.getElementById("memoryDisplay");
-let advancedPanel=document.getElementById("advancedPanel");
-let currentInput=''; let memory=0; let historyData=[]; let radMode=true; let theme='neon';
+let display = document.getElementById("calcDisplay");
+let historyPanel = document.getElementById("historyPanel");
+let memoryDisplay = document.getElementById("memoryDisplay");
+let advancedPanel = document.getElementById("advancedPanel");
+let currentInput = '';
+let memory = 0;
+let historyData = [];
+let radMode = true;
 
 function toggleRadDeg(){ radMode=!radMode; event.target.textContent=radMode?'RAD':'DEG'; }
 function toggleAdvanced(){ advancedPanel.classList.toggle('show'); }
-function appendNumber(n){ currentInput=currentInput==='0'?n:currentInput+n; display.textContent=currentInput; }
+
+function appendNumber(num){ if(currentInput==='0') currentInput=''; currentInput+=num; display.textContent=currentInput; }
 function appendOperator(op){ currentInput+=op; display.textContent=currentInput; }
-function appendFunction(f){ currentInput+=f+'('; display.textContent=currentInput; }
-function appendConstant(c){ currentInput+=c; display.textContent=currentInput; }
+function appendFunction(func){ currentInput+=func+'('; display.textContent=currentInput; }
+function appendConstant(constant){ currentInput+=constant; display.textContent=currentInput; }
 function clearAll(){ currentInput=''; display.textContent='0'; }
 function backspace(){ currentInput=currentInput.slice(0,-1); display.textContent=currentInput||'0'; }
+
 function calculateResult(){
   try{
-    let expr=currentInput;
+    let expr = currentInput;
     if(!radMode){
-      expr=expr.replace(/Math\.sin\(/g,'Math.sin(Math.PI/180*')
-               .replace(/Math\.cos\(/g,'Math.cos(Math.PI/180*')
-               .replace(/Math\.tan\(/g,'Math.tan(Math.PI/180*')
-               .replace(/Math\.asin\(/g,'180/Math.PI*Math.asin(')
-               .replace(/Math\.acos\(/g,'180/Math.PI*Math.acos(')
-               .replace(/Math\.atan\(/g,'180/Math.PI*Math.atan(');
+      expr = expr.replace(/Math\.sin\(/g,'Math.sin(Math.PI/180*')
+                 .replace(/Math\.cos\(/g,'Math.cos(Math.PI/180*')
+                 .replace(/Math\.tan\(/g,'Math.tan(Math.PI/180*')
+                 .replace(/Math\.asin\(/g,'180/Math.PI*Math.asin(')
+                 .replace(/Math\.acos\(/g,'180/Math.PI*Math.acos(')
+                 .replace(/Math\.atan\(/g,'180/Math.PI*Math.atan(');
     }
-    let result=eval(expr);
-    historyPanel.innerHTML+=`<div>${currentInput} = ${result}</div>`;
+    let result = eval(expr);
+    historyPanel.innerHTML += `<div>${currentInput} = ${result}</div>`;
     historyData.push({expression:currentInput,result:result});
-    currentInput=result; display.textContent=result;
-  }catch{ display.textContent='Error'; }
+    currentInput=result;
+    display.textContent=currentInput;
+  } catch{ display.textContent='Error'; }
 }
-function memoryAdd(){ memory+=parseFloat(display.textContent)||0; updateMemory(); }
-function memorySubtract(){ memory-=parseFloat(display.textContent)||0; updateMemory(); }
-function memoryRecall(){ currentInput+=memory; display.textContent=currentInput; }
+
+function memoryAdd(){ memory += parseFloat(display.textContent)||0; updateMemory(); }
+function memorySubtract(){ memory -= parseFloat(display.textContent)||0; updateMemory(); }
+function memoryRecall(){ currentInput += memory; display.textContent=currentInput; }
 function updateMemory(){ memoryDisplay.textContent='M: '+memory; }
-function factorial(){ try{ let n=parseFloat(display.textContent); if(n<0) throw 'Error'; let f=1; for(let i=2;i<=n;i++) f*=i; currentInput=f; display.textContent=f; historyPanel.innerHTML+=`<div>${n}! = ${f}</div>`; historyData.push({expression:`${n}!`,result:f}); } catch{ display.textContent='Error'; } }
-function downloadCSV(){ if(historyData.length===0){ alert('No history!'); return; } let csv='Expression,Result\n'; historyData.forEach(item=>{ csv+=`${item.expression},${item.result}\n`; }); let blob=new Blob([csv],{type:'text/csv'}); let link=document.createElement('a'); link.href=URL.createObjectURL(blob); link.download='calculator_history.csv'; link.click(); }
-function switchTheme(){ if(theme==='neon'){ document.body.style.background='#f5f5f5'; document.body.style.color='#000'; theme='light'; } else if(theme==='light'){ document.body.style.background='#111827'; document.body.style.color='#fff'; theme='dark'; } else{ document.body.style.background='#0f172a'; document.body.style.color='#fff'; theme='neon'; } }
-function searchHistory(){ const term=document.getElementById('searchHistory').value.toLowerCase(); historyPanel.innerHTML=''; historyData.forEach(item=>{ if(item.expression.toLowerCase().includes(term) || item.result.toString().includes(term)){ historyPanel.innerHTML+=`<div>${item.expression} = ${item.result}</div>`; } }); }
-function clearHistory(){ historyData=[]; historyPanel.innerHTML=''; }
 
-// Unit converter
-function convertUnit(){
-  let val=parseFloat(document.getElementById('unitInput').value);
-  let type=document.getElementById('unitType').value;
-  if(type==='length'){ document.getElementById('unitResult').textContent=val+' m = '+(val/1000)+' km'; }
-  else if(type==='weight'){ document.getElementById('unitResult').textContent=val+' kg = '+(val*1000)+' g'; }
-  else if(type==='temperature'){ document.getElementById('unitResult').textContent=val+' °C = '+((val*9/5)+32)+' °F'; }
+function factorial(){
+  try{
+    let n=parseFloat(display.textContent);
+    if(n<0) throw 'Error';
+    let f=1; for(let i=2;i<=n;i++) f*=i;
+    currentInput=f; display.textContent=f;
+    historyPanel.innerHTML+=`<div>${n}! = ${f}</div>`;
+    historyData.push({expression:`${n}!`,result:f});
+  } catch{ display.textContent='Error'; }
 }
 
-// Matrix functions (2x2 & 3x3)
-function getMatrix(id){ 
-  let m=[[...Array(3)].map((_,i)=>parseFloat(document.getElementById(id+`${i+1}1`).value)||0),
-         [...Array(3)].map((_,i)=>parseFloat(document.getElementById(id+`${i+1}2`).value)||0),
-         [...Array(3)].map((_,i)=>parseFloat(document.getElementById(id+`${i+1}3`).value)||0)];
-  return m;
-}
-function showMatrixResult(mat,label=''){ let html=mat.map(r=>r.map(v=>`<span class="neon-cell">${v}</span>`).join(' ')).join('<br>'); document.getElementById('matrixResult').innerHTML=label?`<p class="font-bold">${label}</p>`+html:html; }
-function matrixAdd(){ let A=getMatrix('a'),B=getMatrix('b'),R=A.map((r,i)=>r.map((v,j)=>v+B[i][j])); showMatrixResult(R,'A + B ='); }
-function matrixMultiply(){ let A=getMatrix('a'),B=getMatrix('b'); let R=Array(3).fill(0).map(()=>Array(3).fill(0)); for(let i=0;i<3;i++){ for(let j=0;j<3;j++){ for(let k=0;k<3;k++){ R[i][j]+=A[i][k]*B[k][j]; } } } showMatrixResult(R,'A × B ='); }
-function matrixDeterminant(matrix){ let M=getMatrix(matrix==='A'?'a':'b'); let det=M[0][0]*(M[1][1]*M[2][2]-M[1][2]*M[2][1])-M[0][1]*(M[1][0]*M[2][2]-M[1][2]*M[2][0])+M[0][2]*(M[1][0]*M[2][1]-M[1][1]*M[2][0]); showMatrixResult([[det]],`Determinant ${matrix} =`); }
-function matrixInverse(matrix){
-  let M=getMatrix(matrix==='A'?'a':'b'); let det=M[0][0]*(M[1][1]*M[2][2]-M[1][2]*M[2][1])-M[0][1]*(M[1][0]*M[2][2]-M[1][2]*M[2][0])+M[0][2]*(M[1][0]*M[2][1]-M[1][1]*M[2][0]);
-  if(det===0){ document.getElementById('matrixResult').textContent='Inverse does not exist'; return; }
-  let inv=[[],[],[]];
-  inv[0][0]=(M[1][1]*M[2][2]-M[1][2]*M[2][1])/det;
-  inv[0][1]=-(M[0][1]*M[2][2]-M[0][2]*M[2][1])/det;
-  inv[0][2]=(M[0][1]*M[1][2]-M[0][2]*M[1][1])/det;
-  inv[1][0]=-(M[1][0]*M[2][2]-M[1][2]*M[2][0])/det;
-  inv[1][1]=(M[0][0]*M[2][2]-M[0][2]*M[2][0])/det;
-  inv[1][2]=-(M[0][0]*M[1][2]-M[0][2]*M[1][0])/det;
-  inv[2][0]=(M[1][0]*M[2][1]-M[1][1]*M[2][0])/det;
-  inv[2][1]=-(M[0][0]*M[2][1]-M[0][1]*M[2][0])/det;
-  inv[2][2]=(M[0][0]*M[1][1]-M[0][1]*M[1][0])/det;
-  showMatrixResult(inv,`Inverse ${matrix} =`);
+function downloadCSV(){
+  if(historyData.length===0){ alert('No history to download!'); return; }
+  let csv='Expression,Result\n';
+  historyData.forEach(item=>{ csv+=`${item.expression},${item.result}\n`; });
+  let blob = new Blob([csv],{type:'text/csv'});
+  let link=document.createElement('a');
+  link.href=URL.createObjectURL(blob);
+  link.download='calculator_history.csv';
+  link.click();
 }
 
-// Keyboard support
-document.addEventListener('keydown', e=>{
-  if(e.key>='0' && e.key<='9') appendNumber(e.key);
-  else if(e.key==='.') appendNumber('.');
-  else if(e.key==='Backspace') backspace();
-  else if(e.key==='Enter') calculateResult();
-  else if(['+','-','*','/','%'].includes(e.key)) appendOperator(e.key);
+// Neon input glow effect
+document.querySelectorAll('.neon-input').forEach(input => {
+  input.addEventListener('input', () => {
+    let hue = Math.floor(Math.random() * 360);
+    input.style.boxShadow = `0 0 5px hsl(${hue},100%,50%),0 0 15px hsl(${hue},100%,60%),0 0 30px hsl(${hue},100%,70%)`;
+  });
 });
+
+// Matrix functions
+function neonWrap(value){ return `<span class="neon-cell">${value}</span>`; }
+function showMatrixResult(matrix, label=''){ 
+  let resultDiv = document.getElementById('matrixResult'); 
+  let html = matrix.map(row=>row.map(neonWrap).join(' ')).join('<br>'); 
+  resultDiv.innerHTML = label ? `<p class="font-bold">${label}</p>`+html : html;
+}
+
+function matrixAdd(){
+  let A=[[+document.getElementById('a11').value, +document.getElementById('a12').value],[+document.getElementById('a21').value, +document.getElementById('a22').value]];
+  let B=[[+document.getElementById('b11').value, +document.getElementById('b12').value],[+document.getElementById('b21').value, +document.getElementById('b22').value]];
+  let R=[[A[0][0]+B[0][0], A[0][1]+B[0][1]],[A[1][0]+B[1][0], A[1][1]+B[1][1]]];
+  showMatrixResult(R,'A + B =');
+}
+
+function matrixMultiply(){
+  let A=[[+document.getElementById('a11').value, +document.getElementById('a12').value],[+document.getElementById('a21').value, +document.getElementById('a22').value]];
+  let B=[[+document.getElementById('b11').value, +document.getElementById('b12').value],[+document.getElementById('b21').value, +document.getElementById('b22').value]];
+  let R=[[A[0][0]*B[0][0]+A[0][1]*B[1][0], A[0][0]*B[0][1]+A[0][1]*B[1][1]],[A[1][0]*B[0][0]+A[1][1]*B[1][0], A[1][0]*B[0][1]+A[1][1]*B[1][1]]];
+  showMatrixResult(R,'A × B =');
+}
+
+function matrixDeterminant(matrix){
+  let M=(matrix==='A')?[[+document.getElementById('a11').value,+document.getElementById('a12').value],[+document.getElementById('a21').value,+document.getElementById('a22').value]]:[[+document.getElementById('b11').value,+document.getElementById('b12').value],[+document.getElementById('b21').value,+document.getElementById('b22').value]]];
+  let det=M[0][0]*M[1][1]-M[0][1]*M[1][0];
+  showMatrixResult([[det]],`Determinant ${matrix} =`);
+}
+
+function matrixInverse(matrix){
+  let M=(matrix==='A')?[[+document.getElementById('a11').value,+document.getElementById('a12').value],[+document.getElementById('a21').value,+document.getElementById('a22').value]]:[[+document.getElementById('b11').value,+document.getElementById('b12').value],[+document.getElementById('b21').value,+document.getElementById('b22').value]]];
+  let det=M[0][0]*M[1][1]-M[0][1]*M[1][0];
+  if(det===0){ showMatrixResult([['Matrix '+matrix+' is singular (Det=0)']],''); return; }
+  let inv=[[M[1][1]/det, -M[0][1]/det],[-M[1][0]/det, M[0][0]/det]];
+  showMatrixResult(inv,'Inverse '+matrix+' =');
+}
 </script>
 </body>
 </html>
