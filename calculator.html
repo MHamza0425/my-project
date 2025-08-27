@@ -222,6 +222,8 @@ let calcHistory = [];
 let radMode = true;      // RAD by default
 let sciMode = false;     // SCI display toggle
 let recognition = null;  // speech recognition instance
+
+// Grab elements AFTER DOM is ready
 const display = document.getElementById('calcDisplay');
 const previewEl = document.getElementById('previewValue');
 const historyPanel = document.getElementById('historyPanel');
@@ -238,14 +240,13 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 /* sanitize: allow only safe characters in expressions */
-const SAFE_RE = /^[0-9+\-*/().,%\sA-Za-z_iPIEpi*^]*$/;
-/* we will replace '^' with '**' and map named functions */
+const SAFE_RE = /^[0-9+\-*/().,%\sA-Za-zPIEpie^]*$/;
 
 /* =========================
    Display helpers + live preview
    ========================= */
 function setDisplay(text){
-  display.innerText = text;
+  display.innerText = String(text);
   livePreview();
 }
 function getDisplayText(){
@@ -255,9 +256,6 @@ function onDisplayInput(){ livePreview(); saveCursorPos(); }
 function onDisplayKeyDown(e){
   // Enter => evaluate
   if(e.key === 'Enter'){ e.preventDefault(); calculateResult(); return; }
-  // allow basic navigation and keys
-  // block unsafe characters quickly (user could paste, but we blocked paste)
-  // live preview will ignore invalid chars
 }
 
 /* Live preview: evaluate expression as user types (non-destructive) */
@@ -305,41 +303,71 @@ function backspace(){
 }
 
 /* =========================
-   Safe evaluator
-   - maps functions and constants into local scope
-   - uses eval in a controlled closure
+   Safe evaluator (fixed)
+   - Build a small function body that defines helpers then returns evaluated expr.
+   - This avoids the Function.call(context) issue and keeps helpers in scope.
    ========================= */
-function evaluateExpression(expr){
-  // prepare: ^ -> **
-  expr = expr.replace(/\^/g,'**');
-  // block suspicious characters
-  if(!SAFE_RE.test(expr)) throw new Error('Invalid characters');
-  // create a sandboxed closure that exposes permitted names
-  const PI = Math.PI, E = Math.E;
-  const toRad = x => radMode ? x : x * Math.PI/180;
-  const fromRad = x => radMode ? x : x * 180/Math.PI;
-  const sin = x => Math.sin(toRad(x));
-  const cos = x => Math.cos(toRad(x));
-  const tan = x => Math.tan(toRad(x));
-  const asin = x => fromRad(Math.asin(x));
-  const acos = x => fromRad(Math.acos(x));
-  const atan = x => fromRad(Math.atan(x));
-  const sinh = x => Math.sinh(x);
-  const cosh = x => Math.cosh(x);
-  const tanh = x => Math.tanh(x);
-  const sqrt = x => Math.sqrt(x);
-  const ln = x => Math.log(x);
-  const log10 = x => Math.log10(x);
-  const abs = x => Math.abs(x);
-  const round = x => Math.round(x);
+function evaluateExpression(rawExpr){
+  if(!rawExpr || !rawExpr.trim()) return 0;
+  // prepare: ^ -> ** and normalize unicode operators
+  let expr = rawExpr.replace(/\^/g,'**').replace(/×/g,'*').replace(/÷/g,'/');
+
   // percent: treat trailing % by converting n% -> (n/100)
   expr = expr.replace(/(\d+(\.\d+)?)%/g, '($1/100)');
-  // disallow double __ or constructor
-  if(/__|constructor|window|document|=>|function|new /.test(expr)) throw new Error('Unsafe expr');
-  // evaluate
-  return Function('"use strict";return (' + expr + ')').call({
-    PI, E, sin, cos, tan, asin, acos, atan, sinh, cosh, tanh, sqrt, ln, log10, abs, round
-  })();
+  expr = expr.trim();
+
+  // quick safety check
+  if(!SAFE_RE.test(expr)) throw new Error('Invalid characters');
+
+  // replace named constants (keep uppercase PI/E allowed)
+  expr = expr.replace(/\bPI\b/gi, 'Math.PI');
+  expr = expr.replace(/\bE\b/g, 'Math.E');
+
+  // convert common function names to Math.* or wrapper tokens
+  expr = expr.replace(/\bsqrt\(/gi, 'Math.sqrt(');
+  expr = expr.replace(/\blog10\(/gi, 'Math.log10(');
+  expr = expr.replace(/\bln\(/gi, 'Math.log(');
+  expr = expr.replace(/\bsinh\s*\(/gi, 'Math.sinh(');
+  expr = expr.replace(/\bcosh\s*\(/gi, 'Math.cosh(');
+  expr = expr.replace(/\btanh\s*\(/gi, 'Math.tanh(');
+
+  // Replace trig/arc-trig with wrapper calls so RAD/DEG can be honored
+  expr = expr.replace(/\bsin\s*\(/gi, "__TRIG__('sin',");
+  expr = expr.replace(/\bcos\s*\(/gi, "__TRIG__('cos',");
+  expr = expr.replace(/\btan\s*\(/gi, "__TRIG__('tan',");
+  expr = expr.replace(/\basin\s*\(/gi, "__ARCTRIG__('asin',");
+  expr = expr.replace(/\bacos\s*\(/gi, "__ARCTRIG__('acos',");
+  expr = expr.replace(/\batan\s*\(/gi, "__ARCTRIG__('atan',");
+
+  // block obviously dangerous tokens
+  if(/__|constructor|window|document|=>|function|new\s+/.test(expr)) throw new Error('Unsafe expr');
+
+  // Build function body with helper wrappers and evaluate
+  const funcBody = `
+    const radMode = ${radMode};
+    function __TRIG__(name, x) {
+      const v = Number(x);
+      if(isNaN(v)) throw 'NaN';
+      const angle = radMode ? v : v * Math.PI/180;
+      if(name==='sin') return Math.sin(angle);
+      if(name==='cos') return Math.cos(angle);
+      if(name==='tan') return Math.tan(angle);
+      return NaN;
+    }
+    function __ARCTRIG__(name, x){
+      const v = Number(x);
+      if(isNaN(v)) throw 'NaN';
+      if(name==='asin') return radMode ? Math.asin(v) : Math.asin(v) * 180/Math.PI;
+      if(name==='acos') return radMode ? Math.acos(v) : Math.acos(v) * 180/Math.PI;
+      if(name==='atan') return radMode ? Math.atan(v) : Math.atan(v) * 180/Math.PI;
+      return NaN;
+    }
+    return (${expr});
+  `;
+  // Evaluate in its own scope so helper functions are available
+  const result = Function(funcBody)();
+  if(typeof result === 'number' && !isFinite(result)) throw new Error('Non-finite');
+  return result;
 }
 
 /* Final calculate (push to history) */
@@ -379,9 +407,8 @@ function pushHistory(expression, result){
 function renderHistory(){
   historyPanel.innerHTML = '';
   if(calcHistory.length === 0){ historyPanel.innerText = 'No history yet'; return; }
-  // show newest first
   const items = calcHistory.slice().reverse();
-  items.forEach((h, idx) => {
+  items.forEach((h) => {
     const el = document.createElement('div');
     el.style.padding = '6px';
     el.style.borderBottom = '1px dashed rgba(255,255,255,0.03)';
@@ -424,6 +451,7 @@ function toggleAdvanced(){ document.getElementById('advancedPanel').classList.to
    ========================= */
 function drawAxes(){
   const c = graphCanvas;
+  if(!c) return;
   c.width = c.clientWidth;
   c.height = 300;
   const ctx = c.getContext('2d');
@@ -445,6 +473,7 @@ function plotFunction(){
   if(!fn){ alert('Enter a function like sin(x) or x**2'); return; }
   drawAxes();
   const c = graphCanvas;
+  if(!c) return;
   const ctx = c.getContext('2d');
   ctx.lineWidth = 2; ctx.strokeStyle = '#10b981';
   ctx.beginPath();
@@ -457,7 +486,7 @@ function plotFunction(){
     let expr = fn.replace(/x/g, `(${x})`);
     try{
       expr = expr.replace(/\^/g,'**');
-      if(!SAFE_RE.test(expr)) { continue; }
+      if(!SAFE_RE.test(expr)) { first = true; continue; }
       const y = evaluateExpression(expr);
       if(!isFinite(y)) { first = true; continue; }
       const py = H/2 - y*yScale;
@@ -555,7 +584,6 @@ function matrix2Inverse(){
 function convertUnit(type){
   if(type==='length'){
     const input = parseFloat(document.getElementById('lengthInput').value) || 0;
-    document.getElementById('lengthInput').nextElementSibling; // nothing
     alert(`${input} m = ${input*100} cm`);
   } else if(type==='weight'){
     const input = parseFloat(document.getElementById('weightInput').value) || 0;
