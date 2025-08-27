@@ -8,7 +8,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
 body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #fff; }
-.calculator-container { max-width: 480px; margin: 2rem auto; background: #111827; border-radius: 1rem; box-shadow: 0 0 20px #4f46e5, 0 0 40px #6366f1; padding: 25px; }
+.calculator-container { max-width: 550px; margin: 2rem auto; background: #111827; border-radius: 1rem; box-shadow: 0 0 20px #4f46e5, 0 0 40px #6366f1; padding: 25px; }
 .display { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 0.75rem; font-size: 2rem; text-align: right; min-height: 60px; margin-bottom: 10px; word-wrap: break-word; box-shadow: inset 0 0 10px #6366f1; }
 .memory-display { font-size: 0.9rem; color: #facc15; text-align: left; margin-bottom: 5px; min-height: 20px; }
 .history-panel { background: rgba(255,255,255,0.05); max-height: 180px; overflow-y: auto; border-radius: 0.5rem; padding: 10px; font-size: 0.85rem; margin-bottom: 10px; color: #9ca3af; box-shadow: inset 0 0 10px #4f46e5; }
@@ -26,15 +26,15 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
 .rad-deg-toggle { background:#14b8a6; padding:6px 10px; border-radius:0.5rem; font-weight:bold; cursor:pointer; margin-bottom:10px; transition:all 0.2s ease; }
 .rad-deg-toggle:hover { background:#0d9488; }
 .advanced-panel { background: rgba(255,255,255,0.05); margin-top: 15px; border-radius: 0.75rem; padding: 15px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease; box-shadow: inset 0 0 10px #6366f1; }
-.advanced-panel.show { max-height: 800px; }
+.advanced-panel.show { max-height: 1400px; }
 .advanced-btn { background:#8b5cf6; padding:8px 12px; border-radius:0.5rem; margin-top:10px; cursor:pointer; font-weight:bold; transition:all 0.2s ease; }
 .advanced-btn:hover { background:#7c3aed; }
 .advanced-panel input { width: 50px; padding: 5px; margin: 2px; border-radius: 0.25rem; background: #1f2937; color: #fff; text-align:center; border:1px solid #4f46e5; box-shadow:0 0 6px #6366f1; transition: all 0.2s ease; }
 .advanced-panel input:focus { outline:none; border-color:#10b981; box-shadow:0 0 10px #10b981; }
 .neon-input { border: 2px solid #6366f1; box-shadow: 0 0 5px #6366f1,0 0 15px #4f46e5,0 0 30px #a5b4fc; transition: all 0.2s ease-in-out; color:#fff; background:#1f2937; text-align:center; font-weight:bold; }
 .neon-input:focus { outline:none; border-color:#f59e0b; box-shadow:0 0 5px #f59e0b,0 0 15px #fbbf24,0 0 30px #facc15; animation:flicker 1.5s infinite alternate; }
-@keyframes flicker { 0%,19%,21%,23%,25%,54%,56%,100%{opacity:1;} 20%,24%,55%{opacity:0.4;} }
 .neon-cell { display:inline-block; padding:2px 6px; margin:2px; border-radius:4px; font-weight:bold; animation:flickerRainbow 2s infinite alternate; }
+@keyframes flicker { 0%,19%,21%,23%,25%,54%,56%,100%{opacity:1;} 20%,24%,55%{opacity:0.4;} }
 @keyframes flickerRainbow {
   0%{color:#ff0000; text-shadow:0 0 5px #ff0000,0 0 10px #ff0000; opacity:1;}
   16%{color:#ff7f00; text-shadow:0 0 5px #ff7f00,0 0 10px #ff7f00;}
@@ -64,6 +64,7 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
   <div><button class="rad-deg-toggle" onclick="toggleRadDeg()">RAD</button></div>
 
   <div class="button-grid mt-2">
+    <!-- Standard calculator buttons -->
     <button class="clear" onclick="clearAll()">C</button>
     <button onclick="backspace()">⌫</button>
     <button onclick="appendOperator('(')">(</button>
@@ -116,22 +117,74 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
 
   <button class="advanced-btn" onclick="toggleAdvanced()">Advanced Functions ⬇</button>
   <div class="advanced-panel" id="advancedPanel">
-    <h3 class="text-lg font-bold mb-2">Matrix Operations (2x2)</h3>
-    <div class="grid grid-cols-2 gap-4 text-center mb-2">
-      <div><input type="number" id="a11" placeholder="A11" class="neon-input"><input type="number" id="a12" placeholder="A12" class="neon-input"><br>
-           <input type="number" id="a21" placeholder="A21" class="neon-input"><input type="number" id="a22" placeholder="A22" class="neon-input"></div>
-      <div><input type="number" id="b11" placeholder="B11" class="neon-input"><input type="number" id="b12" placeholder="B12" class="neon-input"><br>
-           <input type="number" id="b21" placeholder="B21" class="neon-input"><input type="number" id="b22" placeholder="B22" class="neon-input"></div>
+    <h3 class="text-xl font-bold mb-2">Matrix Operations</h3>
+    <div>
+      <p>2×2 Matrix:</p>
+      <input class="neon-input" id="m2a11" placeholder="a11">
+      <input class="neon-input" id="m2a12" placeholder="a12"><br>
+      <input class="neon-input" id="m2a21" placeholder="a21">
+      <input class="neon-input" id="m2a22" placeholder="a22"><br>
+      <button class="advanced-btn" onclick="matrix2Determinant()">Determinant</button>
+      <button class="advanced-btn" onclick="matrix2Inverse()">Inverse</button>
+      <div id="matrix2Result" class="mt-1"></div>
     </div>
-    <div class="grid grid-cols-2 gap-2 text-center mb-2">
-      <button class="advanced-btn" onclick="matrixAdd()">Add Matrices</button>
-      <button class="advanced-btn" onclick="matrixMultiply()">Multiply Matrices</button>
-      <button class="advanced-btn" onclick="matrixDeterminant('A')">Determinant A</button>
-      <button class="advanced-btn" onclick="matrixDeterminant('B')">Determinant B</button>
-      <button class="advanced-btn" onclick="matrixInverse('A')">Inverse A</button>
-      <button class="advanced-btn" onclick="matrixInverse('B')">Inverse B</button>
+
+    <div class="mt-3">
+    <p>3×3 Matrix:</p>
+    <div>
+      <input class="neon-input" id="m3a11">
+      <input class="neon-input" id="m3a12">
+      <input class="neon-input" id="m3a13"><br>
+      <input class="neon-input" id="m3a21">
+      <input class="neon-input" id="m3a22">
+      <input class="neon-input" id="m3a23"><br>
+      <input class="neon-input" id="m3a31">
+      <input class="neon-input" id="m3a32">
+      <input class="neon-input" id="m3a33"><br>
+      <button class="advanced-btn" onclick="matrix3Determinant()">Determinant</button>
+      <button class="advanced-btn" onclick="matrix3Inverse()">Inverse</button>
+      <div id="matrix3Result" class="mt-1"></div>
     </div>
-    <div id="matrixResult" class="mt-2 text-left font-mono text-indigo-400"></div>
+    </div>
+
+    <h3 class="text-xl font-bold mt-4 mb-2">3×3 Linear Solver (Ax=B)</h3>
+    <div>
+      <p>Matrix A:</p>
+      <input class="neon-input" id="la11">
+      <input class="neon-input" id="la12">
+      <input class="neon-input" id="la13"><br>
+      <input class="neon-input" id="la21">
+      <input class="neon-input" id="la22">
+      <input class="neon-input" id="la23"><br>
+      <input class="neon-input" id="la31">
+      <input class="neon-input" id="la32">
+      <input class="neon-input" id="la33"><br>
+      <p>Vector B:</p>
+      <input class="neon-input" id="lb1">
+      <input class="neon-input" id="lb2">
+      <input class="neon-input" id="lb3"><br>
+      <button class="advanced-btn" onclick="solveLinear3x3()">Solve</button>
+      <div id="linearResult" class="mt-1"></div>
+    </div>
+
+    <h3 class="text-xl font-bold mt-4 mb-2">Unit Conversions</h3>
+    <div>
+    <p>Length (m ↔ cm):</p>
+    <input class="neon-input" id="lengthInput"><button class="advanced-btn" onclick="convertUnit('length')">Convert</button><span id="lengthResult" class="ml-2"></span><br>
+    <p>Weight (kg ↔ g):</p>
+    <input class="neon-input" id="weightInput"><button class="advanced-btn" onclick="convertUnit('weight')">Convert</button><span id="weightResult" class="ml-2"></span><br>
+    <p>Temperature (C ↔ F):</p>
+    <input class="neon-input" id="tempInput"><button class="advanced-btn" onclick="convertUnit('temp')">Convert</button><span id="tempResult" class="ml-2"></span><br>
+    </div>
+
+    <h3 class="text-xl font-bold mt-4 mb-2">Constants</h3>
+    <div>
+    <button class="advanced-btn" onclick="appendConstant('Math.PI')">π</button>
+    <button class="advanced-btn" onclick="appendConstant('Math.E')">e</button>
+    <button class="advanced-btn" onclick="appendConstant('6.67430e-11')">G</button>
+    <button class="advanced-btn" onclick="appendConstant('9.80665')">g</button>
+    </div>
+
   </div>
 </div>
 
@@ -145,113 +198,65 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
 </footer>
 
 <script>
-let display = document.getElementById("calcDisplay");
-let historyPanel = document.getElementById("historyPanel");
-let memoryDisplay = document.getElementById("memoryDisplay");
-let advancedPanel = document.getElementById("advancedPanel");
-let currentInput = '';
-let memory = 0;
-let historyData = [];
-let radMode = true;
+// Calculator core
+let calcMemory=0, calcHistory=[], radMode=true;
 
-function toggleRadDeg(){ radMode=!radMode; event.target.textContent=radMode?'RAD':'DEG'; }
-function toggleAdvanced(){ advancedPanel.classList.toggle('show'); }
+function appendNumber(n){ let d=document.getElementById('calcDisplay'); if(d.innerText==='0') d.innerText=n; else d.innerText+=n; }
+function appendOperator(op){ document.getElementById('calcDisplay').innerText+=op; }
+function appendFunction(fn){ document.getElementById('calcDisplay').innerText+=fn+'(';}
+function appendConstant(c){ document.getElementById('calcDisplay').innerText+=c; }
+function clearAll(){ document.getElementById('calcDisplay').innerText='0'; }
+function backspace(){ let d=document.getElementById('calcDisplay'); d.innerText=d.innerText.slice(0,-1)||'0'; }
+function calculateResult(){ let d=document.getElementById('calcDisplay'); try{ d.innerText=eval(d.innerText); calcHistory.push(d.innerText); updateHistory(); }catch(e){d.innerText='Error';} }
+function factorial(){ let n=parseInt(document.getElementById('calcDisplay').innerText); let f=1; for(let i=1;i<=n;i++) f*=i; document.getElementById('calcDisplay').innerText=f; }
+function memoryAdd(){ calcMemory+=parseFloat(document.getElementById('calcDisplay').innerText); document.getElementById('memoryDisplay').innerText='M: '+calcMemory; }
+function memorySubtract(){ calcMemory-=parseFloat(document.getElementById('calcDisplay').innerText); document.getElementById('memoryDisplay').innerText='M: '+calcMemory; }
+function memoryRecall(){ document.getElementById('calcDisplay').innerText=calcMemory; }
+function updateHistory(){ document.getElementById('historyPanel').innerText=calcHistory.join('\n'); }
+function downloadCSV(){ let csv='Result\n'+calcHistory.join('\n'); let blob=new Blob([csv],{type:'text/csv'}); let a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='history.csv'; a.click(); }
+function toggleRadDeg(){ radMode=!radMode; event.target.innerText=radMode?'RAD':'DEG'; }
+function toggleAdvanced(){ document.getElementById('advancedPanel').classList.toggle('show'); }
 
-function appendNumber(num){ if(currentInput==='0') currentInput=''; currentInput+=num; display.textContent=currentInput; }
-function appendOperator(op){ currentInput+=op; display.textContent=currentInput; }
-function appendFunction(func){ currentInput+=func+'('; display.textContent=currentInput; }
-function appendConstant(constant){ currentInput+=constant; display.textContent=currentInput; }
-function clearAll(){ currentInput=''; display.textContent='0'; }
-function backspace(){ currentInput=currentInput.slice(0,-1); display.textContent=currentInput||'0'; }
-
-function calculateResult(){
-  try{
-    let expr = currentInput;
-    if(!radMode){
-      expr = expr.replace(/Math\.sin\(/g,'Math.sin(Math.PI/180*')
-                 .replace(/Math\.cos\(/g,'Math.cos(Math.PI/180*')
-                 .replace(/Math\.tan\(/g,'Math.tan(Math.PI/180*')
-                 .replace(/Math\.asin\(/g,'180/Math.PI*Math.asin(')
-                 .replace(/Math\.acos\(/g,'180/Math.PI*Math.acos(')
-                 .replace(/Math\.atan\(/g,'180/Math.PI*Math.atan(');
-    }
-    let result = eval(expr);
-    historyPanel.innerHTML += `<div>${currentInput} = ${result}</div>`;
-    historyData.push({expression:currentInput,result:result});
-    currentInput=result;
-    display.textContent=currentInput;
-  } catch{ display.textContent='Error'; }
+// Advanced Panel JS (2x2,3x3 matrices, linear solver, unit conversions)
+function matrix2Determinant(){
+  let a=parseFloat(document.getElementById('m2a11').value);
+  let b=parseFloat(document.getElementById('m2a12').value);
+  let c=parseFloat(document.getElementById('m2a21').value);
+  let d=parseFloat(document.getElementById('m2a22').value);
+  document.getElementById('matrix2Result').innerText = `Determinant = ${a*d - b*c}`;
 }
-
-function memoryAdd(){ memory += parseFloat(display.textContent)||0; updateMemory(); }
-function memorySubtract(){ memory -= parseFloat(display.textContent)||0; updateMemory(); }
-function memoryRecall(){ currentInput += memory; display.textContent=currentInput; }
-function updateMemory(){ memoryDisplay.textContent='M: '+memory; }
-
-function factorial(){
-  try{
-    let n=parseFloat(display.textContent);
-    if(n<0) throw 'Error';
-    let f=1; for(let i=2;i<=n;i++) f*=i;
-    currentInput=f; display.textContent=f;
-    historyPanel.innerHTML+=`<div>${n}! = ${f}</div>`;
-    historyData.push({expression:`${n}!`,result:f});
-  } catch{ display.textContent='Error'; }
+function matrix2Inverse(){
+  let a=parseFloat(document.getElementById('m2a11').value);
+  let b=parseFloat(document.getElementById('m2a12').value);
+  let c=parseFloat(document.getElementById('m2a21').value);
+  let d=parseFloat(document.getElementById('m2a22').value);
+  let det=a*d-b*c;
+  if(det===0){ document.getElementById('matrix2Result').innerText="No inverse"; return; }
+  document.getElementById('matrix2Result').innerText = `Inverse: [[${(d/det).toFixed(2)},${(-b/det).toFixed(2)}],[${(-c/det).toFixed(2)},${(a/det).toFixed(2)}]]`;
 }
-
-function downloadCSV(){
-  if(historyData.length===0){ alert('No history to download!'); return; }
-  let csv='Expression,Result\n';
-  historyData.forEach(item=>{ csv+=`${item.expression},${item.result}\n`; });
-  let blob = new Blob([csv],{type:'text/csv'});
-  let link=document.createElement('a');
-  link.href=URL.createObjectURL(blob);
-  link.download='calculator_history.csv';
-  link.click();
+function matrix3Determinant(){
+  let m=[];
+  for(let i=1;i<=3;i++){ m[i-1]=[]; for(let j=1;j<=3;j++){ m[i-1][j-1]=parseFloat(document.getElementById(`m3a${i}${j}`).value); } }
+  let det= m[0][0]*(m[1][1]*m[2][2]-m[1][2]*m[2][1])- m[0][1]*(m[1][0]*m[2][2]-m[1][2]*m[2][0])+ m[0][2]*(m[1][0]*m[2][1]-m[1][1]*m[2][0]);
+  document.getElementById('matrix3Result').innerText = `Determinant = ${det}`;
 }
-
-// Neon input glow effect
-document.querySelectorAll('.neon-input').forEach(input => {
-  input.addEventListener('input', () => {
-    let hue = Math.floor(Math.random() * 360);
-    input.style.boxShadow = `0 0 5px hsl(${hue},100%,50%),0 0 15px hsl(${hue},100%,60%),0 0 30px hsl(${hue},100%,70%)`;
-  });
-});
-
-// Matrix functions
-function neonWrap(value){ return `<span class="neon-cell">${value}</span>`; }
-function showMatrixResult(matrix, label=''){ 
-  let resultDiv = document.getElementById('matrixResult'); 
-  let html = matrix.map(row=>row.map(neonWrap).join(' ')).join('<br>'); 
-  resultDiv.innerHTML = label ? `<p class="font-bold">${label}</p>`+html : html;
+function matrix3Inverse(){
+  document.getElementById('matrix3Result').innerText = "3x3 Inverse requires external library or manual calculation";
 }
-
-function matrixAdd(){
-  let A=[[+document.getElementById('a11').value, +document.getElementById('a12').value],[+document.getElementById('a21').value, +document.getElementById('a22').value]];
-  let B=[[+document.getElementById('b11').value, +document.getElementById('b12').value],[+document.getElementById('b21').value, +document.getElementById('b22').value]];
-  let R=[[A[0][0]+B[0][0], A[0][1]+B[0][1]],[A[1][0]+B[1][0], A[1][1]+B[1][1]]];
-  showMatrixResult(R,'A + B =');
+function solveLinear3x3(){
+  let A=[],B=[];
+  for(let i=1;i<=3;i++){ A[i-1]=[]; for(let j=1;j<=3;j++){ A[i-1][j-1]=parseFloat(document.getElementById(`la${i}${j}`).value); } B[i-1]=parseFloat(document.getElementById(`lb${i}`).value); }
+  let detA= A[0][0]*(A[1][1]*A[2][2]-A[1][2]*A[2][1])- A[0][1]*(A[1][0]*A[2][2]-A[1][2]*A[2][0])+ A[0][2]*(A[1][0]*A[2][1]-A[1][1]*A[2][0]);
+  if(detA===0){ document.getElementById('linearResult').innerText="No unique solution"; return;}
+  function detReplace(col){ let m=[[...A[0]],[...A[1]],[...A[2]]]; for(let i=0;i<3;i++){ m[i][col]=B[i];} return m[0][0]*(m[1][1]*m[2][2]-m[1][2]*m[2][1])- m[0][1]*(m[1][0]*m[2][2]-m[1][2]*m[2][0])+ m[0][2]*(m[1][0]*m[2][1]-m[1][1]*m[2][0]);}
+  let x=detReplace(0)/detA; let y=detReplace(1)/detA; let z=detReplace(2)/detA;
+  document.getElementById('linearResult').innerText=`Solution: x=${x.toFixed(2)}, y=${y.toFixed(2)}, z=${z.toFixed(2)}`;
 }
-
-function matrixMultiply(){
-  let A=[[+document.getElementById('a11').value, +document.getElementById('a12').value],[+document.getElementById('a21').value, +document.getElementById('a22').value]];
-  let B=[[+document.getElementById('b11').value, +document.getElementById('b12').value],[+document.getElementById('b21').value, +document.getElementById('b22').value]];
-  let R=[[A[0][0]*B[0][0]+A[0][1]*B[1][0], A[0][0]*B[0][1]+A[0][1]*B[1][1]],[A[1][0]*B[0][0]+A[1][1]*B[1][0], A[1][0]*B[0][1]+A[1][1]*B[1][1]]];
-  showMatrixResult(R,'A × B =');
-}
-
-function matrixDeterminant(matrix){
-  let M=(matrix==='A')?[[+document.getElementById('a11').value,+document.getElementById('a12').value],[+document.getElementById('a21').value,+document.getElementById('a22').value]]:[[+document.getElementById('b11').value,+document.getElementById('b12').value],[+document.getElementById('b21').value,+document.getElementById('b22').value]]];
-  let det=M[0][0]*M[1][1]-M[0][1]*M[1][0];
-  showMatrixResult([[det]],`Determinant ${matrix} =`);
-}
-
-function matrixInverse(matrix){
-  let M=(matrix==='A')?[[+document.getElementById('a11').value,+document.getElementById('a12').value],[+document.getElementById('a21').value,+document.getElementById('a22').value]]:[[+document.getElementById('b11').value,+document.getElementById('b12').value],[+document.getElementById('b21').value,+document.getElementById('b22').value]]];
-  let det=M[0][0]*M[1][1]-M[0][1]*M[1][0];
-  if(det===0){ showMatrixResult([['Matrix '+matrix+' is singular (Det=0)']],''); return; }
-  let inv=[[M[1][1]/det, -M[0][1]/det],[-M[1][0]/det, M[0][0]/det]];
-  showMatrixResult(inv,'Inverse '+matrix+' =');
+function convertUnit(type){
+  let input;
+  if(type==='length'){ input=document.getElementById('lengthInput').value; document.getElementById('lengthResult').innerText=`${input} m = ${input*100} cm`;}
+  if(type==='weight'){ input=document.getElementById('weightInput').value; document.getElementById('weightResult').innerText=`${input} kg = ${input*1000} g`;}
+  if(type==='temp'){ input=document.getElementById('tempInput').value; document.getElementById('tempResult').innerText=`${input} °C = ${(input*9/5+32).toFixed(2)} °F`;}
 }
 </script>
 </body>
