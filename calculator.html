@@ -3,153 +3,67 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>All Tools Hub - Advanced Calculator</title>
-<meta name="description" content="Advanced Scientific Calculator - free online tool at All Tools Hub.">
+<title>All Tools Hub - Futuristic Calculator</title>
+<meta name="description" content="Futuristic Scientific Calculator with Neon Theme, History, Memory, CSV Download, and Advanced Functions Panel.">
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-/* Custom styles for futuristic calculator */
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.calculator-container {
-  max-width: 400px;
-  margin: 0 auto;
-  background: linear-gradient(145deg, #1f2937, #111827);
-  border-radius: 1rem;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  padding: 20px;
-  color: #fff;
-}
-
-.display {
-  background: rgba(255,255,255,0.05);
-  padding: 15px;
-  border-radius: 0.5rem;
-  font-size: 1.8rem;
-  text-align: right;
-  min-height: 50px;
-  margin-bottom: 15px;
-  word-wrap: break-word;
-}
-
-.memory-display {
-  font-size: 0.9rem;
-  color: #facc15;
-  text-align: left;
-  margin-bottom: 5px;
-  min-height: 20px;
-}
-
-.history-panel {
-  background: rgba(255,255,255,0.05);
-  max-height: 120px;
-  overflow-y: auto;
-  border-radius: 0.5rem;
-  padding: 10px;
-  font-size: 0.9rem;
-  margin-bottom: 15px;
-  color: #9ca3af;
-}
-
-.button-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
-}
-
-.button-grid button {
-  padding: 15px;
-  border: none;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  background: rgba(255,255,255,0.05);
-  color: #fff;
-  box-shadow: 0 4px #00000020;
-}
-
-.button-grid button:hover {
-  background: #2563eb;
-  box-shadow: 0 4px #1d4ed8;
-  transform: translateY(-2px);
-}
-
-.button-grid .operator {
-  background: #f59e0b;
-}
-
-.button-grid .operator:hover {
-  background: #d97706;
-}
-
-.button-grid .equal {
-  background: #10b981;
-  grid-column: span 2;
-}
-
-.button-grid .equal:hover {
-  background: #059669;
-}
-
-.button-grid .clear {
-  background: #ef4444;
-}
-
-.button-grid .clear:hover {
-  background: #b91c1c;
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #fff; }
+.calculator-container { max-width: 480px; margin: 2rem auto; background: #111827; border-radius: 1rem; box-shadow: 0 0 20px #4f46e5, 0 0 40px #6366f1; padding: 25px; }
+.display { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 0.75rem; font-size: 2rem; text-align: right; min-height: 60px; margin-bottom: 10px; word-wrap: break-word; box-shadow: inset 0 0 10px #6366f1; }
+.memory-display { font-size: 0.9rem; color: #facc15; text-align: left; margin-bottom: 5px; min-height: 20px; }
+.history-panel { background: rgba(255,255,255,0.05); max-height: 180px; overflow-y: auto; border-radius: 0.5rem; padding: 10px; font-size: 0.85rem; margin-bottom: 10px; color: #9ca3af; box-shadow: inset 0 0 10px #4f46e5; }
+.button-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.button-grid button { padding: 18px; border: none; border-radius: 0.75rem; font-size: 1rem; font-weight: bold; cursor: pointer; transition: all 0.3s ease; background: rgba(255,255,255,0.05); color: #fff; box-shadow: 0 4px #00000020, 0 0 8px #6366f1; }
+.button-grid button:hover { background: #4f46e5; box-shadow: 0 6px #1e3a8a, 0 0 12px #a5b4fc; transform: translateY(-3px); }
+.button-grid .operator { background: #f59e0b; box-shadow: 0 4px #b45309, 0 0 8px #facc15; }
+.button-grid .operator:hover { background: #d97706; box-shadow: 0 6px #b45309, 0 0 12px #facc15; }
+.button-grid .equal { background: #10b981; grid-column: span 2; box-shadow: 0 4px #047857, 0 0 8px #34d399; }
+.button-grid .equal:hover { background: #059669; box-shadow: 0 6px #047857, 0 0 12px #34d399; }
+.button-grid .clear { background: #ef4444; box-shadow:0 4px #b91c1c,0 0 8px #f87171; }
+.button-grid .clear:hover { background: #b91c1c; box-shadow:0 6px #7f1d1d,0 0 12px #fca5a5; }
+.download-btn { background:#6366f1; padding: 10px 18px; border-radius: 0.75rem; font-weight:bold; margin-top:5px; cursor:pointer; transition:all 0.2s ease; box-shadow:0 4px #4f46e5; }
+.download-btn:hover { background:#4f46e5; box-shadow:0 6px #312e81; }
+.rad-deg-toggle { background:#14b8a6; padding:6px 10px; border-radius:0.5rem; font-weight:bold; cursor:pointer; margin-bottom:10px; transition:all 0.2s ease; }
+.rad-deg-toggle:hover { background:#0d9488; }
+.advanced-panel { background: rgba(255,255,255,0.05); margin-top: 15px; border-radius: 0.75rem; padding: 15px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease; box-shadow: inset 0 0 10px #6366f1; }
+.advanced-panel.show { max-height: 800px; }
+.advanced-btn { background:#8b5cf6; padding:8px 12px; border-radius:0.5rem; margin-top:10px; cursor:pointer; font-weight:bold; transition:all 0.2s ease; }
+.advanced-btn:hover { background:#7c3aed; }
+.advanced-panel input { width: 50px; padding: 5px; margin: 2px; border-radius: 0.25rem; background: #1f2937; color: #fff; text-align:center; border:1px solid #4f46e5; box-shadow:0 0 6px #6366f1; transition: all 0.2s ease; }
+.advanced-panel input:focus { outline:none; border-color:#10b981; box-shadow:0 0 10px #10b981; }
+.neon-input { border: 2px solid #6366f1; box-shadow: 0 0 5px #6366f1,0 0 15px #4f46e5,0 0 30px #a5b4fc; transition: all 0.2s ease-in-out; color:#fff; background:#1f2937; text-align:center; font-weight:bold; }
+.neon-input:focus { outline:none; border-color:#f59e0b; box-shadow:0 0 5px #f59e0b,0 0 15px #fbbf24,0 0 30px #facc15; animation:flicker 1.5s infinite alternate; }
+@keyframes flicker { 0%,19%,21%,23%,25%,54%,56%,100%{opacity:1;} 20%,24%,55%{opacity:0.4;} }
+.neon-cell { display:inline-block; padding:2px 6px; margin:2px; border-radius:4px; font-weight:bold; animation:flickerRainbow 2s infinite alternate; }
+@keyframes flickerRainbow {
+  0%{color:#ff0000; text-shadow:0 0 5px #ff0000,0 0 10px #ff0000; opacity:1;}
+  16%{color:#ff7f00; text-shadow:0 0 5px #ff7f00,0 0 10px #ff7f00;}
+  32%{color:#ffff00; text-shadow:0 0 5px #ffff00,0 0 10px #ffff00;}
+  48%{color:#00ff00; text-shadow:0 0 5px #00ff00,0 0 10px #00ff00;}
+  64%{color:#0000ff; text-shadow:0 0 5px #0000ff,0 0 10px #0000ff;}
+  80%{color:#4b0082; text-shadow:0 0 5px #4b0082,0 0 10px #4b0082;}
+  100%{color:#8f00ff; text-shadow:0 0 5px #8f00ff,0 0 10px #8f00ff;}
 }
 </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans">
-
-<!-- Header -->
-<header class="bg-white dark:bg-gray-800 shadow fixed w-full z-50">
+<body>
+<header class="bg-gray-900 shadow fixed w-full z-50">
   <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
-    <h1 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 cursor-pointer" onclick="window.location.href='index.html'">All Tools Hub</h1>
-    <nav class="hidden md:flex gap-6 text-sm font-medium">
-      <a href="index.html#about" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">About</a>
-      <a href="index.html#tools" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Tools</a>
-      <a href="contact.html" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Contact</a>
-      <a href="privacy.html" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Privacy</a>
-      <a href="terms.html" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Terms</a>
-    </nav>
-    <div class="flex items-center gap-3">
-      <button id="darkToggle" class="text-sm px-3 py-1 border rounded hover:bg-gray-200 dark:hover:bg-gray-700">🌙</button>
-      <button id="mobileMenuBtn" class="md:hidden text-2xl">☰</button>
-    </div>
-  </div>
-
-  <!-- Mobile Menu -->
-  <div id="mobileMenu" class="hidden md:hidden bg-white dark:bg-gray-800 border-t text-center py-2 space-y-2">
-    <a href="index.html#about" class="block hover:text-indigo-600 dark:hover:text-indigo-400">About</a>
-    <a href="index.html#tools" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Tools</a>
-    <a href="contact.html" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Contact</a>
-    <a href="privacy.html" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Privacy</a>
-    <a href="terms.html" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Terms</a>
+    <h1 class="text-2xl font-bold text-indigo-600 cursor-pointer" onclick="window.location.href='index.html'">All Tools Hub</h1>
   </div>
 </header>
 
-<!-- Main Content -->
-<main class="pt-32 pb-16 px-6 text-center">
-
-<h2 class="text-4xl font-bold text-indigo-700 mb-6">Advanced Scientific Calculator</h2>
+<main class="pt-32 px-6 text-center">
+<h2 class="text-4xl font-bold text-indigo-500 mb-6">Neon Futuristic Scientific Calculator</h2>
 
 <div class="calculator-container">
-
-  <!-- Memory Display -->
   <div class="memory-display" id="memoryDisplay">M: 0</div>
-
-  <!-- Calculator Display -->
   <div class="display" id="calcDisplay">0</div>
-
-  <!-- History Panel -->
   <div class="history-panel" id="historyPanel"></div>
+  <button class="download-btn" onclick="downloadCSV()">Download History CSV</button>
+  <div><button class="rad-deg-toggle" onclick="toggleRadDeg()">RAD</button></div>
 
-  <!-- Buttons -->
-  <div class="button-grid">
+  <div class="button-grid mt-2">
     <button class="clear" onclick="clearAll()">C</button>
     <button onclick="backspace()">⌫</button>
     <button onclick="appendOperator('(')">(</button>
@@ -181,118 +95,164 @@ body {
     <button onclick="appendConstant('Math.PI')">π</button>
 
     <button onclick="appendFunction('Math.sin')">sin</button>
+    <button onclick="appendFunction('Math.asin')">asin</button>
     <button onclick="appendFunction('Math.cos')">cos</button>
+    <button onclick="appendFunction('Math.acos')">acos</button>
     <button onclick="appendFunction('Math.tan')">tan</button>
+    <button onclick="appendFunction('Math.atan')">atan</button>
+    <button onclick="appendFunction('Math.sinh')">sinh</button>
+    <button onclick="appendFunction('Math.cosh')">cosh</button>
+    <button onclick="appendFunction('Math.tanh')">tanh</button>
     <button onclick="appendFunction('Math.log10')">log</button>
     <button onclick="appendFunction('Math.log')">ln</button>
-
     <button onclick="appendFunction('Math.sqrt')">√</button>
     <button onclick="appendOperator('**2')">x²</button>
     <button onclick="appendOperator('**3')">x³</button>
     <button onclick="appendOperator('**')">x^y</button>
     <button onclick="appendConstant('Math.E')">e</button>
-
     <button onclick="factorial()">x!</button>
-    <button onclick="appendOperator('**0.5')">√x</button>
-    <button onclick="appendOperator('**(1/3)')">³√x</button>
-    <button onclick="appendOperator('**(1/y)')">y√x</button>
     <button onclick="appendOperator('**-1')">1/x</button>
   </div>
 
+  <button class="advanced-btn" onclick="toggleAdvanced()">Advanced Functions ⬇</button>
+  <div class="advanced-panel" id="advancedPanel">
+    <h3 class="text-lg font-bold mb-2">Matrix Operations (2x2)</h3>
+    <div class="grid grid-cols-2 gap-4 text-center mb-2">
+      <div><input type="number" id="a11" placeholder="A11" class="neon-input"><input type="number" id="a12" placeholder="A12" class="neon-input"><br>
+           <input type="number" id="a21" placeholder="A21" class="neon-input"><input type="number" id="a22" placeholder="A22" class="neon-input"></div>
+      <div><input type="number" id="b11" placeholder="B11" class="neon-input"><input type="number" id="b12" placeholder="B12" class="neon-input"><br>
+           <input type="number" id="b21" placeholder="B21" class="neon-input"><input type="number" id="b22" placeholder="B22" class="neon-input"></div>
+    </div>
+    <div class="grid grid-cols-2 gap-2 text-center mb-2">
+      <button class="advanced-btn" onclick="matrixAdd()">Add Matrices</button>
+      <button class="advanced-btn" onclick="matrixMultiply()">Multiply Matrices</button>
+      <button class="advanced-btn" onclick="matrixDeterminant('A')">Determinant A</button>
+      <button class="advanced-btn" onclick="matrixDeterminant('B')">Determinant B</button>
+      <button class="advanced-btn" onclick="matrixInverse('A')">Inverse A</button>
+      <button class="advanced-btn" onclick="matrixInverse('B')">Inverse B</button>
+    </div>
+    <div id="matrixResult" class="mt-2 text-left font-mono text-indigo-400"></div>
+  </div>
 </div>
 
 <div class="mt-6">
 <button onclick="window.location.href='index.html'" class="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 transition">Back to Home</button>
 </div>
-
 </main>
 
-<!-- Footer -->
 <footer class="bg-gray-900 text-gray-300 py-6 text-center">
-© 2025 All Tools Hub. All rights reserved.
+© 2025 All Tools Hub. All rights reserved. | Contact: saadkhan0425@gmail.com
 </footer>
 
 <script>
-// Dark mode toggle
-document.getElementById("darkToggle").addEventListener("click", () => {
-  document.body.classList.toggle("dark");
-});
-
-// Mobile menu toggle
-document.getElementById("mobileMenuBtn").addEventListener("click", () => {
-  document.getElementById("mobileMenu").classList.toggle("hidden");
-});
-
-// Calculator logic
 let display = document.getElementById("calcDisplay");
 let historyPanel = document.getElementById("historyPanel");
 let memoryDisplay = document.getElementById("memoryDisplay");
+let advancedPanel = document.getElementById("advancedPanel");
 let currentInput = '';
 let memory = 0;
+let historyData = [];
+let radMode = true;
 
-function appendNumber(num){
-  if(currentInput==='0') currentInput='';
-  currentInput += num;
-  display.textContent = currentInput;
-}
+function toggleRadDeg(){ radMode=!radMode; event.target.textContent=radMode?'RAD':'DEG'; }
+function toggleAdvanced(){ advancedPanel.classList.toggle('show'); }
 
-function appendOperator(op){
-  currentInput += op;
-  display.textContent = currentInput;
-}
-
-function appendFunction(func){
-  currentInput += func + '(';
-  display.textContent = currentInput;
-}
-
-function appendConstant(constant){
-  currentInput += constant;
-  display.textContent = currentInput;
-}
-
-function clearAll(){
-  currentInput = '';
-  display.textContent = '0';
-}
-
-function backspace(){
-  currentInput = currentInput.slice(0,-1);
-  display.textContent = currentInput || '0';
-}
+function appendNumber(num){ if(currentInput==='0') currentInput=''; currentInput+=num; display.textContent=currentInput; }
+function appendOperator(op){ currentInput+=op; display.textContent=currentInput; }
+function appendFunction(func){ currentInput+=func+'('; display.textContent=currentInput; }
+function appendConstant(constant){ currentInput+=constant; display.textContent=currentInput; }
+function clearAll(){ currentInput=''; display.textContent='0'; }
+function backspace(){ currentInput=currentInput.slice(0,-1); display.textContent=currentInput||'0'; }
 
 function calculateResult(){
   try{
-    let result = eval(currentInput);
+    let expr = currentInput;
+    if(!radMode){
+      expr = expr.replace(/Math\.sin\(/g,'Math.sin(Math.PI/180*')
+                 .replace(/Math\.cos\(/g,'Math.cos(Math.PI/180*')
+                 .replace(/Math\.tan\(/g,'Math.tan(Math.PI/180*')
+                 .replace(/Math\.asin\(/g,'180/Math.PI*Math.asin(')
+                 .replace(/Math\.acos\(/g,'180/Math.PI*Math.acos(')
+                 .replace(/Math\.atan\(/g,'180/Math.PI*Math.atan(');
+    }
+    let result = eval(expr);
     historyPanel.innerHTML += `<div>${currentInput} = ${result}</div>`;
-    currentInput = result;
-    display.textContent = currentInput;
-  } catch {
-    display.textContent = 'Error';
-  }
+    historyData.push({expression:currentInput,result:result});
+    currentInput=result;
+    display.textContent=currentInput;
+  } catch{ display.textContent='Error'; }
 }
 
-// Memory functions
 function memoryAdd(){ memory += parseFloat(display.textContent)||0; updateMemory(); }
 function memorySubtract(){ memory -= parseFloat(display.textContent)||0; updateMemory(); }
-function memoryRecall(){ currentInput += memory; display.textContent = currentInput; }
-function updateMemory(){ memoryDisplay.textContent = 'M: '+memory; }
+function memoryRecall(){ currentInput += memory; display.textContent=currentInput; }
+function updateMemory(){ memoryDisplay.textContent='M: '+memory; }
 
-// Factorial
 function factorial(){
   try{
-    let n = parseFloat(display.textContent);
+    let n=parseFloat(display.textContent);
     if(n<0) throw 'Error';
-    let f = 1;
-    for(let i=2;i<=n;i++) f*=i;
-    currentInput = f;
-    display.textContent = f;
-    historyPanel.innerHTML += `<div>${n}! = ${f}</div>`;
-  } catch{
-    display.textContent='Error';
-  }
+    let f=1; for(let i=2;i<=n;i++) f*=i;
+    currentInput=f; display.textContent=f;
+    historyPanel.innerHTML+=`<div>${n}! = ${f}</div>`;
+    historyData.push({expression:`${n}!`,result:f});
+  } catch{ display.textContent='Error'; }
+}
+
+function downloadCSV(){
+  if(historyData.length===0){ alert('No history to download!'); return; }
+  let csv='Expression,Result\n';
+  historyData.forEach(item=>{ csv+=`${item.expression},${item.result}\n`; });
+  let blob = new Blob([csv],{type:'text/csv'});
+  let link=document.createElement('a');
+  link.href=URL.createObjectURL(blob);
+  link.download='calculator_history.csv';
+  link.click();
+}
+
+// Neon input glow effect
+document.querySelectorAll('.neon-input').forEach(input => {
+  input.addEventListener('input', () => {
+    let hue = Math.floor(Math.random() * 360);
+    input.style.boxShadow = `0 0 5px hsl(${hue},100%,50%),0 0 15px hsl(${hue},100%,60%),0 0 30px hsl(${hue},100%,70%)`;
+  });
+});
+
+// Matrix functions
+function neonWrap(value){ return `<span class="neon-cell">${value}</span>`; }
+function showMatrixResult(matrix, label=''){ 
+  let resultDiv = document.getElementById('matrixResult'); 
+  let html = matrix.map(row=>row.map(neonWrap).join(' ')).join('<br>'); 
+  resultDiv.innerHTML = label ? `<p class="font-bold">${label}</p>`+html : html;
+}
+
+function matrixAdd(){
+  let A=[[+document.getElementById('a11').value, +document.getElementById('a12').value],[+document.getElementById('a21').value, +document.getElementById('a22').value]];
+  let B=[[+document.getElementById('b11').value, +document.getElementById('b12').value],[+document.getElementById('b21').value, +document.getElementById('b22').value]];
+  let R=[[A[0][0]+B[0][0], A[0][1]+B[0][1]],[A[1][0]+B[1][0], A[1][1]+B[1][1]]];
+  showMatrixResult(R,'A + B =');
+}
+
+function matrixMultiply(){
+  let A=[[+document.getElementById('a11').value, +document.getElementById('a12').value],[+document.getElementById('a21').value, +document.getElementById('a22').value]];
+  let B=[[+document.getElementById('b11').value, +document.getElementById('b12').value],[+document.getElementById('b21').value, +document.getElementById('b22').value]];
+  let R=[[A[0][0]*B[0][0]+A[0][1]*B[1][0], A[0][0]*B[0][1]+A[0][1]*B[1][1]],[A[1][0]*B[0][0]+A[1][1]*B[1][0], A[1][0]*B[0][1]+A[1][1]*B[1][1]]];
+  showMatrixResult(R,'A × B =');
+}
+
+function matrixDeterminant(matrix){
+  let M=(matrix==='A')?[[+document.getElementById('a11').value,+document.getElementById('a12').value],[+document.getElementById('a21').value,+document.getElementById('a22').value]]:[[+document.getElementById('b11').value,+document.getElementById('b12').value],[+document.getElementById('b21').value,+document.getElementById('b22').value]]];
+  let det=M[0][0]*M[1][1]-M[0][1]*M[1][0];
+  showMatrixResult([[det]],`Determinant ${matrix} =`);
+}
+
+function matrixInverse(matrix){
+  let M=(matrix==='A')?[[+document.getElementById('a11').value,+document.getElementById('a12').value],[+document.getElementById('a21').value,+document.getElementById('a22').value]]:[[+document.getElementById('b11').value,+document.getElementById('b12').value],[+document.getElementById('b21').value,+document.getElementById('b22').value]]];
+  let det=M[0][0]*M[1][1]-M[0][1]*M[1][0];
+  if(det===0){ showMatrixResult([['Matrix '+matrix+' is singular (Det=0)']],''); return; }
+  let inv=[[M[1][1]/det, -M[0][1]/det],[-M[1][0]/det, M[0][0]/det]];
+  showMatrixResult(inv,'Inverse '+matrix+' =');
 }
 </script>
-
 </body>
 </html>
