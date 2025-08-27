@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trip Planner - All Tools Hub</title>
+  <meta name="description" content="Plan your trips with destinations, dates, and notes easily.">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans">
+
+<!-- Header -->
+<header class="bg-white dark:bg-gray-800 shadow fixed w-full z-50">
+  <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+    <h1 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 cursor-pointer" onclick="window.location.href='index.html'">All Tools Hub</h1>
+    <nav class="hidden md:flex gap-6 text-sm font-medium">
+      <a href="index.html#about" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">About</a>
+      <a href="index.html#tools" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Tools</a>
+      <a href="contact.html" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Contact</a>
+      <a href="privacy.html" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Privacy</a>
+      <a href="terms.html" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Terms</a>
+    </nav>
+    <div class="flex items-center gap-3">
+      <button id="darkToggle" class="text-sm px-3 py-1 border rounded hover:bg-gray-200 dark:hover:bg-gray-700">🌙</button>
+      <button id="mobileMenuBtn" class="md:hidden text-2xl">☰</button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobileMenu" class="hidden md:hidden bg-white dark:bg-gray-800 border-t text-center py-2 space-y-2">
+    <a href="index.html#about" class="block hover:text-indigo-600 dark:hover:text-indigo-400">About</a>
+    <a href="index.html#tools" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Tools</a>
+    <a href="contact.html" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Contact</a>
+    <a href="privacy.html" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Privacy</a>
+    <a href="terms.html" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Terms</a>
+  </div>
+</header>
+
+<!-- Trip Planner Section -->
+<section class="pt-32 pb-16 px-6 max-w-xl mx-auto text-center">
+  <h2 class="text-3xl font-bold text-indigo-700 dark:text-indigo-400 mb-6">Trip Planner</h2>
+  <p class="text-gray-600 dark:text-gray-300 mb-6">Plan your trips and organize destinations, dates, and notes.</p>
+
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 space-y-4">
+    <input type="text" id="destination" placeholder="Destination" class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600" />
+    <input type="date" id="tripDate" class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600" />
+    <textarea id="notes" rows="4" placeholder="Notes" class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600"></textarea>
+    <button id="addTripBtn" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition w-full">Add Trip</button>
+
+    <h3 class="text-xl font-semibold mt-4 text-indigo-700 dark:text-indigo-400">Planned Trips</h3>
+    <ul id="tripList" class="space-y-2 text-left"></ul>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-gray-300 py-6 text-center">
+  © 2025 All Tools Hub. All rights reserved.
+</footer>
+
+<script>
+  // Dark mode toggle
+  document.getElementById("darkToggle").addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+  });
+
+  // Mobile menu toggle
+  document.getElementById("mobileMenuBtn").addEventListener("click", () => {
+    document.getElementById("mobileMenu").classList.toggle("hidden");
+  });
+
+  // Trip Planner logic
+  const addTripBtn = document.getElementById("addTripBtn");
+  const tripList = document.getElementById("tripList");
+
+  addTripBtn.addEventListener("click", () => {
+    const destination = document.getElementById("destination").value.trim();
+    const date = document.getElementById("tripDate").value;
+    const notes = document.getElementById("notes").value.trim();
+
+    if (!destination || !date) {
+      alert("Please enter a destination and date.");
+      return;
+    }
+
+    const li = document.createElement("li");
+    li.className = "bg-gray-100 dark:bg-gray-700 rounded p-3 shadow flex justify-between items-center";
+    li.innerHTML = `
+      <div>
+        <strong>${destination}</strong> - ${new Date(date).toLocaleDateString()}<br>
+        ${notes ? `<em>${notes}</em>` : ''}
+      </div>
+      <button class="text-red-600 dark:text-red-400 hover:underline" onclick="this.parentElement.remove()">Delete</button>
+    `;
+
+    tripList.appendChild(li);
+
+    // Clear inputs
+    document.getElementById("destination").value = '';
+    document.getElementById("tripDate").value = '';
+    document.getElementById("notes").value = '';
+  });
+</script>
+
+</body>
+</html>
