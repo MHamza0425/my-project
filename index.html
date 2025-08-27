@@ -7,6 +7,8 @@
   <meta name="description" content="Free online tools for productivity, conversion, and more." />
   <meta name="keywords" content="tools, calculators, converters, free online tools" />
   <meta name="author" content="All Tools Hub" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="manifest.json" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 font-sans">
@@ -23,6 +25,12 @@
       <a href="#terms" class="hover:text-blue-600 dark:hover:text-blue-400">Terms</a>
     </nav>
     <div class="flex items-center space-x-2">
+      <span id="liveClock" class="text-sm font-mono hidden sm:block"></span>
+      <select id="languageSwitcher" class="px-2 py-1 border rounded dark:bg-gray-700 dark:border-gray-600 text-sm">
+        <option value="en">EN</option>
+        <option value="es">ES</option>
+        <option value="hi">HI</option>
+      </select>
       <button id="darkToggle" class="text-sm px-3 py-1 border rounded hover:bg-gray-200 dark:hover:bg-gray-700">🌙</button>
       <button id="mobileMenuBtn" class="md:hidden text-2xl px-2 py-1">☰</button>
     </div>
@@ -48,32 +56,33 @@
 <!-- About Section -->
 <section id="about" class="py-16 bg-white dark:bg-gray-800 px-4">
   <div class="max-w-4xl mx-auto text-center">
-    <h2 class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-4">About Us</h2>
-    <p class="text-gray-600 dark:text-gray-300">All Tools Hub provides free, fast, and reliable online tools to help you work smarter. From calculators to converters, we’ve got you covered.</p>
+    <h2 class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-4 lang" data-en="About Us" data-es="Sobre nosotros" data-hi="हमारे बारे में">About Us</h2>
+    <p class="text-gray-600 dark:text-gray-300 lang" data-en="All Tools Hub provides free, fast, and reliable online tools to help you work smarter."
+       data-es="All Tools Hub ofrece herramientas gratuitas, rápidas y confiables para ayudarte a trabajar mejor."
+       data-hi="ऑल टूल्स हब मुफ्त, तेज़ और विश्वसनीय टूल्स प्रदान करता है जो आपके काम को आसान बनाते हैं।">
+       All Tools Hub provides free, fast, and reliable online tools to help you work smarter.
+    </p>
   </div>
 </section>
 
 <!-- Tools Section -->
 <section id="tools" class="py-16 bg-gray-100 dark:bg-gray-900 px-4">
-  <div class="max-w-6xl mx-auto text-center mb-10">
+  <div class="max-w-6xl mx-auto text-center mb-6">
     <h2 class="text-3xl font-bold text-blue-600 dark:text-blue-400">Popular Tools</h2>
+    <input type="text" id="toolSearch" placeholder="Search tools..." class="mt-4 w-full sm:w-1/2 px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600" />
+    <div class="mt-4 flex flex-wrap justify-center gap-3">
+      <button class="filter-btn bg-blue-600 text-white px-3 py-1 rounded" data-category="all">All</button>
+      <button class="filter-btn bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded" data-category="math">Math</button>
+      <button class="filter-btn bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded" data-category="productivity">Productivity</button>
+      <button class="filter-btn bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded" data-category="converter">Converter</button>
+    </div>
   </div>
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-    <div class="bg-white dark:bg-gray-700 rounded-lg shadow p-6 hover:shadow-xl transition">
-      <div class="text-4xl mb-2">🧮</div>
-      <h3 class="text-xl font-semibold mb-1">Calculator</h3>
-      <p class="text-sm text-gray-500 dark:text-gray-300">Perform quick math operations.</p>
-    </div>
-    <div class="bg-white dark:bg-gray-700 rounded-lg shadow p-6 hover:shadow-xl transition">
-      <div class="text-4xl mb-2">📅</div>
-      <h3 class="text-xl font-semibold mb-1">Calendar</h3>
-      <p class="text-sm text-gray-500 dark:text-gray-300">Check dates and plan events.</p>
-    </div>
-    <div class="bg-white dark:bg-gray-700 rounded-lg shadow p-6 hover:shadow-xl transition">
-      <div class="text-4xl mb-2">🔁</div>
-      <h3 class="text-xl font-semibold mb-1">Converter</h3>
-      <p class="text-sm text-gray-500 dark:text-gray-300">Convert units and currencies.</p>
-    </div>
+
+  <div id="toolGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
+
+  <div id="recentTools" class="max-w-6xl mx-auto mt-10">
+    <h3 class="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-4">Recently Used Tools</h3>
+    <div id="recentGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
   </div>
 </section>
 
@@ -95,14 +104,14 @@
 <section id="privacy" class="py-16 bg-gray-100 dark:bg-gray-900 px-4">
   <div class="max-w-4xl mx-auto text-center">
     <h2 class="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-4">Privacy Policy</h2>
-    <p class="text-sm text-gray-600 dark:text-gray-300">We respect your privacy. Your data is never sold or shared. Read our full policy here.</p>
+    <p class="text-sm text-gray-600 dark:text-gray-300">We respect your privacy. Your data is never sold or shared.</p>
   </div>
 </section>
 
 <section id="terms" class="py-16 bg-white dark:bg-gray-800 px-4">
   <div class="max-w-4xl mx-auto text-center">
     <h2 class="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-4">Terms & Conditions</h2>
-    <p class="text-sm text-gray-600 dark:text-gray-300">By using our tools, you agree to our terms of service. Please review them carefully.</p>
+    <p class="text-sm text-gray-600 dark:text-gray-300">By using our tools, you agree to our terms of service.</p>
   </div>
 </section>
 
@@ -112,12 +121,11 @@
 </footer>
 
 <!-- Scroll-to-Top Button -->
-<button onclick="window.scrollTo({top:0,behavior:'smooth'})"
+<button id="scrollTopBtn"
   class="fixed bottom-6 right-6 bg-blue-600 text-white px-3 py-2 rounded-full shadow-lg hover:bg-blue-700 z-50">
-  ↑ Top
+  ↑
 </button>
 
-<!-- Scripts -->
-<script>
-  // Mobile menu toggle
-  document.get
+<script src="app.js"></script>
+</body>
+</html>
