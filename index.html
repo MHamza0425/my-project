@@ -1,68 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>All Tools Hub - Free Online Tools</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-  /* 3D Cube Styles */
-  .cube-container {
-    perspective: 1000px;
-    width: 250px;
-    height: 250px;
-    margin: 0 auto;
-  }
-  .cube {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    transform-style: preserve-3d;
-    animation: rotateCube 15s infinite linear;
-  }
-  .cube-face {
-    position: absolute;
-    width: 240px;
-    height: 240px;
-    border: 2px solid #e5e7eb;
-    background: #f9fafb;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: bold;
-    font-size: 18px;
-    color: #1e3a8a;
-    cursor: pointer;
-    border-radius: 12px;
-  }
-  .cube-face:nth-child(1) { transform: rotateY(0deg) translateZ(120px); }
-  .cube-face:nth-child(2) { transform: rotateY(90deg) translateZ(120px); }
-  .cube-face:nth-child(3) { transform: rotateY(180deg) translateZ(120px); }
-  .cube-face:nth-child(4) { transform: rotateY(-90deg) translateZ(120px); }
-  .cube-face:nth-child(5) { transform: rotateX(90deg) translateZ(120px); }
-  .cube-face:nth-child(6) { transform: rotateX(-90deg) translateZ(120px); }
+/* 3D Cube Styling */
+.cube-container { perspective: 1000px; }
+.cube { width: 200px; height: 200px; position: relative; transform-style: preserve-3d; animation: rotateCube 20s infinite linear; margin:auto; }
+.face { position: absolute; width: 200px; height: 200px; background: #4f46e5; color: white; display:flex; justify-content:center; align-items:center; font-weight:bold; font-size:1.2rem; cursor:pointer; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.2);}
+.face:hover{background:#4338ca;}
+.front  { transform: rotateY(0deg) translateZ(100px); }
+.back   { transform: rotateY(180deg) translateZ(100px); }
+.right  { transform: rotateY(90deg) translateZ(100px); }
+.left   { transform: rotateY(-90deg) translateZ(100px); }
+.top    { transform: rotateX(90deg) translateZ(100px); }
+.bottom { transform: rotateX(-90deg) translateZ(100px); }
 
-  @keyframes rotateCube {
-    0% { transform: rotateX(0deg) rotateY(0deg); }
-    100% { transform: rotateX(360deg) rotateY(360deg); }
-  }
+@keyframes rotateCube { 0%{ transform: rotateX(0deg) rotateY(0deg);} 100%{ transform: rotateX(360deg) rotateY(360deg);} }
 
-  /* Mobile vertical points layout */
-  .vertical-points {
-    display: none;
-  }
-  @media (max-width: 768px) {
-    .cube-container { display: none; }
-    .vertical-points { display: flex; flex-direction: column; gap: 12px; justify-content: center; align-items: center; }
-  }
-
-  /* Mobile hamburger menu */
-  .hamburger { display: none; cursor: pointer; }
-  .mobile-nav { display: none; flex-direction: column; gap: 12px; margin-top: 10px; }
-  @media (max-width:768px) {
-    .desktop-nav { display: none; }
-    .hamburger { display: block; }
-  }
+/* Hamburger menu for mobile */
+#mobileMenu { display: none; }
 </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -71,88 +30,86 @@
 <header class="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
   <div class="max-w-6xl mx-auto flex justify-between items-center p-4">
     <div class="flex items-center space-x-2">
-      <img src="logo.png" alt="Logo" class="w-10 h-10 rounded-full border" />
-      <h1 class="text-xl font-bold text-blue-600 cursor-pointer" onclick="window.location.href='index.html'">All Tools Hub</h1>
+      <img src="logo.png" alt="Logo" class="w-10 h-10 rounded-full border"/>
+      <h1 class="text-xl font-bold text-blue-600 cursor-pointer" onclick="window.location.href='#'">All Tools Hub</h1>
     </div>
-    <!-- Desktop nav -->
-    <nav class="space-x-6 text-sm font-medium desktop-nav">
-      <a href="#intro" class="hover:text-blue-600">About</a>
+    <nav class="hidden md:flex space-x-6 text-sm font-medium">
+      <a href="#about" class="hover:text-blue-600">About</a>
       <a href="#tools" class="hover:text-blue-600">Tools</a>
       <a href="privacy.html" class="hover:text-blue-600">Privacy</a>
       <a href="terms.html" class="hover:text-blue-600">Terms</a>
-      <a href="disclaimer.html" class="hover:text-blue-600">Disclaimer</a>
       <a href="contact.html" class="hover:text-blue-600">Contact</a>
-      <input type="text" id="desktopSearch" placeholder="Search..." class="border rounded px-2 py-1">
-      <button onclick="searchSite('desktopSearch')" class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700">Search</button>
+      <div>
+        <input type="text" id="desktopSearch" placeholder="Search..." class="px-2 py-1 border rounded"/>
+        <button onclick="doSearch('desktop')" class="bg-blue-600 text-white px-2 py-1 rounded ml-1">Search</button>
+      </div>
     </nav>
-    <!-- Mobile hamburger -->
-    <div class="hamburger flex flex-col gap-1" onclick="toggleMobileNav()">
-      <span class="w-6 h-0.5 bg-gray-800"></span>
-      <span class="w-6 h-0.5 bg-gray-800"></span>
-      <span class="w-6 h-0.5 bg-gray-800"></span>
-    </div>
-  </div>
-  <div class="mobile-nav max-w-6xl mx-auto p-4" id="mobileNav">
-    <a href="#intro" class="hover:text-blue-600">About</a>
-    <a href="#tools" class="hover:text-blue-600">Tools</a>
-    <a href="privacy.html" class="hover:text-blue-600">Privacy</a>
-    <a href="terms.html" class="hover:text-blue-600">Terms</a>
-    <a href="disclaimer.html" class="hover:text-blue-600">Disclaimer</a>
-    <a href="contact.html" class="hover:text-blue-600">Contact</a>
-    <input type="text" id="mobileSearch" placeholder="Search..." class="border rounded px-2 py-1 mt-2 w-full">
-    <button onclick="searchSite('mobileSearch')" class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 mt-2 w-full">Search</button>
+    <button class="md:hidden" onclick="toggleMobileMenu()">☰</button>
   </div>
 </header>
 
-<!-- Hero Section -->
-<section class="pt-28 text-center bg-gradient-to-r from-indigo-600 to-purple-600 text-white min-h-screen flex flex-col justify-center">
-  <!-- 3D Cube (desktop) -->
+<!-- Mobile Menu -->
+<div id="mobileMenu" class="bg-white shadow-md p-4 fixed top-16 w-full z-40 space-y-2">
+  <a href="#about" class="block hover:text-blue-600">About</a>
+  <a href="#tools" class="block hover:text-blue-600">Tools</a>
+  <a href="privacy.html" class="block hover:text-blue-600">Privacy</a>
+  <a href="terms.html" class="block hover:text-blue-600">Terms</a>
+  <a href="contact.html" class="block hover:text-blue-600">Contact</a>
+  <div class="flex mt-2">
+    <input type="text" id="mobileSearch" placeholder="Search..." class="px-2 py-1 border rounded flex-1"/>
+    <button onclick="doSearch('mobile')" class="bg-blue-600 text-white px-2 py-1 rounded ml-1">Search</button>
+  </div>
+</div>
+
+<!-- Hero / 3D Cube Section -->
+<section class="pt-28 pb-16 text-center">
+  <h2 class="text-4xl md:text-5xl font-extrabold mb-4 text-blue-600">Welcome to All Tools Hub</h2>
+  <p class="text-lg md:text-xl mb-10 max-w-2xl mx-auto">Your one-stop solution for free online tools like calculators, converters, and more.</p>
+
   <div class="cube-container">
     <div class="cube">
-      <div class="cube-face" onclick="alert('Go to About')">About</div>
-      <div class="cube-face" onclick="alert('Go to Tools')">Tools</div>
-      <div class="cube-face" onclick="alert('Go to Privacy')">Privacy</div>
-      <div class="cube-face" onclick="alert('Go to Terms')">Terms</div>
-      <div class="cube-face" onclick="alert('Go to Disclaimer')">Disclaimer</div>
-      <div class="cube-face" onclick="window.location.href='contact.html'">Contact</div>
+      <div class="face front" onclick="navigate('tools')">Tools</div>
+      <div class="face back" onclick="navigate('privacy.html')">Privacy</div>
+      <div class="face right" onclick="navigate('terms.html')">Terms</div>
+      <div class="face left" onclick="navigate('contact.html')">Contact</div>
+      <div class="face top" onclick="navigate('about')">About</div>
+      <div class="face bottom" onclick="navigate('home')">Home</div>
     </div>
-  </div>
-  <!-- Vertical points (mobile) -->
-  <div class="vertical-points">
-    <div class="px-4 py-2 bg-white text-blue-600 rounded shadow w-3/4 text-center cursor-pointer" onclick="alert('Go to About')">About</div>
-    <div class="px-4 py-2 bg-white text-blue-600 rounded shadow w-3/4 text-center cursor-pointer" onclick="alert('Go to Tools')">Tools</div>
-    <div class="px-4 py-2 bg-white text-blue-600 rounded shadow w-3/4 text-center cursor-pointer" onclick="alert('Go to Privacy')">Privacy</div>
-    <div class="px-4 py-2 bg-white text-blue-600 rounded shadow w-3/4 text-center cursor-pointer" onclick="alert('Go to Terms')">Terms</div>
-    <div class="px-4 py-2 bg-white text-blue-600 rounded shadow w-3/4 text-center cursor-pointer" onclick="alert('Go to Disclaimer')">Disclaimer</div>
-    <div class="px-4 py-2 bg-white text-blue-600 rounded shadow w-3/4 text-center cursor-pointer" onclick="window.location.href='contact.html'">Contact</div>
   </div>
 </section>
 
-<!-- Introduction Section -->
-<section id="intro" class="max-w-4xl mx-auto p-6 text-center mt-10">
-  <h2 class="text-3xl font-bold mb-4">Welcome to All Tools Hub</h2>
-  <p class="text-gray-700 text-lg">
-    Your one-stop destination for free online tools like calculators, converters, calendars, and more. 
-    Explore our tools and make your tasks easier, faster, and fun.
-  </p>
+<!-- About / Intro Section -->
+<section id="about" class="max-w-4xl mx-auto p-6 text-center">
+  <h3 class="text-3xl font-bold mb-4">About All Tools Hub</h3>
+  <p class="text-gray-700">All Tools Hub is a platform where you can find a variety of online tools like calculators, converters, and other useful utilities. Everything is free and easy to use.</p>
 </section>
 
 <!-- Footer -->
-<footer class="bg-gray-900 text-gray-300 py-6 mt-10 text-center">
+<footer class="bg-gray-900 text-gray-300 py-6 mt-16 text-center">
   © 2025 All Tools Hub. All rights reserved.
 </footer>
 
 <script>
-function toggleMobileNav(){
-  const nav = document.getElementById('mobileNav');
-  nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
+// Mobile menu toggle
+function toggleMobileMenu(){
+  const menu = document.getElementById('mobileMenu');
+  menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
 }
 
-// Simple search alert for demo (can be integrated with real search later)
-function searchSite(inputId){
-  const query = document.getElementById(inputId).value.trim();
-  if(query) alert('Searching for: ' + query);
+// Navigation from cube
+function navigate(page){
+  if(page === 'tools') window.location.href='#tools';
+  else if(page==='about') window.location.href='#about';
+  else if(page==='home') window.location.href='#';
+  else window.location.href=page;
+}
+
+// Search function
+function doSearch(type){
+  const query = type==='desktop'?document.getElementById('desktopSearch').value.trim():document.getElementById('mobileSearch').value.trim();
+  if(query) alert(`Search for: ${query} (Implement your search logic here)`); // placeholder
 }
 </script>
+
 </body>
 </html>
