@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="All Tools Hub - Your one-stop destination for free online tools like calculators, converters, and more.">
-  <title>All Tools Hub - Free Online Tools</title>
+  <meta name="description" content="All Tools Hub - Free online tools for productivity, conversion, and more.">
+  <title>All Tools Hub</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { margin: 0; font-family: 'Inter', sans-serif; }
-    /* Simplified cube for better compatibility */
+    /* Cube Styles */
     .cube-container { perspective: 1500px; width: 100%; max-width: 300px; margin: 40px auto; text-align: center; }
     .cube { width: 200px; height: 200px; position: relative; transform-style: preserve-3d; cursor: grab; margin: auto; transition: transform 0.3s ease-out; }
     .face { position: absolute; width: 200px; height: 200px; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 1.2rem; color: white; border: 2px solid rgba(255,255,255,0.5); box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: all 0.3s ease; text-align: center; cursor: pointer; border-radius: 8px; }
@@ -20,12 +20,10 @@
     .top    { transform: rotateX(90deg) translateZ(100px); background: linear-gradient(135deg, #22c55e, #15803d); }
     .bottom { transform: rotateX(-90deg) translateZ(100px); background: linear-gradient(135deg, #f59e0b, #d97706); }
     html { scroll-behavior: smooth; }
-    /* Ensure mobile responsiveness */
     @media (max-width: 640px) {
       .cube-container { width: 250px; }
       .cube { width: 180px; height: 180px; }
       .face { width: 180px; height: 180px; font-size: 1rem; }
-      .front, .back, .right, .left, .top, .bottom { transform-origin: center; }
       .front  { transform: rotateY(0deg) translateZ(90px); }
       .back   { transform: rotateY(180deg) translateZ(90px); }
       .right  { transform: rotateY(90deg) translateZ(90px); }
@@ -35,7 +33,7 @@
     }
   </style>
 </head>
-<body class="bg-gray-100 text-gray-900">
+<body class="bg-gray-50 text-gray-800 font-sans">
 
   <!-- Header -->
   <header class="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
@@ -62,7 +60,6 @@
         </button>
       </div>
     </div>
-    <!-- Mobile menu -->
     <div id="mobileMenu" class="hidden bg-white w-full text-center py-4 border-t border-gray-200">
       <nav class="space-y-3">
         <a href="#about" class="block text-base hover:text-blue-600 transition-colors">About</a>
@@ -90,7 +87,7 @@
     </div>
   </section>
 
-  <!-- 3D Cube Section (Simplified) -->
+  <!-- 3D Cube Section -->
   <section class="py-12 bg-gray-50">
     <div class="cube-container">
       <div id="cubeTitle" class="text-2xl font-bold text-blue-600 mb-4">Explore Our Features</div>
@@ -106,20 +103,20 @@
   </section>
 
   <!-- About Section -->
-  <section id="about" class="py-12 bg-white">
-    <div class="max-w-4xl mx-auto px-4 text-center">
-      <h2 class="text-2xl md:text-3xl font-bold mb-4 text-gray-900">About Us</h2>
-      <p class="text-base md:text-lg text-gray-600 max-w-2xl mx-auto">
+  <section id="about" class="py-12 bg-white text-center">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="text-2xl md:text-3xl font-bold mb-4">About Us</h2>
+      <p class="text-base md:text-lg max-w-2xl mx-auto">
         All Tools Hub is dedicated to providing free, high-quality online tools to simplify your tasks. Our platform is user-friendly and accessible to all.
       </p>
     </div>
   </section>
 
   <!-- Tools Section -->
-  <section id="tools" class="py-12 bg-gray-50">
-    <div class="max-w-4xl mx-auto px-4 text-center">
-      <h2 class="text-2xl md:text-3xl font-bold mb-4 text-gray-900">Our Tools</h2>
-      <p class="text-base md:text-lg text-gray-600 mb-6 max-w-2xl mx-auto">
+  <section id="tools" class="py-12 bg-gray-50 text-center">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="text-2xl md:text-3xl font-bold mb-4">Our Tools</h2>
+      <p class="text-base md:text-lg mb-6 max-w-2xl mx-auto">
         Discover our collection of free tools designed to boost productivity.
       </p>
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
@@ -131,40 +128,34 @@
     </div>
   </section>
 
-  <!-- Privacy Section -->
-  <section id="privacy" class="py-12 bg-white">
-    <div class="max-w-4xl mx-auto px-4 text-center">
-      <h2 class="text-2xl md:text-3xl font-bold mb-4 text-gray-900">Privacy Policy</h2>
-      <p class="text-base md:text-lg text-gray-600 max-w-2xl mx-auto">
+  <!-- Privacy, Terms, Disclaimer, FAQ, Contact Sections (as in your original code) -->
+  <section id="privacy" class="py-12 bg-white text-center">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="text-2xl md:text-3xl font-bold mb-4">Privacy Policy</h2>
+      <p class="text-base md:text-lg max-w-2xl mx-auto">
         We value your privacy. We collect minimal data to enhance your experience and do not share it without consent.
       </p>
     </div>
   </section>
-
-  <!-- Terms Section -->
-  <section id="terms" class="py-12 bg-gray-50">
-    <div class="max-w-4xl mx-auto px-4 text-center">
-      <h2 class="text-2xl md:text-3xl font-bold mb-4 text-gray-900">Terms of Service</h2>
-      <p class="text-base md:text-lg text-gray-600 max-w-2xl mx-auto">
+  <section id="terms" class="py-12 bg-gray-50 text-center">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="text-2xl md:text-3xl font-bold mb-4">Terms of Service</h2>
+      <p class="text-base md:text-lg max-w-2xl mx-auto">
         By using our tools, you agree to use them responsibly. We are not liable for misuse.
       </p>
     </div>
   </section>
-
-  <!-- Disclaimer Section -->
-  <section id="disclaimer" class="py-12 bg-white">
-    <div class="max-w-4xl mx-auto px-4 text-center">
-      <h2 class="text-2xl md:text-3xl font-bold mb-4 text-gray-900">Disclaimer</h2>
-      <p class="text-base md:text-lg text-gray-600 max-w-2xl mx-auto">
+  <section id="disclaimer" class="py-12 bg-white text-center">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="text-2xl md:text-3xl font-bold mb-4">Disclaimer</h2>
+      <p class="text-base md:text-lg max-w-2xl mx-auto">
         Our tools are provided for informational purposes. Use them at your own risk.
       </p>
     </div>
   </section>
-
-  <!-- FAQ Section -->
-  <section id="faq" class="py-12 bg-gray-50">
-    <div class="max-w-4xl mx-auto px-4 text-center">
-      <h2 class="text-2xl md:text-3xl font-bold mb-4 text-gray-900">Frequently Asked Questions</h2>
+  <section id="faq" class="py-12 bg-gray-50 text-center">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="text-2xl md:text-3xl font-bold mb-4">Frequently Asked Questions</h2>
       <div class="space-y-4 max-w-2xl mx-auto text-left">
         <div>
           <h3 class="text-lg font-semibold text-blue-600">Are the tools free?</h3>
@@ -177,16 +168,14 @@
       </div>
     </div>
   </section>
-
-  <!-- Contact Section -->
-  <section id="contact" class="py-12 bg-white">
-    <div class="max-w-4xl mx-auto px-4 text-center">
-      <h2 class="text-2xl md:text-3xl font-bold mb-4 text-gray-900">Contact Us</h2>
-      <p class="text-base md:text-lg text-gray-600 mb-6 max-w-2xl mx-auto">
+  <section id="contact" class="py-12 bg-white text-center">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="text-2xl md:text-3xl font-bold mb-4">Contact Us</h2>
+      <p class="text-base md:text-lg mb-6 max-w-2xl mx-auto">
         Have questions or feedback? Reach out to us.
       </p>
       <form id="contactForm" class="max-w-md mx-auto">
-        <input type="email" name="email" placeholder="Your email" class="w-full border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-600" aria-label="Email address" required/>
+        <input type="email" name="email" placeholder="Your email" class="w-full border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-600" aria-label="Email" required/>
         <textarea name="message" placeholder="Your message" class="w-full border border-gray-300 rounded-md p-2 mb-4 h-24 focus:outline-none focus:ring-2 focus:ring-blue-600" aria-label="Message" required></textarea>
         <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors w-full">Send Message</button>
       </form>
@@ -200,165 +189,83 @@
     </div>
   </footer>
 
+  <!-- Scripts -->
   <script>
-    // Mobile menu toggle
-    const mobileMenuBtn = document.getElementById("mobileMenuBtn");
-    const mobileMenu = document.getElementById("mobileMenu");
-    mobileMenuBtn.addEventListener("click", () => {
-      mobileMenu.classList.toggle("hidden");
-    });
+    // Mobile Menu
+    const mobileMenuBtn=document.getElementById("mobileMenuBtn");
+    const mobileMenu=document.getElementById("mobileMenu");
+    mobileMenuBtn.addEventListener("click",()=>{mobileMenu.classList.toggle("hidden");});
 
-    // Search functionality
-    function performSearch(query, inputElement) {
-      if (query) {
-        const sections = document.querySelectorAll('section');
-        let found = false;
-        for (const section of sections) {
-          if (section.textContent.toLowerCase().includes(query)) {
-            section.scrollIntoView({ behavior: "smooth" });
-            found = true;
-            break;
-          }
+    // Search
+    function performSearch(query,input){
+      if(!query){alert("Please enter a search term."); input.focus(); return;}
+      const sections=document.querySelectorAll('section'); let found=false;
+      for(const section of sections){
+        if(section.textContent.toLowerCase().includes(query)){
+          section.scrollIntoView({behavior:"smooth"}); found=true; break;
         }
-        if (!found) {
-          alert("No results found for: " + query);
-        }
-      } else {
-        alert("Please enter a search term.");
-        inputElement.focus();
       }
+      if(!found) alert("No results found for: "+query);
     }
-    const searchBtn = document.getElementById("searchBtn");
-    const searchInput = document.getElementById("searchInput");
-    searchBtn.addEventListener("click", () => {
-      performSearch(searchInput.value.trim().toLowerCase(), searchInput);
-    });
-    searchInput.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") {
-        performSearch(searchInput.value.trim().toLowerCase(), searchInput);
-      }
-    });
-    const mobileSearchBtn = document.getElementById("mobileSearchBtn");
-    const mobileSearchInput = document.getElementById("mobileSearchInput");
-    mobileSearchBtn.addEventListener("click", () => {
-      performSearch(mobileSearchInput.value.trim().toLowerCase(), mobileSearchInput);
-    });
-    mobileSearchInput.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") {
-        performSearch(mobileSearchInput.value.trim().toLowerCase(), mobileSearchInput);
-      }
-    });
+    const searchBtn=document.getElementById("searchBtn"), searchInput=document.getElementById("searchInput");
+    searchBtn.addEventListener("click",()=>performSearch(searchInput.value.trim().toLowerCase(),searchInput));
+    searchInput.addEventListener("keypress",(e)=>{if(e.key==="Enter") performSearch(searchInput.value.trim().toLowerCase(),searchInput);});
+    const mobileSearchBtn=document.getElementById("mobileSearchBtn"), mobileSearchInput=document.getElementById("mobileSearchInput");
+    mobileSearchBtn.addEventListener("click",()=>performSearch(mobileSearchInput.value.trim().toLowerCase(),mobileSearchInput));
+    mobileSearchInput.addEventListener("keypress",(e)=>{if(e.key==="Enter") performSearch(mobileSearchInput.value.trim().toLowerCase(),mobileSearchInput);});
 
-    // Contact form submission
-    const contactForm = document.getElementById("contactForm");
-    contactForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      alert("Thank you for your message! We'll get back to you soon.");
-      contactForm.reset();
-    });
+    // Contact Form
+    const contactForm=document.getElementById("contactForm");
+    contactForm.addEventListener("submit",(e)=>{e.preventDefault(); alert("Thank you for your message! We'll get back to you soon."); contactForm.reset();});
 
-    // Simplified cube rotation
-    const cube = document.getElementById("cube");
-    const cubeTitle = document.getElementById("cubeTitle");
-    let isDragging = false, prevX = 0, prevY = 0, rotX = -15, rotY = 0, inertiaX = 0, inertiaY = 0, friction = 0.95;
-    const faces = Array.from(document.querySelectorAll(".face"));
+    // 3D Cube
+    const cube=document.getElementById("cube");
+    const faces=document.querySelectorAll(".face");
+    const cubeTitle=document.getElementById("cubeTitle");
+    let isDragging=false, prevX=0, prevY=0, rotX=-15, rotY=0, inertiaX=0, inertiaY=0, friction=0.95;
 
-    // Clickable faces
-    let clickTimeout = null;
-    faces.forEach(face => {
-      face.addEventListener("click", (e) => {
-        if (isDragging) return;
-        if (clickTimeout) clearTimeout(clickTimeout);
-        clickTimeout = setTimeout(() => {
-          const url = face.getAttribute("data-url");
-          if (url.startsWith("#")) {
-            const section = document.querySelector(url);
-            if (section) {
-              section.scrollIntoView({ behavior: "smooth" });
-            } else {
-              console.warn("Section not found: " + url);
-            }
-          } else {
-            window.location.href = url;
-          }
-        }, 200);
-      });
-    });
-
-    // Drag & touch functions
-    function startDrag(e) {
-      isDragging = true;
-      prevX = e.type.includes("touch") ? e.touches[0].clientX : e.clientX;
-      prevY = e.type.includes("touch") ? e.touches[0].clientY : e.clientY;
-      cube.style.transition = "none";
-      e.preventDefault();
+    function startDrag(e){
+      isDragging=true; 
+      prevX=e.type.includes("touch")?e.touches[0].clientX:e.clientX;
+      prevY=e.type.includes("touch")?e.touches[0].clientY:e.clientY;
+      cube.style.transition="none"; e.preventDefault();
     }
-    function moveDrag(e) {
-      if (!isDragging) return;
-      const currX = e.type.includes("touch") ? e.touches[0].clientX : e.clientX;
-      const currY = e.type.includes("touch") ? e.touches[0].clientY : e.clientY;
-      const dx = currX - prevX;
-      const dy = currY - prevY;
-      rotY += dx * 0.5;
-      rotX -= dy * 0.5;
-      rotX = Math.max(-90, Math.min(90, rotX));
-      cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
-      inertiaX = -dy * 0.03;
-      inertiaY = dx * 0.03;
-      prevX = currX;
-      prevY = currY;
-      updateFrontFace();
-      e.preventDefault();
+    function moveDrag(e){
+      if(!isDragging) return;
+      const currX=e.type.includes("touch")?e.touches[0].clientX:e.clientX;
+      const currY=e.type.includes("touch")?e.touches[0].clientY:e.clientY;
+      const dx=currX-prevX, dy=currY-prevY;
+      rotY+=dx*0.5; rotX-=dy*0.5; rotX=Math.max(-90,Math.min(90,rotX));
+      cube.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+      inertiaX=-dy*0.03; inertiaY=dx*0.03; prevX=currX; prevY=currY;
+      updateFrontFace(); e.preventDefault();
     }
-    function endDrag() {
-      isDragging = false;
-      cube.style.transition = "transform 0.3s ease-out";
-    }
-    cube.addEventListener("mousedown", startDrag);
-    document.addEventListener("mousemove", moveDrag);
-    document.addEventListener("mouseup", endDrag);
-    cube.addEventListener("touchstart", startDrag, { passive: false });
-    cube.addEventListener("touchmove", moveDrag, { passive: false });
-    cube.addEventListener("touchend", endDrag);
+    function endDrag(){ isDragging=false; cube.style.transition="transform 0.3s ease-out"; }
 
-    // Auto-spin + inertia
-    function spinCube() {
-      if (!isDragging) {
-        rotY += inertiaY;
-        rotX += inertiaX;
-        rotX = Math.max(-90, Math.min(90, rotX));
-        cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
-        updateFrontFace();
-        inertiaX *= friction;
-        inertiaY *= friction;
-        if (Math.abs(inertiaX) < 0.01) inertiaX = 0;
-        if (Math.abs(inertiaY) < 0.01) inertiaY = 0;
-      }
-      requestAnimationFrame(spinCube);
+    cube.addEventListener("mousedown",startDrag);
+    document.addEventListener("mousemove",moveDrag);
+    document.addEventListener("mouseup",endDrag);
+    cube.addEventListener("touchstart",startDrag,{passive:false});
+    cube.addEventListener("touchmove",moveDrag,{passive:false});
+    cube.addEventListener("touchend",endDrag);
+
+    function spinCube(){
+      if(!isDragging){ rotY+=inertiaY; rotX+=inertiaX; rotX=Math.max(-90,Math.min(90,rotX)); cube.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`; inertiaX*=friction; inertiaY*=friction;}
+      updateFrontFace(); requestAnimationFrame(spinCube);
     }
     spinCube();
 
-    // Update front face title
-    function updateFrontFace() {
-      let minDiff = Infinity, frontFace = faces[0];
-      faces.forEach(f => {
-        const matrix = window.getComputedStyle(f).transform;
-        const values = matrix.match(/matrix3d\((.+)\)/);
-        if (values) {
-          const vals = values[1].split(',').map(Number);
-          const z = vals[10];
-          const diff = Math.abs(z - 1);
-          if (diff < minDiff) {
-            minDiff = diff;
-            frontFace = f;
-          }
-        }
+    function updateFrontFace(){
+      let frontFace=faces[0]; let maxZ=-Infinity;
+      faces.forEach(f=>{
+        const rect=f.getBoundingClientRect(); const z=rect.top+rect.bottom;
+        if(z>maxZ){ maxZ=z; frontFace=f; }
       });
-      cubeTitle.textContent = frontFace.textContent;
+      cubeTitle.textContent=frontFace.textContent;
     }
 
-    // Initial update
-    updateFrontFace();
+    faces.forEach(face=>{face.addEventListener("click",()=>{if(isDragging) return; const url=face.getAttribute("data-url"); if(url.startsWith("#")){const sec=document.querySelector(url); if(sec) sec.scrollIntoView({behavior:"smooth"});} else window.location.href=url;});});
   </script>
+
 </body>
 </html>
