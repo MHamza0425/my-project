@@ -1,127 +1,127 @@
-!DOCTYPE html
-html lang=en class=scroll-smooth
-head
-  meta charset=UTF-8
-  meta name=viewport content=width=device-width, initial-scale=1.0
-  titleTime Zone Converter - All Tools Hubtitle
-  meta name=description content=Convert time between different time zones quickly and easily.
-  script src=httpscdn.tailwindcss.comscript
-head
-body class=bg-gray-50 darkbg-gray-900 text-gray-800 darktext-gray-100 font-sans
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Time Zone Converter - All Tools Hub</title>
+  <meta name="description" content="Convert time between different time zones quickly and easily.">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans">
 
-!-- Header --
-header class=bg-white darkbg-gray-800 shadow fixed w-full z-50
-  div class=max-w-7xl mx-auto flex justify-between items-center px-6 py-4
-    h1 class=text-2xl font-bold text-indigo-600 darktext-indigo-400 cursor-pointer onclick=window.location.href='index.html'All Tools Hubh1
-    nav class=hidden mdflex gap-6 text-sm font-medium
-      a href=index.html#about class=hovertext-indigo-600 darkhovertext-indigo-400 transitionAbouta
-      a href=index.html#tools class=hovertext-indigo-600 darkhovertext-indigo-400 transitionToolsa
-      a href=contact.html class=hovertext-indigo-600 darkhovertext-indigo-400 transitionContacta
-      a href=privacy.html class=hovertext-indigo-600 darkhovertext-indigo-400 transitionPrivacya
-      a href=terms.html class=hovertext-indigo-600 darkhovertext-indigo-400 transitionTermsa
-    nav
-    div class=flex items-center gap-3
-      button id=darkToggle class=text-sm px-3 py-1 border rounded hoverbg-gray-200 darkhoverbg-gray-700🌙button
-      button id=mobileMenuBtn class=mdhidden text-2xl☰button
-    div
-  div
+<!-- Header -->
+<header class="bg-white dark:bg-gray-800 shadow fixed w-full z-50">
+  <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+    <h1 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 cursor-pointer" onclick="window.location.href='index.html'">All Tools Hub</h1>
+    <nav class="hidden md:flex gap-6 text-sm font-medium">
+      <a href="index.html#about" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">About</a>
+      <a href="index.html#tools" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Tools</a>
+      <a href="contact.html" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Contact</a>
+      <a href="privacy.html" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Privacy</a>
+      <a href="terms.html" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Terms</a>
+    </nav>
+    <div class="flex items-center gap-3">
+      <button id="darkToggle" class="text-sm px-3 py-1 border rounded hover:bg-gray-200 dark:hover:bg-gray-700">🌙</button>
+      <button id="mobileMenuBtn" class="md:hidden text-2xl">☰</button>
+    </div>
+  </div>
 
-  !-- Mobile Menu --
-  div id=mobileMenu class=hidden mdhidden bg-white darkbg-gray-800 border-t text-center py-2 space-y-2
-    a href=index.html#about class=block hovertext-indigo-600 darkhovertext-indigo-400Abouta
-    a href=index.html#tools class=block hovertext-indigo-600 darkhovertext-indigo-400Toolsa
-    a href=contact.html class=block hovertext-indigo-600 darkhovertext-indigo-400Contacta
-    a href=privacy.html class=block hovertext-indigo-600 darkhovertext-indigo-400Privacya
-    a href=terms.html class=block hovertext-indigo-600 darkhovertext-indigo-400Termsa
-  div
-header
+  <!-- Mobile Menu -->
+  <div id="mobileMenu" class="hidden md:hidden bg-white dark:bg-gray-800 border-t text-center py-2 space-y-2">
+    <a href="index.html#about" class="block hover:text-indigo-600 dark:hover:text-indigo-400">About</a>
+    <a href="index.html#tools" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Tools</a>
+    <a href="contact.html" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Contact</a>
+    <a href="privacy.html" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Privacy</a>
+    <a href="terms.html" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Terms</a>
+  </div>
+</header>
 
-!-- Time Zone Converter Section --
-section class=pt-32 pb-16 px-6 max-w-md mx-auto
-  h2 class=text-3xl font-bold text-indigo-700 darktext-indigo-400 mb-6 text-centerTime Zone Converterh2
+<!-- Time Zone Converter Section -->
+<section class="pt-32 pb-16 px-6 max-w-md mx-auto">
+  <h2 class="text-3xl font-bold text-indigo-700 dark:text-indigo-400 mb-6 text-center">Time Zone Converter</h2>
 
-  div class=bg-white darkbg-gray-800 rounded-xl shadow-md p-6 space-y-4
-    label class=block text-gray-700 darktext-gray-200 font-mediumSelect Timelabel
-    input type=time id=sourceTime class=w-full px-4 py-2 border rounded darkbg-gray-700 darkborder-gray-600
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 space-y-4">
+    <label class="block text-gray-700 dark:text-gray-200 font-medium">Select Time</label>
+    <input type="time" id="sourceTime" class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600">
 
-    label class=block text-gray-700 darktext-gray-200 font-mediumFrom Time Zonelabel
-    select id=fromZone class=w-full px-4 py-2 border rounded darkbg-gray-700 darkborder-gray-600
-      option value=UTCUTCoption
-      option value=GMTGMToption
-      option value=ESTEST (New York)option
-      option value=PSTPST (Los Angeles)option
-      option value=CETCET (Europe)option
-      option value=ISTIST (India)option
-      option value=JSTJST (Japan)option
-    select
+    <label class="block text-gray-700 dark:text-gray-200 font-medium">From Time Zone</label>
+    <select id="fromZone" class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600">
+      <option value="UTC">UTC</option>
+      <option value="GMT">GMT</option>
+      <option value="EST">EST (New York)</option>
+      <option value="PST">PST (Los Angeles)</option>
+      <option value="CET">CET (Europe)</option>
+      <option value="IST">IST (India)</option>
+      <option value="JST">JST (Japan)</option>
+    </select>
 
-    label class=block text-gray-700 darktext-gray-200 font-mediumTo Time Zonelabel
-    select id=toZone class=w-full px-4 py-2 border rounded darkbg-gray-700 darkborder-gray-600
-      option value=UTCUTCoption
-      option value=GMTGMToption
-      option value=ESTEST (New York)option
-      option value=PSTPST (Los Angeles)option
-      option value=CETCET (Europe)option
-      option value=ISTIST (India)option
-      option value=JSTJST (Japan)option
-    select
+    <label class="block text-gray-700 dark:text-gray-200 font-medium">To Time Zone</label>
+    <select id="toZone" class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600">
+      <option value="UTC">UTC</option>
+      <option value="GMT">GMT</option>
+      <option value="EST">EST (New York)</option>
+      <option value="PST">PST (Los Angeles)</option>
+      <option value="CET">CET (Europe)</option>
+      <option value="IST">IST (India)</option>
+      <option value="JST">JST (Japan)</option>
+    </select>
 
-    button onclick=convertTime() class=w-full bg-indigo-600 text-white px-4 py-2 rounded hoverbg-indigo-700 transitionConvert Timebutton
+    <button onclick="convertTime()" class="w-full bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">Convert Time</button>
 
-    div id=convertedTime class=mt-4 bg-gray-100 darkbg-gray-700 p-3 rounded text-gray-700 darktext-gray-200 text-center font-semibolddiv
-  div
-section
+    <div id="convertedTime" class="mt-4 bg-gray-100 dark:bg-gray-700 p-3 rounded text-gray-700 dark:text-gray-200 text-center font-semibold"></div>
+  </div>
+</section>
 
-!-- Footer --
-footer class=bg-gray-900 text-gray-300 py-6 text-center
+<!-- Footer -->
+<footer class="bg-gray-900 text-gray-300 py-6 text-center">
   © 2025 All Tools Hub. All rights reserved.
-footer
+</footer>
 
-script
-   Dark mode toggle
-  document.getElementById(darkToggle).addEventListener(click, () = {
-    document.body.classList.toggle(dark);
+<script>
+  // Dark mode toggle
+  document.getElementById("darkToggle").addEventListener("click", () => {
+    document.body.classList.toggle("dark");
   });
 
-   Mobile menu toggle
-  document.getElementById(mobileMenuBtn).addEventListener(click, () = {
-    document.getElementById(mobileMenu).classList.toggle(hidden);
+  // Mobile menu toggle
+  document.getElementById("mobileMenuBtn").addEventListener("click", () => {
+    document.getElementById("mobileMenu").classList.toggle("hidden");
   });
 
-   Time zone offsets (hours)
+  // Time zone offsets (hours)
   const tzOffsets = {
-    UTC 0,
-    GMT 0,
-    EST -5,
-    PST -8,
-    CET 1,
-    IST 5.5,
-    JST 9
+    "UTC": 0,
+    "GMT": 0,
+    "EST": -5,
+    "PST": -8,
+    "CET": 1,
+    "IST": 5.5,
+    "JST": 9
   };
 
   function convertTime() {
-    const timeStr = document.getElementById(sourceTime).value;
-    const from = document.getElementById(fromZone).value;
-    const to = document.getElementById(toZone).value;
+    const timeStr = document.getElementById("sourceTime").value;
+    const from = document.getElementById("fromZone").value;
+    const to = document.getElementById("toZone").value;
 
     if (!timeStr) {
-      alert(Please select a time.);
+      alert("Please select a time.");
       return;
     }
 
-    let [hours, minutes] = timeStr.split().map(Number);
+    let [hours, minutes] = timeStr.split(":").map(Number);
     const utcHours = hours - tzOffsets[from];
     let convertedHours = utcHours + tzOffsets[to];
 
-    if (convertedHours = 24) convertedHours -= 24;
-    if (convertedHours  0) convertedHours += 24;
+    if (convertedHours >= 24) convertedHours -= 24;
+    if (convertedHours < 0) convertedHours += 24;
 
     const formattedHours = String(Math.floor(convertedHours)).padStart(2, '0');
     const formattedMinutes = String(minutes).padStart(2, '0');
 
-    document.getElementById(convertedTime).textContent = `Converted Time ${formattedHours}${formattedMinutes} (${to})`;
+    document.getElementById("convertedTime").textContent = `Converted Time: ${formattedHours}:${formattedMinutes} (${to})`;
   }
-script
+</script>
 
-body
-html
+</body>
+</html>
