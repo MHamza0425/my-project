@@ -4,16 +4,42 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Smart Calendar - All Tools Hub</title>
-  <meta name="description" content="Smart responsive calendar with light/dark mode, date selector, and mobile friendly design." />
+  <meta name="description" content="Smart responsive calendar with dark mode, tooltips, events, today button, and full mobile support." />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    // Tailwind dark mode based on system preference
     tailwind.config = {
       darkMode: 'media'
     }
   </script>
+  <style>
+    /* Gradient background */
+    body {
+      background: linear-gradient(to right, #f8fafc, #eef2ff);
+    }
+    .dark body {
+      background: linear-gradient(to right, #111827, #1f2937);
+    }
+    .day-cell {
+      transition: all 0.2s ease-in-out;
+    }
+    .day-cell:hover {
+      transform: scale(1.05);
+    }
+    .selected {
+      background-color: #22c55e !important;
+      color: white !important;
+      font-weight: bold;
+    }
+    .event-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: #f59e0b;
+      margin: 2px auto 0;
+    }
+  </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans flex flex-col min-h-screen">
+<body class="dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans flex flex-col min-h-screen">
 
   <!-- Header -->
   <header class="bg-white dark:bg-gray-800 shadow fixed w-full z-50">
@@ -42,15 +68,16 @@
 
   <!-- Calendar Section -->
   <main class="flex-1 pt-28 pb-12 px-4">
-    <section class="max-w-3xl mx-auto">
+    <section class="max-w-4xl mx-auto">
       <h2 class="text-3xl font-bold text-indigo-600 dark:text-indigo-400 mb-6 text-center">Smart Calendar</h2>
 
       <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
         <!-- Controls -->
-        <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-3">
+        <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-3 sticky top-20 bg-white dark:bg-gray-800 py-2 z-10">
           <div class="flex items-center gap-2">
             <button onclick="prevMonth()" class="px-3 py-1 rounded bg-indigo-600 text-white hover:bg-indigo-700">◀</button>
             <button onclick="nextMonth()" class="px-3 py-1 rounded bg-indigo-600 text-white hover:bg-indigo-700">▶</button>
+            <button onclick="goToToday()" class="px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700">Today</button>
           </div>
 
           <div class="flex items-center gap-2">
@@ -61,12 +88,13 @@
         </div>
 
         <!-- Weekdays -->
-        <div class="grid grid-cols-7 gap-2 text-center font-medium mb-2">
+        <div class="grid grid-cols-8 gap-2 text-center font-medium mb-2">
+          <div class="text-gray-500">Wk</div>
           <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
         </div>
 
         <!-- Days -->
-        <div id="calendarDays" class="grid grid-cols-7 gap-2 text-center text-sm sm:text-base"></div>
+        <div id="calendarDays" class="grid grid-cols-8 gap-2 text-center text-sm sm:text-base"></div>
       </div>
     </section>
   </main>
@@ -93,9 +121,15 @@
     ];
 
     let currentDate = new Date();
+    let selectedCell = null;
+
+    // Dummy events
+    const events = {
+      "2025-08-27": ["Sample Event A"],
+      "2025-08-30": ["Meeting"]
+    };
 
     function populateSelectors() {
-      // Months
       months.forEach((m, i) => {
         const opt = document.createElement("option");
         opt.value = i;
@@ -103,7 +137,6 @@
         monthSelect.appendChild(opt);
       });
 
-      // Years (1900 - 2100)
       for (let y = 1900; y <= 2100; y++) {
         const opt = document.createElement("option");
         opt.value = y;
@@ -124,28 +157,71 @@
       const firstDay = new Date(year, month, 1).getDay();
       const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-      // Empty cells
+      let weekNumber = getWeekNumber(new Date(year, month, 1));
+
+      let rowDay = 0;
+
+      // First week row
+      const weekCell = document.createElement("div");
+      weekCell.textContent = weekNumber;
+      weekCell.className = "text-gray-500 font-semibold";
+      calendarDays.appendChild(weekCell);
+
       for (let i = 0; i < firstDay; i++) {
         const empty = document.createElement("div");
         calendarDays.appendChild(empty);
+        rowDay++;
       }
 
       // Days
       for (let i = 1; i <= daysInMonth; i++) {
+        const dayDate = new Date(year, month, i);
         const dayCell = document.createElement("div");
         dayCell.textContent = i;
-        dayCell.className = "p-2 rounded cursor-pointer hover:bg-indigo-100 dark:hover:bg-indigo-700";
-        
-        // Highlight today
+        dayCell.className = "day-cell p-2 rounded cursor-pointer hover:bg-indigo-100 dark:hover:bg-indigo-700 flex flex-col items-center";
+
+        // Tooltip
+        dayCell.title = dayDate.toDateString();
+
+        // Weekends
+        if (dayDate.getDay() === 0 || dayDate.getDay() === 6) {
+          dayCell.classList.add("text-red-500");
+        }
+
+        // Today
         const today = new Date();
-        if (
-          i === today.getDate() &&
-          month === today.getMonth() &&
-          year === today.getFullYear()
-        ) {
+        if (i === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
           dayCell.classList.add("bg-indigo-500", "text-white", "font-bold");
         }
+
+        // Events
+        const key = `${year}-${String(month+1).padStart(2,"0")}-${String(i).padStart(2,"0")}`;
+        if (events[key]) {
+          const dot = document.createElement("div");
+          dot.className = "event-dot";
+          dayCell.appendChild(dot);
+        }
+
+        // Select date
+        dayCell.addEventListener("click", () => {
+          if (selectedCell) selectedCell.classList.remove("selected");
+          dayCell.classList.add("selected");
+          selectedCell = dayCell;
+          localStorage.setItem("selectedDate", key);
+          alert(`Selected: ${dayDate.toDateString()}\nEvents: ${events[key] ? events[key].join(", ") : "None"}`);
+        });
+
         calendarDays.appendChild(dayCell);
+        rowDay++;
+
+        if (rowDay > 6) {
+          rowDay = 0;
+          weekNumber++;
+          const weekCell = document.createElement("div");
+          weekCell.textContent = weekNumber;
+          weekCell.className = "text-gray-500 font-semibold";
+          calendarDays.appendChild(weekCell);
+        }
       }
     }
 
@@ -166,8 +242,28 @@
       renderCalendar();
     }
 
+    function goToToday() {
+      currentDate = new Date();
+      renderCalendar();
+    }
+
+    function getWeekNumber(d) {
+      d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+      const dayNum = d.getUTCDay() || 7;
+      d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+      const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+      return Math.ceil((((d - yearStart) / 86400000) + 1)/7);
+    }
+
     populateSelectors();
     renderCalendar();
+
+    // Restore last selected date
+    const lastDate = localStorage.getItem("selectedDate");
+    if (lastDate) {
+      currentDate = new Date(lastDate);
+      renderCalendar();
+    }
   </script>
 </body>
 </html>
