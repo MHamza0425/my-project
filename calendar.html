@@ -57,8 +57,21 @@
 
 <!-- Footer -->
 <footer class="bg-gray-900 text-gray-300 py-6 text-center">
-  © 2025 All Tools Hub. All rights reserved.
+  © 2025 All Tools Hub. All rights reserved. <br>
+  📧 Contact: <a href="mailto:saadkhan0425@gmail.com" class="text-indigo-400 hover:underline">saadkhan0425@gmail.com</a>
 </footer>
+
+<!-- Notes Modal -->
+<div id="noteModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 w-80">
+    <h3 class="text-lg font-semibold mb-3">Add Note</h3>
+    <textarea id="noteInput" class="w-full p-2 border rounded dark:bg-gray-700"></textarea>
+    <div class="flex justify-end mt-3 gap-2">
+      <button onclick="closeNoteModal()" class="px-3 py-1 bg-gray-300 dark:bg-gray-700 rounded">Cancel</button>
+      <button onclick="saveNote()" class="px-3 py-1 bg-indigo-600 text-white rounded">Save</button>
+    </div>
+  </div>
+</div>
 
 <script>
   // Dark mode toggle
@@ -81,6 +94,8 @@
   ];
 
   let currentDate = new Date();
+  let selectedDate = null;
+  let notes = JSON.parse(localStorage.getItem("calendarNotes")) || {};
 
   function renderCalendar() {
     const year = currentDate.getFullYear();
@@ -92,17 +107,22 @@
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-    // Empty cells for previous month
     for (let i = 0; i < firstDay; i++) {
       const emptyCell = document.createElement('div');
       calendarDays.appendChild(emptyCell);
     }
 
-    // Days
     for (let i = 1; i <= daysInMonth; i++) {
       const dayCell = document.createElement('div');
       dayCell.textContent = i;
       dayCell.className = "p-2 rounded hover:bg-indigo-100 dark:hover:bg-indigo-700 cursor-pointer";
+
+      const dateKey = `${year}-${month}-${i}`;
+      if (notes[dateKey]) {
+        dayCell.classList.add("bg-yellow-200", "dark:bg-yellow-600");
+        dayCell.title = notes[dateKey];
+      }
+
       if (
         i === new Date().getDate() &&
         month === new Date().getMonth() &&
@@ -110,6 +130,8 @@
       ) {
         dayCell.classList.add("bg-indigo-200", "dark:bg-indigo-600");
       }
+
+      dayCell.addEventListener("click", () => openNoteModal(dateKey));
       calendarDays.appendChild(dayCell);
     }
   }
@@ -121,6 +143,28 @@
 
   function nextMonth() {
     currentDate.setMonth(currentDate.getMonth() + 1);
+    renderCalendar();
+  }
+
+  function openNoteModal(dateKey) {
+    selectedDate = dateKey;
+    document.getElementById("noteInput").value = notes[dateKey] || "";
+    document.getElementById("noteModal").classList.remove("hidden");
+  }
+
+  function closeNoteModal() {
+    document.getElementById("noteModal").classList.add("hidden");
+  }
+
+  function saveNote() {
+    const note = document.getElementById("noteInput").value.trim();
+    if (note) {
+      notes[selectedDate] = note;
+    } else {
+      delete notes[selectedDate];
+    }
+    localStorage.setItem("calendarNotes", JSON.stringify(notes));
+    closeNoteModal();
     renderCalendar();
   }
 
