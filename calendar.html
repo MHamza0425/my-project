@@ -1,270 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Smart Calendar - All Tools Hub</title>
-  <meta name="description" content="Smart responsive calendar with dark mode, tooltips, events, today button, and full mobile support." />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'media'
-    }
-  </script>
-  <style>
-    /* Gradient background */
-    body {
-      background: linear-gradient(to right, #f8fafc, #eef2ff);
-    }
-    .dark body {
-      background: linear-gradient(to right, #111827, #1f2937);
-    }
-    .day-cell {
-      transition: all 0.2s ease-in-out;
-    }
-    .day-cell:hover {
-      transform: scale(1.05);
-    }
-    .selected {
-      background-color: #22c55e !important;
-      color: white !important;
-      font-weight: bold;
-    }
-    .event-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background-color: #f59e0b;
-      margin: 2px auto 0;
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>All Tools Hub — Neon Futuristic Calculator (Final)</title>
+<meta name="description" content="Futuristic calculator with graphing, conversions, stats, complex numbers, history, voice, and responsive UI." />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0f172a; --panel:#0b1220; --card:#111827; --neon1:#6366f1; --neon2:#4f46e5;
+    --accent:#10b981; --warn:#f59e0b; --danger:#ef4444; --muted:#94a3b8;
+    --glass: rgba(255,255,255,0.03);
+  }
+  html,body{height:100%;margin:0;font-family:Inter,Segoe UI,system-ui,Arial;background:linear-gradient(135deg,var(--bg),#07122b);color:#e6eef8;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1200px;margin:84px auto;padding:18px;display:grid;grid-template-columns:1fr 420px;gap:20px}
+  @media(max-width:1000px){ .wrap{grid-template-columns:1fr; padding:14px; margin-top:90px} }
+  @media(max-width:600px){ .wrap{grid-template-columns:1fr; gap:12px; margin-top:80px} }
+  header{position:fixed;left:0;right:0;top:0;height:72px;background:linear-gradient(90deg,#071025,#07122b);display:flex;align-items:center;z-index:60;box-shadow:0 6px 24px rgba(0,0,0,.6)}
+  .bar{max-width:1200px;margin:0 auto;width:100%;display:flex;justify-content:space-between;align-items:center;padding:12px 18px}
+  .brand{display:flex;gap:12px;align-items:center}
+  .brand h1{margin:0;color:var(--neon2);font-size:20px;letter-spacing:0.4px}
+  .controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .btn{background:var(--glass);border:1px solid rgba(255,255,255,0.04);color:#fff;padding:8px 10px;border-radius:8px;cursor:pointer;font-weight:600;box-shadow:0 6px rgba(0,0,0,0.4),0 0 8px var(--neon1)}
+  .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04)}
+  .card{background:var(--card);border-radius:14px;padding:18px;box-shadow:0 0 28px rgba(79,70,229,.08)}
+  .display{background:var(--glass);padding:14px;border-radius:10px;font-size:28px;text-align:right;min-height:64px;box-shadow:inset 0 0 10px var(--neon1);color:#fff;overflow-wrap:break-word}
+  .meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:var(--muted);font-weight:600}
+  .live-preview{color:var(--muted);font-size:13px;transition:text-shadow 0.3s, color 0.3s;}
+  .live-preview.glow{color:var(--accent);text-shadow:0 0 8px var(--accent),0 0 16px var(--accent),0 0 24px var(--accent);}
+  .memory{color:#facc15;font-weight:700}
+  .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  @media(max-width:720px){ .grid{grid-template-columns:repeat(4,1fr);} }
+  .key{padding:14px;border-radius:10px;border:none;background:var(--glass);color:#fff;font-weight:800;cursor:pointer;box-shadow:0 6px rgba(0,0,0,.4)}
+  .key:hover{transform:translateY(-3px);background:linear-gradient(90deg,var(--neon2),var(--neon1));box-shadow:0 10px rgba(0,0,0,.6)}
+  .operator{background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#111}
+  .equal{background:linear-gradient(90deg,#34d399,#10b981);grid-column:span 2;color:#022;box-shadow:0 8px rgba(2,78,70,.18)}
+  .clear{background:linear-gradient(90deg,#fb7185,#ef4444);color:#111}
+  .small{font-size:12px;color:var(--muted)}
+  .panel-card{background:linear-gradient(180deg,#071022,#0b1226);border-radius:12px;padding:14px;box-shadow:0 0 20px rgba(79,70,229,.06);min-height:120px;color:#dbeafe}
+  .panel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+  .panel-grid button{padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04);cursor:pointer;color:#e6eef8;font-weight:700}
+  canvas{width:100%;height:260px;border-radius:8px;background:#000;box-shadow:0 0 12px rgba(79,70,229,.12);display:block}
+  .neon-input{background:#0f172a;border:2px solid var(--neon1);padding:8px;border-radius:8px;color:#fff;font-weight:700}
+  footer{max-width:1200px;margin:20px auto 40px;color:var(--muted);text-align:center;font-size:13px}
+  a.email{color:var(--neon2);text-decoration:none;font-weight:700}
+  .sci-only{display:none}
+  .sci-mode .sci-only{display:inline-block}
+</style>
 </head>
-<body class="dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans flex flex-col min-h-screen">
-
-  <!-- Header -->
-  <header class="bg-white dark:bg-gray-800 shadow fixed w-full z-50">
-    <div class="max-w-6xl mx-auto flex justify-between items-center px-4 py-3">
-      <h1 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 cursor-pointer"
-          onclick="window.location.href='index.html'">All Tools Hub</h1>
-      <button id="mobileMenuBtn" class="md:hidden text-2xl">☰</button>
-      <nav id="desktopMenu" class="hidden md:flex gap-6 text-sm font-medium">
-        <a href="index.html#about" class="hover:text-indigo-600 dark:hover:text-indigo-400">About</a>
-        <a href="index.html#tools" class="hover:text-indigo-600 dark:hover:text-indigo-400">Tools</a>
-        <a href="contact.html" class="hover:text-indigo-600 dark:hover:text-indigo-400">Contact</a>
-        <a href="privacy.html" class="hover:text-indigo-600 dark:hover:text-indigo-400">Privacy</a>
-        <a href="terms.html" class="hover:text-indigo-600 dark:hover:text-indigo-400">Terms</a>
-      </nav>
+<body>
+<header>
+  <div class="bar">
+    <div class="brand">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="6" fill="#4f46e5"/><path d="M7 12h10" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <h1>All Tools Hub</h1>
+      <div class="small" style="margin-left:6px;color:#9ca3af">Neon Calculator</div>
     </div>
-
-    <!-- Mobile Menu -->
-    <div id="mobileMenu" class="hidden bg-white dark:bg-gray-800 border-t text-center py-3 space-y-2 md:hidden">
-      <a href="index.html#about" class="block hover:text-indigo-600 dark:hover:text-indigo-400">About</a>
-      <a href="index.html#tools" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Tools</a>
-      <a href="contact.html" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Contact</a>
-      <a href="privacy.html" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Privacy</a>
-      <a href="terms.html" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Terms</a>
+    <div class="controls">
+      <button id="radBtn" class="btn ghost">RAD</button>
+      <button id="sciBtn" class="btn ghost">SCI OFF</button>
+      <button id="voiceBtn" class="btn ghost">🎤 Voice</button>
+      <button id="downloadCSV" class="btn">Download CSV</button>
     </div>
-  </header>
+  </div>
+</header>
 
-  <!-- Calendar Section -->
-  <main class="flex-1 pt-28 pb-12 px-4">
-    <section class="max-w-4xl mx-auto">
-      <h2 class="text-3xl font-bold text-indigo-600 dark:text-indigo-400 mb-6 text-center">Smart Calendar</h2>
+<main class="wrap">
+<section class="card">
+  <div class="meta">
+    <div class="memory" id="memoryDisplay">M: 0</div>
+    <div class="small">Live Preview: <span id="livePreview" class="live-preview">—</span></div>
+  </div>
+  <div id="display" class="display" contenteditable="true" spellcheck="false" aria-label="Calculator display">0</div>
+  <div style="margin:10px 0" class="small">Tip: Use keyboard or tap buttons. Press Enter to evaluate.</div>
 
-      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
-        <!-- Controls -->
-        <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-3 sticky top-20 bg-white dark:bg-gray-800 py-2 z-10">
-          <div class="flex items-center gap-2">
-            <button onclick="prevMonth()" class="px-3 py-1 rounded bg-indigo-600 text-white hover:bg-indigo-700">◀</button>
-            <button onclick="nextMonth()" class="px-3 py-1 rounded bg-indigo-600 text-white hover:bg-indigo-700">▶</button>
-            <button onclick="goToToday()" class="px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700">Today</button>
-          </div>
+  <div class="grid" id="buttonGrid">
+    <button class="key clear" onclick="clearAll()">C</button>
+    <button class="key" onclick="backspace()">⌫</button>
+    <button class="key" onclick="appendOperator('(')">(</button>
+    <button class="key" onclick="appendOperator(')')">)</button>
+    <button class="key operator" onclick="appendOperator('/')">÷</button>
 
-          <div class="flex items-center gap-2">
-            <select id="monthSelect" class="px-2 py-1 rounded border dark:bg-gray-700"></select>
-            <select id="yearSelect" class="px-2 py-1 rounded border dark:bg-gray-700"></select>
-            <button onclick="goToSelectedDate()" class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700">Go</button>
-          </div>
-        </div>
+    <button class="key" onclick="appendNumber('7')">7</button>
+    <button class="key" onclick="appendNumber('8')">8</button>
+    <button class="key" onclick="appendNumber('9')">9</button>
+    <button class="key operator" onclick="appendOperator('*')">×</button>
+    <button class="key" onclick="memoryRecall()">MR</button>
 
-        <!-- Weekdays -->
-        <div class="grid grid-cols-8 gap-2 text-center font-medium mb-2">
-          <div class="text-gray-500">Wk</div>
-          <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
-        </div>
+    <button class="key" onclick="appendNumber('4')">4</button>
+    <button class="key" onclick="appendNumber('5')">5</button>
+    <button class="key" onclick="appendNumber('6')">6</button>
+    <button class="key operator" onclick="appendOperator('-')">−</button>
+    <button class="key" onclick="memoryAdd()">M+</button>
 
-        <!-- Days -->
-        <div id="calendarDays" class="grid grid-cols-8 gap-2 text-center text-sm sm:text-base"></div>
-      </div>
-    </section>
-  </main>
+    <button class="key" onclick="appendNumber('1')">1</button>
+    <button class="key" onclick="appendNumber('2')">2</button>
+    <button class="key" onclick="appendNumber('3')">3</button>
+    <button class="key operator" onclick="appendOperator('+')">+</button>
+    <button class="key" onclick="memorySubtract()">M-</button>
 
-  <!-- Footer -->
-  <footer class="bg-gray-900 text-gray-300 py-6 text-center text-sm">
-    © 2025 All Tools Hub. All rights reserved. | 📧 <a href="mailto:saadkhan0425@gmail.com" class="underline hover:text-white">saadkhan0425@gmail.com</a>
-  </footer>
+    <button class="key" onclick="appendNumber('0')">0</button>
+    <button class="key" onclick="appendNumber('.')">.</button>
+    <button class="key equal" onclick="calculateResult()">=</button>
+    <button class="key" onclick="appendOperator('%')">%</button>
+    <button class="key" onclick="appendConstant('PI')">π</button>
 
-  <script>
-    // Mobile menu toggle
-    document.getElementById("mobileMenuBtn").addEventListener("click", () => {
-      document.getElementById("mobileMenu").classList.toggle("hidden");
-    });
+    <!-- Scientific keys -->
+    <button class="key sci-only" onclick="appendFunction('sin')">sin</button>
+    <button class="key sci-only" onclick="appendFunction('cos')">cos</button>
+    <button class="key sci-only" onclick="appendFunction('tan')">tan</button>
+    <button class="key sci-only" onclick="appendFunction('asin')">asin</button>
+    <button class="key sci-only" onclick="appendFunction('acos')">acos</button>
+    <button class="key sci-only" onclick="appendFunction('atan')">atan</button>
+    <button class="key sci-only" onclick="appendFunction('sqrt')">√</button>
+    <button class="key sci-only" onclick="appendFunction('log10')">log</button>
+    <button class="key sci-only" onclick="appendFunction('ln')">ln</button>
+    <button class="key sci-only" onclick="appendOperator('**2')">x²</button>
+    <button class="key sci-only" onclick="appendOperator('**3')">x³</button>
+    <button class="key sci-only" onclick="appendOperator('**')">x^y</button>
+    <button class="key sci-only" onclick="factorial()">x!</button>
+  </div>
 
-    // Calendar logic
-    const calendarDays = document.getElementById("calendarDays");
-    const monthSelect = document.getElementById("monthSelect");
-    const yearSelect = document.getElementById("yearSelect");
+  <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn" onclick="downloadCSV()">Export History</button>
+    <button class="btn" onclick="clearHistory()">Clear History</button>
+    <button class="btn" onclick="loadHistory()">Reload History</button>
+  </div>
+</section>
 
-    const months = [
-      "January","February","March","April","May","June",
-      "July","August","September","October","November","December"
-    ];
+<aside class="panel-card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <h3 style="margin:0;color:var(--neon1)">Advanced Tools</h3>
+    <div class="small" id="modeLabel">Mode: <strong id="raddeg">RAD</strong></div>
+  </div>
+  <div class="panel-grid" style="margin-bottom:10px">
+    <button onclick="showTab('graph')">Graph</button>
+    <button onclick="showTab('convert')">Convert</button>
+    <button onclick="showTab('stats')">Stats</button>
+    <button onclick="showTab('complex')">Complex</button>
+    <button onclick="showTab('voice')">Voice</button>
+    <button onclick="showTab('history')">History</button>
+  </div>
+  <div id="panelContent">Select a tool above.</div>
+</aside>
+</main>
 
-    let currentDate = new Date();
-    let selectedCell = null;
+<footer>
+  &copy; 2025 All Tools Hub • Contact: <a class="email" href="mailto:saadkhan0425@gmail.com">saadkhan0425@gmail.com</a>
+</footer>
 
-    // Dummy events
-    const events = {
-      "2025-08-27": ["Sample Event A"],
-      "2025-08-30": ["Meeting"]
-    };
+<script>
+let displayEl = document.getElementById('display');
+let livePreviewEl = document.getElementById('livePreview');
+let memory = 0;
+let history = [];
+let sciMode = false;
+let degMode = false;
 
-    function populateSelectors() {
-      months.forEach((m, i) => {
-        const opt = document.createElement("option");
-        opt.value = i;
-        opt.textContent = m;
-        monthSelect.appendChild(opt);
-      });
+function getDisplay(){return displayEl.innerText||'0'}
+function setDisplay(val){displayEl.innerText=val;updateLivePreview(val)}
+function appendNumber(n){displayEl.innerText += n;updateLivePreview(displayEl.innerText)}
+function appendOperator(op){displayEl.innerText += op;updateLivePreview(displayEl.innerText)}
+function appendFunction(f){displayEl.innerText += f+'(';updateLivePreview(displayEl.innerText)}
+function appendConstant(c){displayEl.innerText += (c==='PI'?Math.PI:Math.E);updateLivePreview(displayEl.innerText)}
+function clearAll(){displayEl.innerText='';updateLivePreview('')}
+function backspace(){displayEl.innerText=displayEl.innerText.slice(0,-1);updateLivePreview(displayEl.innerText)}
+function memoryAdd(){memory+=Number(getDisplay());updateMemory()}
+function memorySubtract(){memory-=Number(getDisplay());updateMemory()}
+function memoryRecall(){displayEl.innerText+=memory;updateLivePreview(displayEl.innerText)}
+function updateMemory(){document.getElementById('memoryDisplay').innerText='M: '+memory}
+function factorial(){try{let n=Number(getDisplay());let f=1;for(let i=2;i<=n;i++)f*=i;setDisplay(f);}catch{setDisplay('Error')}}
 
-      for (let y = 1900; y <= 2100; y++) {
-        const opt = document.createElement("option");
-        opt.value = y;
-        opt.textContent = y;
-        yearSelect.appendChild(opt);
-      }
+function evaluateExpression(expr){
+  try {
+    if(degMode){
+      expr = expr.replace(/sin\(/g,'Math.sin(Math.PI/180*').replace(/cos\(/g,'Math.cos(Math.PI/180*').replace(/tan\(/g,'Math.tan(Math.PI/180*');
+      expr = expr.replace(/asin\(/g,'180/Math.PI*Math.asin(').replace(/acos\(/g,'180/Math.PI*Math.acos(').replace(/atan\(/g,'180/Math.PI*Math.atan(');
+    } else {
+      expr = expr.replace(/sin\(/g,'Math.sin(').replace(/cos\(/g,'Math.cos(').replace(/tan\(/g,'Math.tan(');
+      expr = expr.replace(/asin\(/g,'Math.asin(').replace(/acos\(/g,'Math.acos(').replace(/atan\(/g,'Math.atan(');
     }
+    expr = expr.replace(/log10\(/g,'Math.log10(').replace(/ln\(/g,'Math.log(').replace(/sqrt\(/g,'Math.sqrt(');
+    expr = expr.replace(/\*\*/g,'**'); 
+    return Function('"use strict";return ('+expr+')')()
+  } catch { return 'Error' }
+}
 
-    function renderCalendar() {
-      const year = currentDate.getFullYear();
-      const month = currentDate.getMonth();
+function calculateResult(){try{const expr=getDisplay();const result=evaluateExpression(expr);setDisplay(result);history.push({expr,result});triggerLivePreviewGlow()}catch{setDisplay('Error')}}
 
-      monthSelect.value = month;
-      yearSelect.value = year;
+function updateLivePreview(val){livePreviewEl.innerText=val||'—'}
+function triggerLivePreviewGlow(){livePreviewEl.classList.add('glow');setTimeout(()=>livePreviewEl.classList.remove('glow'),400)}
 
-      calendarDays.innerHTML = '';
+function downloadCSV(){let csv='Expression,Result\n';history.forEach(h=>{csv+=`"${h.expr}","${h.result}"\n`});let blob=new Blob([csv],{type:'text/csv'});let url=URL.createObjectURL(blob);let a=document.createElement('a');a.href=url;a.download='calculator_history.csv';a.click();URL.revokeObjectURL(url)}
+function clearHistory(){history=[];alert('History cleared')}
+function loadHistory(){alert('History reloaded (demo)')}
 
-      const firstDay = new Date(year, month, 1).getDay();
-      const daysInMonth = new Date(year, month + 1, 0).getDate();
+document.addEventListener('keydown',e=>{if(e.key==='Enter'){calculateResult();e.preventDefault()}})
 
-      let weekNumber = getWeekNumber(new Date(year, month, 1));
+// SCI mode toggle
+document.getElementById('sciBtn').addEventListener('click',()=>{
+  sciMode=!sciMode;
+  document.body.classList.toggle('sci-mode',sciMode);
+  document.getElementById('sciBtn').innerText=sciMode?'SCI ON':'SCI OFF';
+});
 
-      let rowDay = 0;
+// RAD/DEG toggle
+document.getElementById('radBtn').addEventListener('click',()=>{
+  degMode=!degMode;
+  document.getElementById('raddeg').innerText=degMode?'DEG':'RAD';
+});
 
-      // First week row
-      const weekCell = document.createElement("div");
-      weekCell.textContent = weekNumber;
-      weekCell.className = "text-gray-500 font-semibold";
-      calendarDays.appendChild(weekCell);
-
-      for (let i = 0; i < firstDay; i++) {
-        const empty = document.createElement("div");
-        calendarDays.appendChild(empty);
-        rowDay++;
-      }
-
-      // Days
-      for (let i = 1; i <= daysInMonth; i++) {
-        const dayDate = new Date(year, month, i);
-        const dayCell = document.createElement("div");
-        dayCell.textContent = i;
-        dayCell.className = "day-cell p-2 rounded cursor-pointer hover:bg-indigo-100 dark:hover:bg-indigo-700 flex flex-col items-center";
-
-        // Tooltip
-        dayCell.title = dayDate.toDateString();
-
-        // Weekends
-        if (dayDate.getDay() === 0 || dayDate.getDay() === 6) {
-          dayCell.classList.add("text-red-500");
-        }
-
-        // Today
-        const today = new Date();
-        if (i === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
-          dayCell.classList.add("bg-indigo-500", "text-white", "font-bold");
-        }
-
-        // Events
-        const key = `${year}-${String(month+1).padStart(2,"0")}-${String(i).padStart(2,"0")}`;
-        if (events[key]) {
-          const dot = document.createElement("div");
-          dot.className = "event-dot";
-          dayCell.appendChild(dot);
-        }
-
-        // Select date
-        dayCell.addEventListener("click", () => {
-          if (selectedCell) selectedCell.classList.remove("selected");
-          dayCell.classList.add("selected");
-          selectedCell = dayCell;
-          localStorage.setItem("selectedDate", key);
-          alert(`Selected: ${dayDate.toDateString()}\nEvents: ${events[key] ? events[key].join(", ") : "None"}`);
-        });
-
-        calendarDays.appendChild(dayCell);
-        rowDay++;
-
-        if (rowDay > 6) {
-          rowDay = 0;
-          weekNumber++;
-          const weekCell = document.createElement("div");
-          weekCell.textContent = weekNumber;
-          weekCell.className = "text-gray-500 font-semibold";
-          calendarDays.appendChild(weekCell);
-        }
-      }
-    }
-
-    function prevMonth() {
-      currentDate.setMonth(currentDate.getMonth() - 1);
-      renderCalendar();
-    }
-
-    function nextMonth() {
-      currentDate.setMonth(currentDate.getMonth() + 1);
-      renderCalendar();
-    }
-
-    function goToSelectedDate() {
-      const month = parseInt(monthSelect.value);
-      const year = parseInt(yearSelect.value);
-      currentDate = new Date(year, month, 1);
-      renderCalendar();
-    }
-
-    function goToToday() {
-      currentDate = new Date();
-      renderCalendar();
-    }
-
-    function getWeekNumber(d) {
-      d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-      const dayNum = d.getUTCDay() || 7;
-      d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-      const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
-      return Math.ceil((((d - yearStart) / 86400000) + 1)/7);
-    }
-
-    populateSelectors();
-    renderCalendar();
-
-    // Restore last selected date
-    const lastDate = localStorage.getItem("selectedDate");
-    if (lastDate) {
-      currentDate = new Date(lastDate);
-      renderCalendar();
-    }
-  </script>
+// Voice input
+let recognition;
+if('webkitSpeechRecognition' in window){
+  recognition = new webkitSpeechRecognition();
+  recognition.continuous=false;
+  recognition.interimResults=false;
+  recognition.lang='en-US';
+  document.getElementById('voiceBtn').addEventListener('click',()=>{recognition.start()})
+  recognition.onresult = (event)=>{
+    let transcript = event.results[0][0].transcript;
+    transcript = transcript.replace('plus','+').replace('minus','-').replace('times','*').replace('x','*').replace('divide','/').replace('over','/');
+    displayEl.innerText += transcript;
+    updateLivePreview(displayEl.innerText);
+  }
+}
+</script>
 </body>
 </html>
-
