@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Time Zone Converter - All Tools Hub</title>
-  <meta name="description" content="Convert time between different time zones quickly and easily.">
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans">
@@ -25,8 +24,6 @@
       <button id="mobileMenuBtn" class="md:hidden text-2xl">☰</button>
     </div>
   </div>
-
-  <!-- Mobile Menu -->
   <div id="mobileMenu" class="hidden md:hidden bg-white dark:bg-gray-800 border-t text-center py-2 space-y-2">
     <a href="index.html#about" class="block hover:text-indigo-600 dark:hover:text-indigo-400">About</a>
     <a href="index.html#tools" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Tools</a>
@@ -36,7 +33,7 @@
   </div>
 </header>
 
-<!-- Time Zone Converter Section -->
+<!-- Time Zone Converter -->
 <section class="pt-32 pb-16 px-6 max-w-md mx-auto">
   <h2 class="text-3xl font-bold text-indigo-700 dark:text-indigo-400 mb-6 text-center">Time Zone Converter</h2>
 
@@ -45,42 +42,27 @@
     <input type="time" id="sourceTime" class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600">
 
     <label class="block text-gray-700 dark:text-gray-200 font-medium">From Time Zone</label>
-    <select id="fromZone" class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600">
-      <option value="UTC">UTC</option>
-      <option value="GMT">GMT</option>
-      <option value="EST">EST (New York)</option>
-      <option value="PST">PST (Los Angeles)</option>
-      <option value="CET">CET (Europe)</option>
-      <option value="IST">IST (India)</option>
-      <option value="JST">JST (Japan)</option>
-    </select>
+    <select id="fromZone" class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600"></select>
 
     <label class="block text-gray-700 dark:text-gray-200 font-medium">To Time Zone</label>
-    <select id="toZone" class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600">
-      <option value="UTC">UTC</option>
-      <option value="GMT">GMT</option>
-      <option value="EST">EST (New York)</option>
-      <option value="PST">PST (Los Angeles)</option>
-      <option value="CET">CET (Europe)</option>
-      <option value="IST">IST (India)</option>
-      <option value="JST">JST (Japan)</option>
-    </select>
+    <select id="toZone" class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600"></select>
 
     <button onclick="convertTime()" class="w-full bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">Convert Time</button>
-
     <div id="convertedTime" class="mt-4 bg-gray-100 dark:bg-gray-700 p-3 rounded text-gray-700 dark:text-gray-200 text-center font-semibold"></div>
   </div>
 </section>
 
 <!-- Footer -->
 <footer class="bg-gray-900 text-gray-300 py-6 text-center">
-  © 2025 All Tools Hub. All rights reserved.
+  © 2025 All Tools Hub. Contact: <a href="mailto:saadkhan0425@gmail.com" class="text-indigo-400 hover:underline">saadkhan0425@gmail.com</a>
 </footer>
 
 <script>
   // Dark mode toggle
+  if (localStorage.getItem("theme") === "dark") document.body.classList.add("dark");
   document.getElementById("darkToggle").addEventListener("click", () => {
     document.body.classList.toggle("dark");
+    localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
   });
 
   // Mobile menu toggle
@@ -88,38 +70,64 @@
     document.getElementById("mobileMenu").classList.toggle("hidden");
   });
 
-  // Time zone offsets (hours)
-  const tzOffsets = {
-    "UTC": 0,
-    "GMT": 0,
-    "EST": -5,
-    "PST": -8,
-    "CET": 1,
-    "IST": 5.5,
-    "JST": 9
-  };
+  // Limited timezones
+  const timezones = [
+    { tz: "Pacific/Pago_Pago", description: "Midway; Samoa (SST)" },
+    { tz: "America/New_York", description: "Eastern (EST/EDT) - US & Canada" },
+    { tz: "America/Los_Angeles", description: "Pacific (PST/PDT) - US & Canada" },
+    { tz: "Europe/London", description: "United Kingdom (GMT/BST)" },
+    { tz: "Europe/Paris", description: "Central Europe (CET/CEST)" },
+    { tz: "Asia/Kolkata", description: "India (IST)" },
+    { tz: "Asia/Tokyo", description: "Japan (JST)" },
+    { tz: "Asia/Dubai", description: "UAE (GST)" },
+    { tz: "Australia/Sydney", description: "Eastern Australia (AEST/AEDT)" }
+  ];
 
+  // Populate dropdowns
+  function populateTimezones() {
+    const from = document.getElementById("fromZone");
+    const to = document.getElementById("toZone");
+    timezones.forEach(tz => {
+      const option1 = document.createElement("option");
+      option1.value = tz.tz;
+      option1.textContent = `${tz.description} (${tz.tz})`;
+      from.appendChild(option1);
+
+      const option2 = document.createElement("option");
+      option2.value = tz.tz;
+      option2.textContent = `${tz.description} (${tz.tz})`;
+      to.appendChild(option2);
+    });
+    from.value = "UTC";
+    to.value = "UTC";
+  }
+  populateTimezones();
+
+  // Convert time with Next/Previous Day indicator
   function convertTime() {
     const timeStr = document.getElementById("sourceTime").value;
     const from = document.getElementById("fromZone").value;
     const to = document.getElementById("toZone").value;
-
-    if (!timeStr) {
-      alert("Please select a time.");
-      return;
-    }
+    if (!timeStr) return;
 
     let [hours, minutes] = timeStr.split(":").map(Number);
-    const utcHours = hours - tzOffsets[from];
-    let convertedHours = utcHours + tzOffsets[to];
+    const now = new Date();
+    now.setHours(hours, minutes, 0, 0);
 
-    if (convertedHours >= 24) convertedHours -= 24;
-    if (convertedHours < 0) convertedHours += 24;
+    const fromTime = new Date(now.toLocaleString("en-US", { timeZone: from }));
+    const toTime = new Date(now.toLocaleString("en-US", { timeZone: to }));
 
-    const formattedHours = String(Math.floor(convertedHours)).padStart(2, '0');
-    const formattedMinutes = String(minutes).padStart(2, '0');
+    const formattedHours = String(toTime.getHours()).padStart(2, '0');
+    const formattedMinutes = String(toTime.getMinutes()).padStart(2, '0');
 
-    document.getElementById("convertedTime").textContent = `Converted Time: ${formattedHours}:${formattedMinutes} (${to})`;
+    // Determine day difference
+    const dayDiff = toTime.getDate() - fromTime.getDate();
+    let dayText = "";
+    if (dayDiff === 1 || (dayDiff < 0 && Math.abs(dayDiff) > 1)) dayText = " (Next Day)";
+    else if (dayDiff === -1 || (dayDiff > 1)) dayText = " (Previous Day)";
+
+    document.getElementById("convertedTime").textContent = 
+      `Converted Time: ${formattedHours}:${formattedMinutes} (${to})${dayText}`;
   }
 </script>
 
