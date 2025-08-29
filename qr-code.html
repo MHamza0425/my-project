@@ -1,94 +1,266 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>QR Code Generator - All Tools Hub</title>
-  <meta name="description" content="Generate QR codes online for URLs, text, or any content." />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>QR Code Tool - All Tools Hub</title>
+<meta name="description" content="Generate and scan QR codes online." />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+<style>
+  .tab-content { transition: opacity 0.4s ease, transform 0.4s ease; }
+  .tab-content-hidden { opacity: 0; transform: translateY(-20px); position: absolute; width: 100%; pointer-events: none; }
+  .tab-content-visible { opacity: 1; transform: translateY(0); position: relative; pointer-events: auto; }
+
+  /* Toast container */
+  #toastContainer {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+  .toast {
+    min-width: 200px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease, transform 0.4s ease, background-color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.success { background-color: #4ade80; }
+  .toast.error { background-color: #f87171; }
+</style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans">
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans transition-colors">
 
 <!-- Header -->
 <header class="bg-white dark:bg-gray-800 shadow fixed w-full z-50">
   <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
-    <h1 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 cursor-pointer" onclick="window.location.href='index.html'">All Tools Hub</h1>
-    <nav class="hidden md:flex gap-6 text-sm font-medium">
-      <a href="index.html#about" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">About</a>
-      <a href="index.html#tools" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Tools</a>
-      <a href="contact.html" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Contact</a>
-      <a href="privacy.html" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Privacy</a>
-      <a href="terms.html" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Terms</a>
-    </nav>
+    <h1 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 cursor-pointer">All Tools Hub</h1>
     <div class="flex items-center gap-3">
       <button id="darkToggle" class="text-sm px-3 py-1 border rounded hover:bg-gray-200 dark:hover:bg-gray-700">🌙</button>
-      <button id="mobileMenuBtn" class="md:hidden text-2xl">☰</button>
     </div>
-  </div>
-
-  <!-- Mobile Menu -->
-  <div id="mobileMenu" class="hidden md:hidden bg-white dark:bg-gray-800 border-t text-center py-2 space-y-2">
-    <a href="index.html#about" class="block hover:text-indigo-600 dark:hover:text-indigo-400">About</a>
-    <a href="index.html#tools" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Tools</a>
-    <a href="contact.html" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Contact</a>
-    <a href="privacy.html" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Privacy</a>
-    <a href="terms.html" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Terms</a>
   </div>
 </header>
 
-<!-- QR Code Generator Section -->
+<!-- Main Section -->
 <section class="pt-32 pb-16 px-6 max-w-md mx-auto">
-  <h2 class="text-3xl font-bold text-indigo-700 dark:text-indigo-400 mb-6 text-center">QR Code Generator</h2>
+  <h2 class="text-3xl font-bold text-indigo-700 dark:text-indigo-400 mb-6 text-center">QR Code Tool</h2>
 
-  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 space-y-4">
-    <input type="text" id="qrText" placeholder="Enter text or URL" class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600" />
-    <button onclick="generateQR()" class="w-full bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">Generate QR Code</button>
-    <div class="flex justify-center mt-4">
+  <!-- Tabs -->
+  <div class="flex justify-center mb-4 space-x-2">
+    <button class="tab-btn bg-indigo-600 text-white px-4 py-2 rounded" data-tab="generator">Generate</button>
+    <button class="tab-btn bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 px-4 py-2 rounded" data-tab="image">Scan Image</button>
+    <button class="tab-btn bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 px-4 py-2 rounded" data-tab="camera">Scan Camera</button>
+  </div>
+
+  <!-- Tab Contents -->
+  <div id="generator" class="tab-content tab-content-visible bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
+    <input type="text" id="qrText" placeholder="Enter text or URL" class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600 mb-4" />
+    <div class="flex flex-col md:flex-row gap-2 mb-2">
+      <select id="qrSize" class="flex-1 px-2 py-1 border rounded dark:bg-gray-700 dark:border-gray-600">
+        <option value="150">Small (150px)</option>
+        <option value="200" selected>Medium (200px)</option>
+        <option value="300">Large (300px)</option>
+      </select>
+      <select id="qrError" class="flex-1 px-2 py-1 border rounded dark:bg-gray-700 dark:border-gray-600">
+        <option value="L">Error L</option>
+        <option value="M" selected>Error M</option>
+        <option value="Q">Error Q</option>
+        <option value="H">Error H</option>
+      </select>
+    </div>
+    <div class="flex gap-2 mb-4">
+      <input type="color" id="qrFgColor" value="#000000" class="w-1/2 border rounded dark:border-gray-600" />
+      <input type="color" id="qrBgColor" value="#ffffff" class="w-1/2 border rounded dark:border-gray-600" />
+    </div>
+    <div class="flex justify-center mb-4">
       <canvas id="qrCanvas" class="border rounded bg-white dark:bg-gray-700"></canvas>
     </div>
-    <button onclick="downloadQR()" class="w-full bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">Download QR Code</button>
+    <div class="flex flex-col md:flex-row gap-2">
+      <button onclick="downloadQR('png')" class="flex-1 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">Download PNG</button>
+      <button onclick="downloadQR('svg')" class="flex-1 bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700 transition">Download SVG</button>
+      <button onclick="copyQR()" class="flex-1 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">Copy Text</button>
+    </div>
   </div>
+
+  <div id="image" class="tab-content tab-content-hidden bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
+    <input type="file" id="qrFile" accept="image/*" class="w-full border rounded px-2 py-1 dark:bg-gray-700 dark:border-gray-600 mb-2" />
+    <p id="scanResult" class="text-green-600 dark:text-green-400"></p>
+  </div>
+
+  <div id="camera" class="tab-content tab-content-hidden bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
+    <video id="qrVideo" class="w-full border rounded mb-2" autoplay></video>
+    <p id="cameraResult" class="text-green-600 dark:text-green-400 mb-2"></p>
+    <div class="flex gap-2">
+      <button id="startCamera" class="flex-1 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">Start Camera</button>
+      <button id="stopCamera" class="flex-1 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">Stop Camera</button>
+    </div>
+  </div>
+
 </section>
+
+<!-- Toast Container -->
+<div id="toastContainer"></div>
 
 <!-- Footer -->
 <footer class="bg-gray-900 text-gray-300 py-6 text-center">
-  © 2025 All Tools Hub. All rights reserved.
+  Contact: <a href="mailto:saadkhan0425@gmail.com" class="text-indigo-400 hover:underline">saadkhan0425@gmail.com</a>
 </footer>
 
 <script>
-  // Dark mode toggle
-  document.getElementById("darkToggle").addEventListener("click", () => {
-    document.body.classList.toggle("dark");
-  });
-
-  // Mobile menu toggle
-  document.getElementById("mobileMenuBtn").addEventListener("click", () => {
-    document.getElementById("mobileMenu").classList.toggle("hidden");
-  });
-
-  // QR Code logic
-  const qr = new QRious({
-    element: document.getElementById('qrCanvas'),
-    size: 200,
-    value: ''
-  });
-
-  function generateQR() {
-    const text = document.getElementById('qrText').value.trim();
-    if (!text) {
-      alert("Please enter text or URL to generate QR code.");
-      return;
-    }
-    qr.value = text;
+  // Dark mode
+  const darkToggle = document.getElementById("darkToggle");
+  darkToggle.addEventListener("click", () => document.body.classList.toggle("dark"));
+  if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){
+    document.body.classList.add('dark');
   }
 
-  function downloadQR() {
-    const canvas = document.getElementById('qrCanvas');
-    const link = document.createElement('a');
-    link.href = canvas.toDataURL("image/png");
-    link.download = "qr-code.png";
-    link.click();
+  // Tabs
+  const tabs = document.querySelectorAll('.tab-btn');
+  const contents = document.querySelectorAll('.tab-content');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t=>t.classList.remove('bg-indigo-600','text-white'));
+      tabs.forEach(t=>t.classList.add('bg-gray-200','dark:bg-gray-700','text-gray-800','dark:text-gray-100'));
+      tab.classList.add('bg-indigo-600','text-white');
+      contents.forEach(c=>{
+        c.classList.remove('tab-content-visible');
+        c.classList.add('tab-content-hidden');
+      });
+      const active = document.getElementById(tab.dataset.tab);
+      active.classList.remove('tab-content-hidden');
+      active.classList.add('tab-content-visible');
+    });
+  });
+
+  // Stackable toast with icons
+  const toastContainer = document.getElementById('toastContainer');
+  function showToast(message, type='success'){
+    const toast = document.createElement('div');
+    toast.classList.add('toast', type, 'show');
+
+    // Icon
+    const icon = document.createElement('span');
+    icon.textContent = type==='success' ? '✅' : '❌';
+    toast.appendChild(icon);
+
+    // Message
+    const text = document.createElement('span');
+    text.textContent = message;
+    toast.appendChild(text);
+
+    toastContainer.appendChild(toast);
+
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(()=>toastContainer.removeChild(toast),400);
+    }, 3000);
+  }
+
+  // QRious generator
+  let qr = new QRious({ element: document.getElementById('qrCanvas'), size: 200, value: '', background: '#ffffff', foreground: '#000000', level: 'M' });
+  function generateQR() {
+    const text = document.getElementById('qrText').value.trim();
+    if(!text) return;
+    qr.value = text;
+    qr.size = parseInt(document.getElementById('qrSize').value);
+    qr.level = document.getElementById('qrError').value;
+    qr.background = document.getElementById('qrBgColor').value;
+    qr.foreground = document.getElementById('qrFgColor').value;
+  }
+  ['qrText','qrSize','qrError','qrFgColor','qrBgColor'].forEach(id=>{
+    document.getElementById(id).addEventListener('input',generateQR);
+  });
+
+  function downloadQR(type){
+    const text=document.getElementById('qrText').value.trim();
+    if(!text){ showToast('Please enter text or URL!', 'error'); return; }
+    if(type==='png'){
+      const link=document.createElement('a');
+      link.href=document.getElementById('qrCanvas').toDataURL('image/png');
+      link.download='qr-code.png';
+      link.click();
+      showToast('QR code downloaded!');
+    }else if(type==='svg'){
+      const svgData=qr.toDataURL('image/svg+xml');
+      const link=document.createElement('a');
+      link.href=svgData;
+      link.download='qr-code.svg';
+      link.click();
+      showToast('QR code downloaded!');
+    }
+  }
+
+  function copyQR(){
+    const text=document.getElementById('qrText').value.trim();
+    if(!text){ showToast('Nothing to copy!', 'error'); return; }
+    navigator.clipboard.writeText(text).then(()=>showToast('Text copied to clipboard!'));
+  }
+
+  // Scan from image
+  const qrFile = document.getElementById('qrFile');
+  const scanResult = document.getElementById('scanResult');
+  qrFile.addEventListener('change', e=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const img = new Image();
+    img.onload=()=>{
+      const canvas=document.createElement('canvas');
+      canvas.width=img.width; canvas.height=img.height;
+      const ctx=canvas.getContext('2d');
+      ctx.drawImage(img,0,0);
+      const code=jsQR(ctx.getImageData(0,0,canvas.width,canvas.height).data,canvas.width,canvas.height);
+      if(code){
+        scanResult.textContent=`Decoded QR Code: ${code.data}`;
+        showToast('QR code scanned successfully!');
+      }else{
+        scanResult.textContent='No QR code found.';
+        showToast('No QR code found!', 'error');
+      }
+    };
+    img.src=URL.createObjectURL(file);
+  });
+
+  // Camera scanning
+  const video=document.getElementById('qrVideo');
+  const cameraResult=document.getElementById('cameraResult');
+  let stream, scanInterval;
+  document.getElementById('startCamera').addEventListener('click', async ()=>{
+    try{
+      stream=await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'environment' }});
+      video.srcObject=stream;
+      scanInterval=setInterval(scanCamera,500);
+      showToast('Camera started!');
+    }catch{
+      showToast('Unable to access camera!', 'error');
+    }
+  });
+  document.getElementById('stopCamera').addEventListener('click', ()=>{
+    clearInterval(scanInterval);
+    if(stream) stream.getTracks().forEach(track=>track.stop());
+    cameraResult.textContent='';
+    showToast('Camera stopped.');
+  });
+  function scanCamera(){
+    if(video.readyState!==video.HAVE_ENOUGH_DATA) return;
+    const canvas=document.createElement('canvas');
+    canvas.width=video.videoWidth; canvas.height=video.videoHeight;
+    const ctx=canvas.getContext('2d');
+    ctx.drawImage(video,0,0,canvas.width,canvas.height);
+    const code=jsQR(ctx.getImageData(0,0,canvas.width,canvas.height).data,canvas.width,canvas.height);
+    if(code) cameraResult.textContent=`Decoded QR Code: ${code.data}`;
   }
 </script>
 </body>
