@@ -1,135 +1,238 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Time Zone Converter - All Tools Hub</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Time Zone Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f4f4;
+      color: #222;
+      transition: background 0.3s, color 0.3s;
+    }
+    header, footer {
+      text-align: center;
+      padding: 15px;
+      background: #333;
+      color: white;
+    }
+    .container {
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+    }
+    .col {
+      flex: 1;
+      min-width: 280px;
+    }
+    label {
+      display: block;
+      margin: 8px 0 4px;
+    }
+    select, input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      border-radius: 8px;
+      background: #0077cc;
+      color: white;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover { background: #005fa3; }
+    .result-box {
+      text-align: center;
+      font-size: 18px;
+      padding: 10px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+    .dark-mode {
+      background: #121212;
+      color: #eee;
+    }
+    .dark-mode header, .dark-mode footer {
+      background: #000;
+    }
+    .dark-mode .container {
+      background: #1e1e1e;
+      color: #eee;
+    }
+    .dark-mode select, .dark-mode input {
+      background: #333;
+      color: white;
+      border: 1px solid #555;
+    }
+  </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans">
+<body>
+  <header>
+    <h1>🌍 Time Zone Converter</h1>
+    <button onclick="toggleDarkMode()">Toggle Dark/Light</button>
+  </header>
 
-<!-- Header -->
-<header class="bg-white dark:bg-gray-800 shadow fixed w-full z-50">
-  <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
-    <h1 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 cursor-pointer" onclick="window.location.href='index.html'">All Tools Hub</h1>
-    <nav class="hidden md:flex gap-6 text-sm font-medium">
-      <a href="index.html#about" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">About</a>
-      <a href="index.html#tools" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Tools</a>
-      <a href="contact.html" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Contact</a>
-      <a href="privacy.html" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Privacy</a>
-      <a href="terms.html" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Terms</a>
-    </nav>
-    <div class="flex items-center gap-3">
-      <button id="darkToggle" class="text-sm px-3 py-1 border rounded hover:bg-gray-200 dark:hover:bg-gray-700">🌙</button>
-      <button id="mobileMenuBtn" class="md:hidden text-2xl">☰</button>
+  <div class="container">
+    <h2>Convert Between Time Zones</h2>
+
+    <div class="row">
+      <div class="col">
+        <label for="fromZone">From Time Zone:</label>
+        <select id="fromZone"></select>
+        <label for="fromTime">Date & Time:</label>
+        <input type="datetime-local" id="fromTime">
+        <div class="result-box">
+          Local Clock: <span id="fromClock">--:--:--</span>
+        </div>
+      </div>
+
+      <div class="col" style="text-align:center; align-self:center;">
+        <button onclick="swapZones()">⇆ Swap</button><br>
+        <button onclick="adjustDays(-1)">⬅ Previous Day</button>
+        <button onclick="adjustDays(1)">Next Day ➡</button>
+      </div>
+
+      <div class="col">
+        <label for="toZone">To Time Zone:</label>
+        <select id="toZone"></select>
+        <label>Converted Time:</label>
+        <div class="result-box">
+          <span id="toResult">--:--</span>
+        </div>
+        <div class="result-box">
+          Local Clock: <span id="toClock">--:--:--</span>
+        </div>
+      </div>
     </div>
   </div>
-  <div id="mobileMenu" class="hidden md:hidden bg-white dark:bg-gray-800 border-t text-center py-2 space-y-2">
-    <a href="index.html#about" class="block hover:text-indigo-600 dark:hover:text-indigo-400">About</a>
-    <a href="index.html#tools" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Tools</a>
-    <a href="contact.html" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Contact</a>
-    <a href="privacy.html" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Privacy</a>
-    <a href="terms.html" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Terms</a>
-  </div>
-</header>
 
-<!-- Time Zone Converter -->
-<section class="pt-32 pb-16 px-6 max-w-md mx-auto">
-  <h2 class="text-3xl font-bold text-indigo-700 dark:text-indigo-400 mb-6 text-center">Time Zone Converter</h2>
+  <footer>
+    &copy; 2025 International Services | Contact: <a href="mailto:info@internationalservices.com">info@internationalservices.com</a>
+  </footer>
 
-  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 space-y-4">
-    <label class="block text-gray-700 dark:text-gray-200 font-medium">Select Time</label>
-    <input type="time" id="sourceTime" class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600">
+  <script>
+    // --- Timezone List (from tzdb snippet you gave) ---
+    const tzdbList = [
+      "Pacific/Pago_Pago","Pacific/Niue","Pacific/Honolulu","Pacific/Tahiti","America/Adak",
+      "Pacific/Marquesas","Pacific/Gambier","America/Anchorage","Pacific/Pitcairn","America/Los_Angeles",
+      "America/Phoenix","America/Denver","Pacific/Galapagos","America/Mexico_City","Pacific/Easter",
+      "America/Chicago","America/Lima","America/Jamaica","America/Havana","America/New_York",
+      "America/Caracas","America/Santo_Domingo","America/Santiago","America/Halifax","America/St_Johns",
+      "America/Sao_Paulo","America/Miquelon","America/Noronha","America/Nuuk","Atlantic/Cape_Verde",
+      "Atlantic/Azores","Africa/Abidjan","Europe/London","Europe/Lisbon","Antarctica/Troll",
+      "Africa/Algiers","Africa/Lagos","Europe/Dublin","Africa/Casablanca","Europe/Paris",
+      "Africa/Maputo","Africa/Tripoli","Africa/Johannesburg","Europe/Athens","Africa/Cairo",
+      "Asia/Beirut","Europe/Chisinau","Asia/Gaza","Asia/Jerusalem","Europe/Istanbul",
+      "Africa/Nairobi","Europe/Moscow","Asia/Tehran","Asia/Dubai","Asia/Kabul",
+      "Asia/Tashkent","Asia/Karachi","Asia/Colombo","Asia/Kolkata","Asia/Kathmandu",
+      "Asia/Dhaka","Asia/Yangon","Asia/Bangkok","Asia/Jakarta","Asia/Singapore",
+      "Australia/Perth","Asia/Shanghai","Asia/Hong_Kong","Asia/Manila","Asia/Makassar",
+      "Australia/Eucla","Asia/Chita","Asia/Tokyo","Asia/Seoul","Asia/Jayapura",
+      "Australia/Darwin","Australia/Adelaide","Asia/Vladivostok","Australia/Brisbane","Pacific/Guam",
+      "Australia/Sydney","Australia/Lord_Howe","Pacific/Bougainville","Pacific/Norfolk","Asia/Kamchatka",
+      "Pacific/Auckland","Pacific/Chatham","Pacific/Tongatapu","Pacific/Kiritimati"
+    ];
 
-    <label class="block text-gray-700 dark:text-gray-200 font-medium">From Time Zone</label>
-    <select id="fromZone" class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600"></select>
+    function populateTimezones() {
+      const fromSelect = document.getElementById("fromZone");
+      const toSelect = document.getElementById("toZone");
+      tzdbList.forEach(tz => {
+        const opt1 = document.createElement("option");
+        opt1.value = tz; opt1.textContent = tz;
+        const opt2 = opt1.cloneNode(true);
+        fromSelect.appendChild(opt1);
+        toSelect.appendChild(opt2);
+      });
+      fromSelect.value = "Asia/Karachi";
+      toSelect.value = "America/New_York";
+      document.getElementById("fromTime").value = new Date().toISOString().slice(0,16);
+      convertTime();
+    }
 
-    <label class="block text-gray-700 dark:text-gray-200 font-medium">To Time Zone</label>
-    <select id="toZone" class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600"></select>
+    function convertTime() {
+      const fromZone = document.getElementById("fromZone").value;
+      const toZone = document.getElementById("toZone").value;
+      const fromTime = document.getElementById("fromTime").value;
 
-    <button onclick="convertTime()" class="w-full bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">Convert Time</button>
-    <div id="convertedTime" class="mt-4 bg-gray-100 dark:bg-gray-700 p-3 rounded text-gray-700 dark:text-gray-200 text-center font-semibold"></div>
-  </div>
-</section>
+      if (!fromTime) return;
+      const date = new Date(fromTime);
 
-<!-- Footer -->
-<footer class="bg-gray-900 text-gray-300 py-6 text-center">
-  © 2025 All Tools Hub. Contact: <a href="mailto:saadkhan0425@gmail.com" class="text-indigo-400 hover:underline">saadkhan0425@gmail.com</a>
-</footer>
+      const fromDate = new Intl.DateTimeFormat('en-US', {
+        timeZone: fromZone, hour12: false, year: "numeric", month: "2-digit",
+        day: "2-digit", hour: "2-digit", minute: "2-digit"
+      }).format(date);
 
-<script>
-  // Dark mode toggle
-  if (localStorage.getItem("theme") === "dark") document.body.classList.add("dark");
-  document.getElementById("darkToggle").addEventListener("click", () => {
-    document.body.classList.toggle("dark");
-    localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
-  });
+      const [mdy, hm] = fromDate.split(", ");
+      const [month, day, year] = mdy.split("/");
+      const [hour, minute] = hm.split(":");
+      const utcDate = new Date(`${year}-${month}-${day}T${hour}:${minute}:00Z`);
 
-  // Mobile menu toggle
-  document.getElementById("mobileMenuBtn").addEventListener("click", () => {
-    document.getElementById("mobileMenu").classList.toggle("hidden");
-  });
+      const toDate = new Intl.DateTimeFormat('en-US', {
+        timeZone: toZone, hour12: false, year: "numeric", month: "short",
+        day: "2-digit", hour: "2-digit", minute: "2-digit"
+      }).format(utcDate);
 
-  // Limited timezones
-  const timezones = [
-    { tz: "Pacific/Pago_Pago", description: "Midway; Samoa (SST)" },
-    { tz: "America/New_York", description: "Eastern (EST/EDT) - US & Canada" },
-    { tz: "America/Los_Angeles", description: "Pacific (PST/PDT) - US & Canada" },
-    { tz: "Europe/London", description: "United Kingdom (GMT/BST)" },
-    { tz: "Europe/Paris", description: "Central Europe (CET/CEST)" },
-    { tz: "Asia/Kolkata", description: "India (IST)" },
-    { tz: "Asia/Tokyo", description: "Japan (JST)" },
-    { tz: "Asia/Dubai", description: "UAE (GST)" },
-    { tz: "Australia/Sydney", description: "Eastern Australia (AEST/AEDT)" }
-  ];
+      document.getElementById("toResult").textContent = toDate;
+    }
 
-  // Populate dropdowns
-  function populateTimezones() {
-    const from = document.getElementById("fromZone");
-    const to = document.getElementById("toZone");
-    timezones.forEach(tz => {
-      const option1 = document.createElement("option");
-      option1.value = tz.tz;
-      option1.textContent = `${tz.description} (${tz.tz})`;
-      from.appendChild(option1);
+    function swapZones() {
+      const fromZone = document.getElementById("fromZone");
+      const toZone = document.getElementById("toZone");
+      const temp = fromZone.value;
+      fromZone.value = toZone.value;
+      toZone.value = temp;
+      convertTime();
+    }
 
-      const option2 = document.createElement("option");
-      option2.value = tz.tz;
-      option2.textContent = `${tz.description} (${tz.tz})`;
-      to.appendChild(option2);
-    });
-    from.value = "UTC";
-    to.value = "UTC";
-  }
-  populateTimezones();
+    function adjustDays(offset) {
+      const input = document.getElementById("fromTime");
+      if (!input.value) return;
+      let date = new Date(input.value);
+      date.setDate(date.getDate() + offset);
+      input.value = date.toISOString().slice(0,16);
+      convertTime();
+    }
 
-  // Convert time with Next/Previous Day indicator
-  function convertTime() {
-    const timeStr = document.getElementById("sourceTime").value;
-    const from = document.getElementById("fromZone").value;
-    const to = document.getElementById("toZone").value;
-    if (!timeStr) return;
+    function updateClocks() {
+      const fromZone = document.getElementById("fromZone").value;
+      const toZone = document.getElementById("toZone").value;
+      const now = new Date();
+      document.getElementById("fromClock").textContent =
+        new Intl.DateTimeFormat("en-GB", { timeZone: fromZone, hour: "2-digit", minute: "2-digit", second: "2-digit"}).format(now);
+      document.getElementById("toClock").textContent =
+        new Intl.DateTimeFormat("en-GB", { timeZone: toZone, hour: "2-digit", minute: "2-digit", second: "2-digit"}).format(now);
+    }
 
-    let [hours, minutes] = timeStr.split(":").map(Number);
-    const now = new Date();
-    now.setHours(hours, minutes, 0, 0);
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark-mode");
+    }
 
-    const fromTime = new Date(now.toLocaleString("en-US", { timeZone: from }));
-    const toTime = new Date(now.toLocaleString("en-US", { timeZone: to }));
-
-    const formattedHours = String(toTime.getHours()).padStart(2, '0');
-    const formattedMinutes = String(toTime.getMinutes()).padStart(2, '0');
-
-    // Determine day difference
-    const dayDiff = toTime.getDate() - fromTime.getDate();
-    let dayText = "";
-    if (dayDiff === 1 || (dayDiff < 0 && Math.abs(dayDiff) > 1)) dayText = " (Next Day)";
-    else if (dayDiff === -1 || (dayDiff > 1)) dayText = " (Previous Day)";
-
-    document.getElementById("convertedTime").textContent = 
-      `Converted Time: ${formattedHours}:${formattedMinutes} (${to})${dayText}`;
-  }
-</script>
-
+    setInterval(updateClocks, 1000);
+    window.onload = () => { populateTimezones(); updateClocks(); };
+  </script>
 </body>
 </html>
