@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>All Tools Hub - Free Online Tools</title>
   <meta name="description" content="All Tools Hub - Your one-stop solution for free online tools like calculators, converters, password generators, and more.">
+  <meta name="keywords" content="free online tools, calculators, converters, password generator, QR code, image compressor, PDF editor, word counter, case converter">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
@@ -34,6 +35,16 @@
     .tool-card p {
       @apply text-sm text-gray-600 dark:text-gray-300;
     }
+    #settingsModal {
+      transition: opacity 0.3s ease;
+    }
+    #settingsModal.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    #settingsModal:not(.hidden) {
+      opacity: 1;
+    }
   </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans">
@@ -59,10 +70,10 @@
     <!-- Right Buttons -->
     <div class="flex items-center gap-3">
       <!-- Settings Button -->
-      <button id="settingsBtn" class="w-8 h-8 flex items-center justify-center">
+      <button id="settingsBtn" class="w-8 h-8 flex items-center justify-center" aria-label="Settings">
         <i data-lucide="settings" class="w-6 h-6 text-gray-700 dark:text-gray-300 cursor-pointer"></i>
       </button>
-      <button id="mobileMenuBtn" class="md:hidden w-8 h-8 flex items-center justify-center">
+      <button id="mobileMenuBtn" class="md:hidden w-8 h-8 flex items-center justify-center" aria-label="Menu">
         <i data-lucide="menu" class="w-6 h-6 text-gray-700 dark:text-gray-300"></i>
       </button>
     </div>
@@ -87,12 +98,15 @@
 <!-- About Section -->
 <section id="about" class="max-w-5xl mx-auto px-6 py-16 text-center border-t border-gray-200 dark:border-gray-700">
   <h3 class="text-3xl font-bold mb-4 text-[var(--primary-700)] dark:text-[var(--primary-300)]">About All Tools Hub</h3>
-  <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">All Tools Hub provides a variety of online tools including calculators, converters, password generators, QR code generator, image compressor, calendar, compass, PDF editor, image converter, and more. Everything is free, fast, and easy to use.</p>
+  <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">All Tools Hub provides a variety of online tools including calculators, converters, password generators, QR code generator, image compressor, calendar, compass, PDF editor, image converter, word counter, case converter, and more. Everything is free, fast, and easy to use.</p>
 </section>
 
 <!-- Categories Section -->
 <section id="categories" class="max-w-7xl mx-auto px-6 py-16">
   <h3 class="text-3xl font-bold text-center text-[var(--primary-700)] dark:text-[var(--primary-300)] mb-10">Explore Our Free Tools</h3>
+  <div class="mb-8 max-w-md mx-auto">
+    <input id="toolSearch" type="text" placeholder="Search tools..." class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[var(--primary-600)]">
+  </div>
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
     <!-- Category: Calculators -->
@@ -106,6 +120,11 @@
         <i data-lucide="calculator" class="w-6 h-6 mb-2 text-[var(--primary-600)] dark:text-[var(--primary-300)]"></i>
         <h4>Calculator</h4>
         <p>Perform quick and accurate calculations.</p>
+      </div>
+      <div class="tool-card" onclick="window.location.href='bmi-calculator.html'">
+        <i data-lucide="scale" class="w-6 h-6 mb-2 text-[var(--primary-600)] dark:text-[var(--primary-300)]"></i>
+        <h4>BMI Calculator</h4>
+        <p>Calculate your Body Mass Index easily.</p>
       </div>
     </div>
 
@@ -186,6 +205,30 @@
       </div>
     </div>
 
+    <!-- Category: Text Tools -->
+    <div class="category-card" onclick="toggleCategory('textTools')">
+      <i data-lucide="type" class="w-10 h-10 mb-3 text-[var(--primary-600)] dark:text-[var(--primary-300)]"></i>
+      <h4>Text Tools</h4>
+      <p>Manipulate and analyze text easily.</p>
+    </div>
+    <div id="textTools" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-4 col-span-full mt-4">
+      <div class="tool-card" onclick="window.location.href='word-counter.html'">
+        <i data-lucide="hash" class="w-6 h-6 mb-2 text-[var(--primary-600)] dark:text-[var(--primary-300)]"></i>
+        <h4>Word Counter</h4>
+        <p>Count words, characters, and more in your text.</p>
+      </div>
+      <div class="tool-card" onclick="window.location.href='case-converter.html'">
+        <i data-lucide="case-upper" class="w-6 h-6 mb-2 text-[var(--primary-600)] dark:text-[var(--primary-300)]"></i>
+        <h4>Case Converter</h4>
+        <p>Convert text to upper, lower, title case, etc.</p>
+      </div>
+      <div class="tool-card" onclick="window.location.href='text-reverser.html'">
+        <i data-lucide="corner-up-left" class="w-6 h-6 mb-2 text-[var(--primary-600)] dark:text-[var(--primary-300)]"></i>
+        <h4>Text Reverser</h4>
+        <p>Reverse your text or words.</p>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -196,7 +239,7 @@
 </footer>
 
 <!-- Settings Modal -->
-<div id="settingsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+<div id="settingsModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 hidden">
   <div class="bg-white dark:bg-gray-800 p-6 rounded-xl w-80 shadow-xl">
     <h3 class="text-xl font-bold mb-4 text-[var(--primary-600)] dark:text-[var(--primary-300)]">Settings</h3>
 
@@ -223,6 +266,8 @@
         <button class="theme-color w-6 h-6 rounded-full bg-indigo-600" data-color="indigo"></button>
         <button class="theme-color w-6 h-6 rounded-full bg-green-600" data-color="green"></button>
         <button class="theme-color w-6 h-6 rounded-full bg-red-600" data-color="red"></button>
+        <button class="theme-color w-6 h-6 rounded-full bg-blue-600" data-color="blue"></button>
+        <button class="theme-color w-6 h-6 rounded-full bg-orange-600" data-color="orange"></button>
       </div>
     </div>
 
@@ -255,6 +300,20 @@
       '400': '#f87171',
       '600': '#dc2626',
       '700': '#b91c1c'
+    },
+    blue: {
+      '50': '#eff6ff',
+      '300': '#93c5fd',
+      '400': '#60a5fa',
+      '600': '#2563eb',
+      '700': '#1d4ed8'
+    },
+    orange: {
+      '50': '#fff7ed',
+      '300': '#fdba74',
+      '400': '#fb923c',
+      '600': '#ea580c',
+      '700': '#c2410c'
     }
   };
 
@@ -290,32 +349,45 @@
 
   // Load preferences from localStorage
   window.addEventListener('load', () => {
+    // Dark mode
     const savedDark = localStorage.getItem('darkMode');
+    let isDark;
     if (savedDark !== null) {
-      applyDarkMode(savedDark === 'true');
-    }
-
-    const savedTheme = localStorage.getItem('themeColor');
-    if (savedTheme) {
-      applyTheme(savedTheme);
+      isDark = savedDark === 'true';
     } else {
-      applyTheme('indigo');
+      isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    applyDarkMode(isDark);
+
+    // Theme
+    const savedTheme = localStorage.getItem('themeColor') || 'indigo';
+    applyTheme(savedTheme);
+    const selectedThemeBtn = document.querySelector(`.theme-color[data-color="${savedTheme}"]`);
+    if (selectedThemeBtn) {
+      selectedThemeBtn.classList.add('ring-2', 'ring-offset-2', 'ring-[var(--primary-600)]');
     }
 
-    const savedLang = localStorage.getItem('language');
-    if (savedLang) {
-      applyLanguage(savedLang);
-      document.getElementById('language').value = savedLang;
+    // Language
+    const savedLang = localStorage.getItem('language') || 'en';
+    applyLanguage(savedLang);
+    document.getElementById('language').value = savedLang;
+
+    // Init Lucide icons after load
+    lucide.createIcons();
+  });
+
+  // System dark mode change listener
+  const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  darkQuery.addEventListener('change', (e) => {
+    if (localStorage.getItem('darkMode') === null) {
+      applyDarkMode(e.matches);
     }
   });
 
-  // Init Lucide icons
-  lucide.createIcons();
-
   // Dark mode toggle
   document.getElementById("darkToggle").addEventListener("click", () => {
-    const isDark = document.body.classList.toggle("dark");
-    localStorage.setItem('darkMode', isDark ? 'true' : 'false');
+    const isDark = !document.body.classList.contains("dark");
+    applyDarkMode(isDark);
   });
 
   // Mobile menu toggle
@@ -330,11 +402,19 @@
 
   settingsBtn.addEventListener("click", () => settingsModal.classList.remove("hidden"));
   closeSettings.addEventListener("click", () => settingsModal.classList.add("hidden"));
+  settingsModal.addEventListener("click", (e) => {
+    if (e.target === settingsModal) {
+      settingsModal.classList.add("hidden");
+    }
+  });
 
   // Theme color switch
   document.querySelectorAll(".theme-color").forEach(btn => {
     btn.addEventListener("click", () => {
-      applyTheme(btn.dataset.color);
+      const color = btn.dataset.color;
+      applyTheme(color);
+      document.querySelectorAll('.theme-color').forEach(b => b.classList.remove('ring-2', 'ring-offset-2', 'ring-[var(--primary-600)]'));
+      btn.classList.add('ring-2', 'ring-offset-2', 'ring-[var(--primary-600)]');
     });
   });
 
@@ -352,6 +432,29 @@
     });
     document.getElementById(id).classList.toggle("hidden");
   }
+
+  // Tool search
+  document.getElementById('toolSearch').addEventListener('input', (e) => {
+    const term = e.target.value.toLowerCase().trim();
+    if (term === '') {
+      // Reset
+      document.querySelectorAll('[id$="Tools"]').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tool-card').forEach(card => card.style.display = '');
+      return;
+    }
+    // Expand all
+    document.querySelectorAll('[id$="Tools"]').forEach(el => el.classList.remove('hidden'));
+    // Filter
+    document.querySelectorAll('.tool-card').forEach(card => {
+      const title = card.querySelector('h4').textContent.toLowerCase();
+      const desc = card.querySelector('p').textContent.toLowerCase();
+      if (title.includes(term) || desc.includes(term)) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  });
 </script>
 
 </body>
