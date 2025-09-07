@@ -7,6 +7,34 @@
   <meta name="description" content="All Tools Hub - Your one-stop solution for free online tools like calculators, converters, password generators, and more.">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --primary-50: #eef2ff;
+      --primary-300: #a5b4fc;
+      --primary-400: #818cf8;
+      --primary-600: #4f46e5;
+      --primary-700: #4338ca;
+      --primary-50-dark: #1e1b4b; /* Adjusted for dark mode if needed, but using gray for bg */
+    }
+    .category-card {
+      @apply bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 hover:shadow-xl transition cursor-pointer text-center;
+    }
+    .category-card h4 {
+      @apply text-xl font-semibold mb-2;
+    }
+    .category-card p {
+      @apply text-sm text-gray-600 dark:text-gray-300;
+    }
+    .tool-card {
+      @apply bg-gray-50 dark:bg-gray-700 rounded-xl shadow p-4 text-center cursor-pointer hover:shadow-lg transition;
+    }
+    .tool-card h4 {
+      @apply text-lg font-semibold mb-1;
+    }
+    .tool-card p {
+      @apply text-sm text-gray-600 dark:text-gray-300;
+    }
+  </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans">
 
@@ -15,65 +43,67 @@
   <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
     <!-- Logo -->
     <div class="flex items-center gap-2 cursor-pointer" onclick="window.scrollTo({top:0, behavior:'smooth'})">
-      <i data-lucide="layers" class="w-7 h-7 text-indigo-600 dark:text-indigo-400"></i>
-      <h1 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">All Tools Hub</h1>
+      <i data-lucide="layers" class="w-7 h-7 text-[var(--primary-600)] dark:text-[var(--primary-400)]"></i>
+      <h1 class="text-2xl font-bold text-[var(--primary-600)] dark:text-[var(--primary-400)]">All Tools Hub</h1>
     </div>
 
     <!-- Desktop Nav -->
     <nav class="hidden md:flex gap-6 text-sm font-medium">
-      <a href="#about" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">About</a>
-      <a href="#categories" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Tools</a>
-      <a href="contact.html" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Contact</a>
-      <a href="privacy.html" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Privacy</a>
-      <a href="terms.html" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Terms</a>
+      <a href="#about" class="hover:text-[var(--primary-600)] dark:hover:text-[var(--primary-400)] transition">About</a>
+      <a href="#categories" class="hover:text-[var(--primary-600)] dark:hover:text-[var(--primary-400)] transition">Tools</a>
+      <a href="contact.html" class="hover:text-[var(--primary-600)] dark:hover:text-[var(--primary-400)] transition">Contact</a>
+      <a href="privacy.html" class="hover:text-[var(--primary-600)] dark:hover:text-[var(--primary-400)] transition">Privacy</a>
+      <a href="terms.html" class="hover:text-[var(--primary-600)] dark:hover:text-[var(--primary-400)] transition">Terms</a>
     </nav>
 
     <!-- Right Buttons -->
     <div class="flex items-center gap-3">
       <!-- Settings Button -->
-      <button id="settingsBtn" class="w-8 h-8">
-        <i data-lucide="settings" class="w-8 h-8 text-gray-700 dark:text-gray-300 cursor-pointer"></i>
+      <button id="settingsBtn" class="w-8 h-8 flex items-center justify-center">
+        <i data-lucide="settings" class="w-6 h-6 text-gray-700 dark:text-gray-300 cursor-pointer"></i>
       </button>
-      <button id="mobileMenuBtn" class="md:hidden text-2xl">☰</button>
+      <button id="mobileMenuBtn" class="md:hidden w-8 h-8 flex items-center justify-center">
+        <i data-lucide="menu" class="w-6 h-6 text-gray-700 dark:text-gray-300"></i>
+      </button>
     </div>
   </div>
 
   <!-- Mobile Menu -->
   <div id="mobileMenu" class="hidden md:hidden bg-white dark:bg-gray-800 border-t text-center py-2 space-y-2">
-    <a href="#about" class="block hover:text-indigo-600 dark:hover:text-indigo-400">About</a>
-    <a href="#categories" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Tools</a>
-    <a href="contact.html" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Contact</a>
-    <a href="privacy.html" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Privacy</a>
-    <a href="terms.html" class="block hover:text-indigo-600 dark:hover:text-indigo-400">Terms</a>
+    <a href="#about" class="block hover:text-[var(--primary-600)] dark:hover:text-[var(--primary-400)]">About</a>
+    <a href="#categories" class="block hover:text-[var(--primary-600)] dark:hover:text-[var(--primary-400)]">Tools</a>
+    <a href="contact.html" class="block hover:text-[var(--primary-600)] dark:hover:text-[var(--primary-400)]">Contact</a>
+    <a href="privacy.html" class="block hover:text-[var(--primary-600)] dark:hover:text-[var(--primary-400)]">Privacy</a>
+    <a href="terms.html" class="block hover:text-[var(--primary-600)] dark:hover:text-[var(--primary-400)]">Terms</a>
   </div>
 </header>
 
 <!-- Hero Section -->
-<section class="pt-32 pb-16 text-center bg-gradient-to-r from-indigo-50 to-white dark:from-gray-800 dark:to-gray-900">
-  <h2 class="text-5xl font-extrabold mb-4 text-indigo-700 dark:text-indigo-300">Welcome to All Tools Hub</h2>
+<section class="pt-32 pb-16 text-center bg-gradient-to-r from-[var(--primary-50)] to-white dark:from-gray-800 dark:to-gray-900">
+  <h2 class="text-5xl font-extrabold mb-4 text-[var(--primary-700)] dark:text-[var(--primary-300)]">Welcome to All Tools Hub</h2>
   <p class="text-lg md:text-xl mb-10 max-w-2xl mx-auto text-gray-600 dark:text-gray-300">Your one-stop solution for free online tools like calculators, converters, password generators, and more.</p>
 </section>
 
 <!-- About Section -->
 <section id="about" class="max-w-5xl mx-auto px-6 py-16 text-center border-t border-gray-200 dark:border-gray-700">
-  <h3 class="text-3xl font-bold mb-4 text-indigo-700 dark:text-indigo-300">About All Tools Hub</h3>
+  <h3 class="text-3xl font-bold mb-4 text-[var(--primary-700)] dark:text-[var(--primary-300)]">About All Tools Hub</h3>
   <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">All Tools Hub provides a variety of online tools including calculators, converters, password generators, QR code generator, image compressor, calendar, compass, PDF editor, image converter, and more. Everything is free, fast, and easy to use.</p>
 </section>
 
 <!-- Categories Section -->
 <section id="categories" class="max-w-7xl mx-auto px-6 py-16">
-  <h3 class="text-3xl font-bold text-center text-indigo-700 dark:text-indigo-300 mb-10">Explore Our Free Tools</h3>
+  <h3 class="text-3xl font-bold text-center text-[var(--primary-700)] dark:text-[var(--primary-300)] mb-10">Explore Our Free Tools</h3>
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
     <!-- Category: Calculators -->
     <div class="category-card" onclick="toggleCategory('calcTools')">
-      <i data-lucide="calculator" class="w-10 h-10 mb-3 text-indigo-600 dark:text-indigo-300"></i>
+      <i data-lucide="calculator" class="w-10 h-10 mb-3 text-[var(--primary-600)] dark:text-[var(--primary-300)]"></i>
       <h4>Calculators</h4>
       <p>Perform quick calculations with ease.</p>
     </div>
-    <div id="calcTools" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-4 col-span-3 mt-4">
+    <div id="calcTools" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-4 col-span-full mt-4">
       <div class="tool-card" onclick="window.location.href='calculator.html'">
-        <i data-lucide="calculator" class="w-6 h-6 mb-2 text-indigo-600 dark:text-indigo-300"></i>
+        <i data-lucide="calculator" class="w-6 h-6 mb-2 text-[var(--primary-600)] dark:text-[var(--primary-300)]"></i>
         <h4>Calculator</h4>
         <p>Perform quick and accurate calculations.</p>
       </div>
@@ -81,28 +111,28 @@
 
     <!-- Category: Converters -->
     <div class="category-card" onclick="toggleCategory('converterTools')">
-      <i data-lucide="repeat" class="w-10 h-10 mb-3 text-indigo-600 dark:text-indigo-300"></i>
+      <i data-lucide="repeat" class="w-10 h-10 mb-3 text-[var(--primary-600)] dark:text-[var(--primary-300)]"></i>
       <h4>Converters</h4>
       <p>Convert files, images, and more.</p>
     </div>
-    <div id="converterTools" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-4 col-span-3 mt-4">
+    <div id="converterTools" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-4 col-span-full mt-4">
       <div class="tool-card" onclick="window.location.href='qr-code.html'">
-        <i data-lucide="qrcode" class="w-6 h-6 mb-2 text-indigo-600 dark:text-indigo-300"></i>
+        <i data-lucide="qrcode" class="w-6 h-6 mb-2 text-[var(--primary-600)] dark:text-[var(--primary-300)]"></i>
         <h4>QR Code Generator</h4>
         <p>Generate QR codes for links, text, and more.</p>
       </div>
       <div class="tool-card" onclick="window.location.href='image-compressor.html'">
-        <i data-lucide="image" class="w-6 h-6 mb-2 text-indigo-600 dark:text-indigo-300"></i>
+        <i data-lucide="image" class="w-6 h-6 mb-2 text-[var(--primary-600)] dark:text-[var(--primary-300)]"></i>
         <h4>Image Compressor</h4>
         <p>Reduce image size without losing quality.</p>
       </div>
       <div class="tool-card" onclick="window.location.href='image-converter.html'">
-        <i data-lucide="repeat" class="w-6 h-6 mb-2 text-indigo-600 dark:text-indigo-300"></i>
+        <i data-lucide="repeat" class="w-6 h-6 mb-2 text-[var(--primary-600)] dark:text-[var(--primary-300)]"></i>
         <h4>Image Converter</h4>
         <p>Convert images between JPG, PNG, and WebP.</p>
       </div>
       <div class="tool-card" onclick="window.location.href='time-zone-converter.html'">
-        <i data-lucide="globe" class="w-6 h-6 mb-2 text-indigo-600 dark:text-indigo-300"></i>
+        <i data-lucide="globe" class="w-6 h-6 mb-2 text-[var(--primary-600)] dark:text-[var(--primary-300)]"></i>
         <h4>Time Zone Converter</h4>
         <p>Convert time across different zones easily.</p>
       </div>
@@ -110,23 +140,23 @@
 
     <!-- Category: Productivity -->
     <div class="category-card" onclick="toggleCategory('productivityTools')">
-      <i data-lucide="briefcase" class="w-10 h-10 mb-3 text-indigo-600 dark:text-indigo-300"></i>
+      <i data-lucide="briefcase" class="w-10 h-10 mb-3 text-[var(--primary-600)] dark:text-[var(--primary-300)]"></i>
       <h4>Productivity</h4>
       <p>Boost your workflow with smart tools.</p>
     </div>
-    <div id="productivityTools" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-4 col-span-3 mt-4">
+    <div id="productivityTools" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-4 col-span-full mt-4">
       <div class="tool-card" onclick="window.location.href='calendar.html'">
-        <i data-lucide="calendar" class="w-6 h-6 mb-2 text-indigo-600 dark:text-indigo-300"></i>
+        <i data-lucide="calendar" class="w-6 h-6 mb-2 text-[var(--primary-600)] dark:text-[var(--primary-300)]"></i>
         <h4>Calendar</h4>
         <p>Plan your events and schedule easily.</p>
       </div>
       <div class="tool-card" onclick="window.location.href='trip-planner.html'">
-        <i data-lucide="map" class="w-6 h-6 mb-2 text-indigo-600 dark:text-indigo-300"></i>
+        <i data-lucide="map" class="w-6 h-6 mb-2 text-[var(--primary-600)] dark:text-[var(--primary-300)]"></i>
         <h4>Trip Planner</h4>
         <p>Plan your trips easily and efficiently.</p>
       </div>
       <div class="tool-card" onclick="window.location.href='pdf-editor.html'">
-        <i data-lucide="file-text" class="w-6 h-6 mb-2 text-indigo-600 dark:text-indigo-300"></i>
+        <i data-lucide="file-text" class="w-6 h-6 mb-2 text-[var(--primary-600)] dark:text-[var(--primary-300)]"></i>
         <h4>PDF Editor</h4>
         <p>Edit, merge, and split your PDFs with ease.</p>
       </div>
@@ -134,23 +164,23 @@
 
     <!-- Category: Utilities -->
     <div class="category-card" onclick="toggleCategory('utilityTools')">
-      <i data-lucide="package" class="w-10 h-10 mb-3 text-indigo-600 dark:text-indigo-300"></i>
+      <i data-lucide="package" class="w-10 h-10 mb-3 text-[var(--primary-600)] dark:text-[var(--primary-300)]"></i>
       <h4>Utilities</h4>
       <p>Essential handy tools.</p>
     </div>
-    <div id="utilityTools" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-4 col-span-3 mt-4">
+    <div id="utilityTools" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-4 col-span-full mt-4">
       <div class="tool-card" onclick="window.location.href='password-generator.html'">
-        <i data-lucide="key" class="w-6 h-6 mb-2 text-indigo-600 dark:text-indigo-300"></i>
+        <i data-lucide="key" class="w-6 h-6 mb-2 text-[var(--primary-600)] dark:text-[var(--primary-300)]"></i>
         <h4>Password Generator</h4>
         <p>Generate strong and secure passwords.</p>
       </div>
       <div class="tool-card" onclick="window.location.href='voice-recorder.html'">
-        <i data-lucide="mic" class="w-6 h-6 mb-2 text-indigo-600 dark:text-indigo-300"></i>
+        <i data-lucide="mic" class="w-6 h-6 mb-2 text-[var(--primary-600)] dark:text-[var(--primary-300)]"></i>
         <h4>Voice Recorder</h4>
         <p>Record audio directly in your browser.</p>
       </div>
       <div class="tool-card" onclick="window.location.href='compass.html'">
-        <i data-lucide="compass" class="w-6 h-6 mb-2 text-indigo-600 dark:text-indigo-300"></i>
+        <i data-lucide="compass" class="w-6 h-6 mb-2 text-[var(--primary-600)] dark:text-[var(--primary-300)]"></i>
         <h4>Compass</h4>
         <p>Find your direction instantly using your device.</p>
       </div>
@@ -162,24 +192,24 @@
 <!-- Footer -->
 <footer class="bg-gray-900 text-gray-300 py-6 text-center">
   © 2025 All Tools Hub. All rights reserved. <br>
-  Contact: <a href="mailto:saadkhan0425@gmail.com" class="text-indigo-400 hover:underline">saadkhan0425@gmail.com</a>
+  Contact: <a href="mailto:saadkhan0425@gmail.com" class="text-[var(--primary-400)] hover:underline">saadkhan0425@gmail.com</a>
 </footer>
 
 <!-- Settings Modal -->
-<div id="settingsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+<div id="settingsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
   <div class="bg-white dark:bg-gray-800 p-6 rounded-xl w-80 shadow-xl">
-    <h3 class="text-xl font-bold mb-4 text-indigo-600 dark:text-indigo-300">Settings</h3>
+    <h3 class="text-xl font-bold mb-4 text-[var(--primary-600)] dark:text-[var(--primary-300)]">Settings</h3>
 
     <!-- Dark Mode -->
     <div class="flex justify-between items-center mb-3">
       <span>Dark Mode</span>
-      <button id="darkToggle" class="px-3 py-1 border rounded">Toggle</button>
+      <button id="darkToggle" class="px-3 py-1 border rounded bg-[var(--primary-600)] text-white">Toggle</button>
     </div>
 
     <!-- Language -->
     <div class="mb-3">
       <label for="language" class="block mb-1">Language</label>
-      <select id="language" class="w-full p-2 border rounded dark:bg-gray-700">
+      <select id="language" class="w-full p-2 border rounded dark:bg-gray-700 dark:text-gray-200">
         <option value="en">English</option>
         <option value="ur">اردو</option>
         <option value="ar">العربية</option>
@@ -197,39 +227,95 @@
     </div>
 
     <div class="text-right">
-      <button id="closeSettings" class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded">Close</button>
+      <button id="closeSettings" class="mt-4 px-4 py-2 bg-[var(--primary-600)] text-white rounded">Close</button>
     </div>
   </div>
 </div>
 
-<style>
-  .category-card {
-    @apply bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 hover:shadow-xl transition cursor-pointer text-center;
-  }
-  .category-card h4 {
-    @apply text-xl font-semibold mb-2;
-  }
-  .category-card p {
-    @apply text-sm text-gray-600 dark:text-gray-300;
-  }
-  .tool-card {
-    @apply bg-gray-50 dark:bg-gray-700 rounded-xl shadow p-4 text-center cursor-pointer hover:shadow-lg transition;
-  }
-  .tool-card h4 {
-    @apply text-lg font-semibold mb-1;
-  }
-  .tool-card p {
-    @apply text-sm text-gray-600 dark:text-gray-300;
-  }
-</style>
-
 <script>
+  // Themes definition
+  const themes = {
+    indigo: {
+      '50': '#eef2ff',
+      '300': '#a5b4fc',
+      '400': '#818cf8',
+      '600': '#4f46e5',
+      '700': '#4338ca'
+    },
+    green: {
+      '50': '#f0fdf4',
+      '300': '#86efac',
+      '400': '#4ade80',
+      '600': '#16a34a',
+      '700': '#15803d'
+    },
+    red: {
+      '50': '#fef2f2',
+      '300': '#fca5a5',
+      '400': '#f87171',
+      '600': '#dc2626',
+      '700': '#b91c1c'
+    }
+  };
+
+  // Function to apply theme
+  function applyTheme(color) {
+    const theme = themes[color] || themes.indigo;
+    Object.entries(theme).forEach(([shade, value]) => {
+      document.documentElement.style.setProperty(`--primary-${shade}`, value);
+    });
+    localStorage.setItem('themeColor', color);
+  }
+
+  // Function to apply dark mode
+  function applyDarkMode(isDark) {
+    if (isDark) {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
+    localStorage.setItem('darkMode', isDark ? 'true' : 'false');
+  }
+
+  // Function to apply language
+  function applyLanguage(lang) {
+    document.documentElement.lang = lang;
+    if (['ur', 'ar'].includes(lang)) {
+      document.documentElement.dir = 'rtl';
+    } else {
+      document.documentElement.dir = 'ltr';
+    }
+    localStorage.setItem('language', lang);
+  }
+
+  // Load preferences from localStorage
+  window.addEventListener('load', () => {
+    const savedDark = localStorage.getItem('darkMode');
+    if (savedDark !== null) {
+      applyDarkMode(savedDark === 'true');
+    }
+
+    const savedTheme = localStorage.getItem('themeColor');
+    if (savedTheme) {
+      applyTheme(savedTheme);
+    } else {
+      applyTheme('indigo');
+    }
+
+    const savedLang = localStorage.getItem('language');
+    if (savedLang) {
+      applyLanguage(savedLang);
+      document.getElementById('language').value = savedLang;
+    }
+  });
+
   // Init Lucide icons
   lucide.createIcons();
 
   // Dark mode toggle
   document.getElementById("darkToggle").addEventListener("click", () => {
-    document.body.classList.toggle("dark");
+    const isDark = document.body.classList.toggle("dark");
+    localStorage.setItem('darkMode', isDark ? 'true' : 'false');
   });
 
   // Mobile menu toggle
@@ -248,8 +334,13 @@
   // Theme color switch
   document.querySelectorAll(".theme-color").forEach(btn => {
     btn.addEventListener("click", () => {
-      document.documentElement.style.setProperty("--theme-color", btn.dataset.color);
+      applyTheme(btn.dataset.color);
     });
+  });
+
+  // Language change
+  document.getElementById("language").addEventListener("change", (e) => {
+    applyLanguage(e.target.value);
   });
 
   // Category expand/collapse
