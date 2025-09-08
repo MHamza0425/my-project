@@ -1,0 +1,33 @@
+// HEADER
+document.getElementById("header").innerHTML = `
+<header class="bg-white dark:bg-gray-800 shadow fixed w-full z-50">
+  <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+    <div class="flex items-center gap-2 cursor-pointer" onclick="window.location.href='index.html'">
+      <i data-lucide="layers" class="w-7 h-7 text-[var(--primary-600)]"></i>
+      <h1 data-translate="brand" class="text-2xl font-bold text-[var(--primary-600)]">All Tools Hub</h1>
+    </div>
+    <nav class="hidden md:flex gap-6 text-sm font-medium">
+      <a href="index.html#about" data-translate="about">About</a>
+      <a href="index.html#categories" data-translate="tools">Tools</a>
+      <a href="contact.html" data-translate="contact">Contact</a>
+      <a href="privacy.html" data-translate="privacy">Privacy</a>
+      <a href="terms.html" data-translate="terms">Terms</a>
+    </nav>
+    <button onclick="openSettings()" class="ml-4 p-2 rounded-lg border">
+      <i data-lucide="settings"></i>
+    </button>
+  </div>
+</header>
+`;
+
+// FOOTER
+document.getElementById("footer").innerHTML = `
+<footer class="bg-gray-900 text-gray-300 py-6 text-center mt-12">
+  <p data-translate="footer">© 2025 All Tools Hub. All rights reserved.</p>
+  <p><span data-translate="contact">Contact</span>: 
+    <a href="mailto:saadkhan0425@gmail.com" class="text-[var(--primary-400)]">
+      saadkhan0425@gmail.com
+    </a>
+  </p>
+</footer>
+`;
