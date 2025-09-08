@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Compass — All Tools Hub</title>
+<meta name="description" content="Compass Tool with live dial, GPS, map, true/magnetic north toggle, history, exports, TTS, themes and more." />
+<!-- Tailwind CDN for quick styling -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Leaflet for map -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- jsPDF for PDF export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+  :root{--theme:#2563eb}
+  body { -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+  .card { background: white; border-radius: 12px; padding: 1rem; box-shadow: 0 10px 30px rgba(2,6,23,0.06); transition: all .25s; }
+  .dark .card { background:#071026; box-shadow:0 10px 30px rgba(2,6,23,0.35); color:#e6eef8; }
+  /* Dial */
+  .dial { width:320px; height:320px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto; position:relative; transition: all .35s; }
+  .dial-inner { width:250px; height:250px; border-radius:50%; position:relative; display:flex; align-items:center; justify-content:center; }
+  .north-mark { position:absolute; top:10px; left:50%; transform:translateX(-50%); font-weight:700; color:var(--theme); }
+  /* needle */
+  .needle { width:8px; height:120px; position:absolute; top:40px; left:50%; transform-origin:50% 90%; border-radius:6px; transition: transform .28s cubic-bezier(.2,.9,.2,1), box-shadow .25s; box-shadow:0 12px 30px rgba(2,6,23,0.12); }
+  .needle::after { content:''; position:absolute; left:50%; top:-12px; transform:translateX(-50%); width:22px; height:22px; border-radius:50%; background: radial-gradient(#fff,#ccc); border:2px solid rgba(0,0,0,0.08); }
+
+  .needle.classic { background: linear-gradient(#ef4444,#7f1d1d); }
+  .needle.modern  { background: linear-gradient(#3b82f6,#1e40af); }
+  .needle.neon    { background: linear-gradient(#06b6d4,#0891b2); box-shadow: 0 0 15px rgba(6,182,212,0.7), 0 8px 30px rgba(6,182,212,0.18); }
+
+  /* Dial themes */
+  .dial.theme-light { background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.06), transparent 15%), linear-gradient(180deg,#ffffff,#f3f4f6); border:6px solid rgba(0,0,0,0.04); }
+  .dial.theme-dark  { background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.02), transparent 15%), linear-gradient(180deg,#0b1220,#071028); border:6px solid rgba(255,255,255,0.04); }
+  .dial.theme-wood  { background: linear-gradient(180deg,#b08968,#8b5e34); border:6px solid rgba(0,0,0,0.06); box-shadow: 0 12px 40px rgba(139,94,52,0.12); }
+  .dial.theme-metal { background: linear-gradient(180deg,#d1d5db,#9ca3af); border:6px solid rgba(0,0,0,0.06); box-shadow:0 12px 40px rgba(0,0,0,0.12); }
+
+  /* small controls */
+  .small { font-size: .9rem; }
+  #map { height: 240px; border-radius:8px; }
+  .toast { position: fixed; right:20px; bottom:20px; background:var(--theme); color:#fff; padding:10px 14px; border-radius:8px; opacity:0; transform:translateY(8px); transition:all .25s; z-index:60; }
+  .toast.show{ opacity:1; transform:translateY(0); }
+
+  @media (max-width:640px){
+    .dial { width:220px; height:220px; }
+    .dial-inner{ width:170px; height:170px; }
+    .needle{ height:86px; width:6px; top:30px; }
+  }
+</style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100">
+
+<!-- Header -->
+<header class="fixed top-0 inset-x-0 z-50 bg-white dark:bg-gray-800 shadow">
+  <div class="max-w-6xl mx-auto flex items-center justify-between p-4">
+    <a href="index.html" class="text-2xl font-bold text-blue-600 dark:text-blue-400">All Tools Hub</a>
+    <div class="flex items-center gap-3">
+      <select id="uiLang" class="p-1 rounded border dark:bg-gray-700 text-sm">
+        <option value="en">English</option>
+        <option value="ur">اردو</option>
+        <option value="ar">العربية</option>
+        <option value="fr">Français</option>
+        <option value="zh">中文</option>
+        <option value="hi">हिन्दी</option>
+      </select>
+      <button id="themeToggle" class="px-3 py-1 border rounded">🌙</button>
+    </div>
+  </div>
+</header>
+
+<main class="pt-28 pb-10">
+  <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-6">
+
+    <!-- Left: dial + controls -->
+    <section class="card p-6">
+      <div class="flex flex-col items-center gap-4">
+        <div id="dialWrap">
+          <div id="dial" class="dial theme-light" role="img" aria-label="Compass dial">
+            <div class="dial-inner">
+              <div class="north-mark">N</div>
+              <div id="needle" class="needle classic" style="transform:rotate(0deg)"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center">
+          <div id="lblDirection" class="text-xs text-gray-500 dark:text-gray-300">Direction</div>
+          <div id="directionText" class="text-3xl font-bold mt-1">—</div>
+          <div id="degreeText" class="text-sm text-gray-600 dark:text-gray-300 mt-1">0°</div>
+        </div>
+
+        <div class="flex flex-wrap gap-2 justify-center mt-3">
+          <button id="copyBtn" class="px-4 py-2 rounded bg-indigo-600 text-white">Copy</button>
+
+          <div class="relative inline-block">
+            <button id="downloadBtn" class="px-4 py-2 rounded bg-indigo-600 text-white">Download</button>
+            <div id="downloadMenu" class="hidden absolute right-0 mt-1 w-40 bg-white dark:bg-gray-700 rounded shadow-md overflow-hidden z-40">
+              <button class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600" data-type="txt">📄 TXT</button>
+              <button class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600" data-type="csv">📊 CSV</button>
+              <button class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600" data-type="json">🗂 JSON</button>
+              <button class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600" data-type="pdf">📑 PDF</button>
+            </div>
+          </div>
+
+          <button id="speakBtn" class="px-4 py-2 rounded border">🔊 Speak</button>
+          <button id="fullscreenBtn" class="px-4 py-2 rounded border">⛶ Fullscreen</button>
+        </div>
+
+        <!-- Calibration / fallback slider -->
+        <div class="w-full mt-4">
+          <label class="block text-sm mb-1">Calibration / Fallback (manual)</label>
+          <input id="calibSlider" type="range" min="0" max="359" value="0" class="w-full" />
+        </div>
+
+        <!-- Magnetic / True north -->
+        <div class="mt-3 w-full grid grid-cols-1 md:grid-cols-2 gap-2">
+          <div>
+            <label class="block text-sm mb-1">North Mode</label>
+            <select id="northMode" class="p-2 rounded border w-full dark:bg-gray-700">
+              <option value="magnetic">Magnetic North (device)</option>
+              <option value="true">True North (requires location)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm mb-1">Declination (°) — manual override</label>
+            <input id="declination" type="number" step="0.1" class="p-2 rounded border w-full dark:bg-gray-700" placeholder="0.0" />
+            <button id="fetchDecl" class="mt-2 px-3 py-1 rounded border text-sm w-full">Fetch Declination</button>
+          </div>
+        </div>
+
+        <!-- Map collapse -->
+        <div class="mt-4 w-full">
+          <button id="toggleMap" class="px-3 py-2 rounded bg-gray-100 dark:bg-gray-700 w-full">Show Map & GPS</button>
+          <div id="mapPanel" class="mt-3 hidden">
+            <div id="map"></div>
+            <div class="mt-2 grid grid-cols-2 gap-2 text-sm">
+              <div class="p-2 rounded bg-gray-100 dark:bg-gray-700"><div class="opacity-70">Latitude</div><div id="lat">—</div></div>
+              <div class="p-2 rounded bg-gray-100 dark:bg-gray-700"><div class="opacity-70">Longitude</div><div id="lon">—</div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Right: options, history, voice -->
+    <aside class="space-y-6">
+
+      <div class="card p-4">
+        <h3 class="font-semibold mb-2">Appearance</h3>
+        <div class="grid grid-cols-1 gap-3">
+          <div>
+            <label class="block text-sm mb-1">Needle Style</label>
+            <select id="needleStyle" class="p-2 rounded border w-full dark:bg-gray-700">
+              <option value="classic">Classic Red</option>
+              <option value="modern">Modern Blue</option>
+              <option value="neon">Neon Glow</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm mb-1">Dial Theme</label>
+            <select id="dialTheme" class="p-2 rounded border w-full dark:bg-gray-700">
+              <option value="theme-light">Light</option>
+              <option value="theme-dark">Dark</option>
+              <option value="theme-wood">Wood</option>
+              <option value="theme-metal">Metal</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm mb-1">Transition Speed</label>
+            <select id="transSpeed" class="p-2 rounded border w-full dark:bg-gray-700">
+              <option value="fast">Fast</option>
+              <option value="normal" selected>Normal</option>
+              <option value="slow">Slow</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card p-4">
+        <h3 class="font-semibold mb-2">TTS & Voice</h3>
+        <div class="flex gap-2">
+          <select id="voiceSel" class="p-2 rounded border flex-1 dark:bg-gray-700"></select>
+          <button id="testVoice" class="px-3 py-2 rounded border">Test</button>
+        </div>
+        <div class="mt-2 text-sm">
+          <label><input id="spokenToggle" type="checkbox" checked> Announce on change</label>
+        </div>
+      </div>
+
+      <div class="card p-4">
+        <h3 class="font-semibold mb-2">History</h3>
+        <div id="historyList" class="text-sm space-y-2 max-h-48 overflow-auto"></div>
+        <div class="mt-2 flex gap-2">
+          <button id="clearHist" class="px-3 py-2 rounded border">Clear</button>
+          <button id="exportHist" class="px-3 py-2 rounded bg-indigo-600 text-white">Export</button>
+        </div>
+      </div>
+
+      <div class="card p-4">
+        <h3 class="font-semibold mb-2">Options</h3>
+        <div class="flex flex-col gap-2 text-sm">
+          <label><input id="autoSave" type="checkbox" checked> Auto-save last reading</label>
+          <label><input id="useGeo" type="checkbox" checked> Use Geolocation (for declination & map)</label>
+          <label><input id="showCalib" type="checkbox"> Show calibration warning</label>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-gray-300 py-6 text-center">
+  © 2025 <a href="index.html" class="text-blue-400 hover:underline">All Tools Hub</a> • Contact: <a href="mailto:saadkhan0425@gmail.com" class="text-blue-400 hover:underline">saadkhan0425@gmail.com</a>
+</footer>
+
+<!-- Toast -->
+<div id="toast" class="toast">Ready</div>
+
+<!-- Script: full feature logic -->
+<script>
+(function(){
+  // Elements
+  const needle = document.getElementById('needle');
+  const dial = document.getElementById('dial');
+  const directionText = document.getElementById('directionText');
+  const degreeText = document.getElementById('degreeText');
+  const copyBtn = document.getElementById('copyBtn');
+  const downloadBtn = document.getElementById('downloadBtn');
+  const downloadMenu = document.getElementById('downloadMenu');
+  const speakBtn = document.getElementById('speakBtn');
+  const fullscreenBtn = document.getElementById('fullscreenBtn');
+  const calibSlider = document.getElementById('calibSlider');
+  const northMode = document.getElementById('northMode');
+  const declInput = document.getElementById('declination');
+  const fetchDeclBtn = document.getElementById('fetchDecl');
+  const toggleMapBtn = document.getElementById('toggleMap');
+  const mapPanel = document.getElementById('mapPanel');
+  const latEl = document.getElementById('lat'), lonEl = document.getElementById('lon');
+  const uiLang = document.getElementById('uiLang');
+  const themeToggle = document.getElementById('themeToggle');
+  const needleStyleSelect = document.getElementById('needleStyle');
+  const dialThemeSelect = document.getElementById('dialTheme');
+  const transSpeed = document.getElementById('transSpeed');
+  const voiceSel = document.getElementById('voiceSel');
+  const testVoice = document.getElementById('testVoice');
+  const spokenToggle = document.getElementById('spokenToggle');
+  const historyList = document.getElementById('historyList');
+  const clearHist = document.getElementById('clearHist');
+  const exportHist = document.getElementById('exportHist');
+  const autoSave = document.getElementById('autoSave');
+  const useGeo = document.getElementById('useGeo');
+  const showCalib = document.getElementById('showCalib');
+  const toast = document.getElementById('toast');
+
+  // State
+  let currentHeading = 0;
+  let declination = 0; // degrees (true = heading + declination)
+  let map = null, marker = null;
+  let history = JSON.parse(localStorage.getItem('compass_history') || '[]');
+
+  // i18n minimal
+  const I = {
+    en: { ready:'Ready', copied:'Copied', download:'Downloaded', fetchDecl:'Fetching declination...', declFail:'Declination fetch failed — enter manually', noGeo:'Geolocation not available', fullscreen:'Entered fullscreen', exitfs:'Exited fullscreen' },
+    ur: { ready:'تیار', copied:'کاپی', download:'ڈاؤن لوڈ', fetchDecl:'ڈیکلینیشن لائی جا رہی ہے...', declFail:'ڈیکلینیشن دستی طور پر درج کریں', noGeo:'جیو لوکیشن دستیاب نہیں', fullscreen:'فل اسکرین میں داخل ہو گئے', exitfs:'فل اسکرین بند' },
+    ar: { ready:'جاهز', copied:'نسخ', download:'تم التنزيل', fetchDecl:'جارٍ جلب الانحراف...', declFail:'فشل الحصول على الانحراف — أدخله يدوياً', noGeo:'الموقع الجغرافي غير متاح', fullscreen:'تم الدخول إلى ملء الشاشة', exitfs:'الخروج من ملء الشاشة' },
+    fr: { ready:'Prêt', copied:'Copié', download:'Téléchargé', fetchDecl:'Récupération déclinaison...', declFail:'Échec récupération — entrez manuellement', noGeo:'Géolocalisation non disponible', fullscreen:'Plein écran activé', exitfs:'Quitter plein écran' },
+    zh: { ready:'准备就绪', copied:'已复制', download:'已下载', fetchDecl:'正在获取磁偏角...', declFail:'获取失败 — 请手动输入', noGeo:'无法获取地理位置', fullscreen:'进入全屏', exitfs:'退出全屏' },
+    hi: { ready:'तैयार', copied:'कॉपी किया गया', download:'डाउनलोड हुआ', fetchDecl:'डिक्लिनेशन लाया जा रहा है...', declFail:'त्रुटि — कृपया हस्तचालित दर्ज करें', noGeo:'स्थलांतर उपलब्ध नहीं', fullscreen:'फुलस्क्रीन में', exitfs:'फुलस्क्रीन से बाहर' }
+  };
+  function t(k){ const lang = uiLang.value || 'en'; return (I[lang] && I[lang][k]) || I.en[k] || k; }
+
+  function showToast(msg){ toast.textContent = msg; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),1600); }
+
+  // Cardinal helper
+  function degToCardinal(d){
+    const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+    return dirs[Math.round(((d%360)+360)%360 / 22.5) % 16];
+  }
+
+  // Set heading (applies declination if true north selected)
+  function setHeading(rawDeg){
+    currentHeading = (rawDeg + 360) % 360;
+    let outputDeg = currentHeading;
+    if(northMode.value === 'true'){
+      outputDeg = (currentHeading + parseFloat(declination || 0)) % 360;
+    }
+    const final = (outputDeg + parseFloat(calibSlider.value || 0)) % 360;
+    needle.style.transform = rotate(${final}deg);
+    degreeText.textContent = Math.round(final) + '°';
+    directionText.textContent = degToCardinal(final);
+    addHistory(directionText.textContent, Math.round(final));
+    if(spokenToggle.checked) speak(directionText.textContent + ', ' + Math.round(final) + ' degrees');
+    if(autoSave.checked) localStorage.setItem('compass_last', JSON.stringify({direction: directionText.textContent, degrees: Math.round(final), at: new Date().toISOString()}));
+  }
+
+  // History
+  function addHistory(dir, deg){
+    const now = new Date().toISOString();
+    history.unshift({direction:dir, degrees:deg, at:now});
+    history = history.slice(0, 10);
+    localStorage.setItem('compass_history', JSON.stringify(history));
+    renderHistory();
+  }
+  function renderHistory(){
+    historyList.innerHTML = '';
+    if(!history.length) { historyList.innerHTML = '<div class="text-sm opacity-70">No history</div>'; return; }
+    history.forEach(h=>{
+      const el = document.createElement('div');
+      el.className = 'p-2 rounded bg-gray-100 dark:bg-gray-800 flex justify-between items-center';
+      el.innerHTML = `<div class="text-xs"><div class="font-semibold">${h.direction} • ${h.degrees}°</div><div class="opacity-70 text-xs">${new Date(h.at).toLocaleString()}</div></div>
+                      <div><button class="px-2 py-1 text-sm border rounded copyHist">Copy</button></div>`;
+      historyList.appendChild(el);
+    });
+    // attach copy handlers
+    historyList.querySelectorAll('.copyHist').forEach((btn,i)=>{
+      btn.addEventListener('click', ()=> {
+        const h = history[i]; navigator.clipboard.writeText(${h.direction} — ${h.degrees}° (${new Date(h.at).toLocaleString()})); showToast(t('copied'));
+      });
+    });
+  }
+
+  // Exports & share
+  function download(type){
+    const dir = directionText.textContent;
+    const deg = degreeText.textContent.replace('°','');
+    const now = new Date().toISOString();
+    if(type==='txt'){ triggerDownload(new Blob([Direction: ${dir}\nDegrees: ${deg}\nWhen: ${now}],{type:'text/plain'}),'compass.txt'); }
+    else if(type==='csv'){ triggerDownload(new Blob([direction,degrees,when\n"${dir}",${deg},"${now}"],{type:'text/csv'}),'compass.csv'); }
+    else if(type==='json'){ triggerDownload(new Blob([JSON.stringify({direction:dir,degrees:parseFloat(deg),when:now},null,2)],{type:'application/json'}),'compass.json'); }
+    else if(type==='pdf'){ try{ const { jsPDF } = window.jspdf; const doc = new jsPDF(); doc.setFontSize(16); doc.text('Compass Reading', 14, 20); doc.setFontSize(12); doc.text(Direction: ${dir}, 14, 36); doc.text(Degrees: ${deg}°, 14, 46); doc.text(When: ${now}, 14, 56); doc.save('compass.pdf'); }catch(e){ showToast('PDF error'); } }
+    showToast(t('download'));
+  }
+  function triggerDownload(blob, name){ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); URL.revokeObjectURL(a.href); }
+
+  // Speech
+  let voices = [];
+  function populateVoices(){
+    voices = speechSynthesis.getVoices().sort((a,b)=>a.name.localeCompare(b.name));
+    voiceSel.innerHTML = '';
+    voices.forEach((v,i)=> voiceSel.appendChild(Object.assign(document.createElement('option'), {value:i, textContent: v.name + (v.lang ? ' — ' + v.lang : '')})));
+  }
+  populateVoices(); if(speechSynthesis.onvoiceschanged!==undefined) speechSynthesis.onvoiceschanged = populateVoices;
+  function speak(text){ const u = new SpeechSynthesisUtterance(text); const idx = voiceSel.value; if(voices[idx]) u.voice = voices[idx]; speechSynthesis.cancel(); speechSynthesis.speak(u); }
+
+  // Device orientation handlers
+  function handleOrientation(e){
+    let heading = null;
+    if(typeof e.webkitCompassHeading !== 'undefined' && e.webkitCompassHeading !== null){
+      heading = e.webkitCompassHeading; // iOS
+    } else if(e.absolute === true && typeof e.alpha === 'number'){
+      heading = 360 - e.alpha;
+    } else if(typeof e.alpha === 'number'){
+      heading = 360 - e.alpha;
+    }
+    if(heading !== null && !Number.isNaN(heading)) setHeading(heading);
+  }
+
+  function startOrientation(){
+    if(!window.DeviceOrientationEvent){
+      showToast('Device orientation not supported — use slider');
+      return;
+    }
+    // iOS permission flow
+    if(typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function'){
+      DeviceOrientationEvent.requestPermission().then(res=>{
+        if(res === 'granted'){
+          window.addEventListener('deviceorientation', handleOrientation, true);
+          showToast(t('ready'));
+        } else showToast('Permission denied');
+      }).catch(()=> showToast('Permission error'));
+    } else {
+      // Android / other
+      window.addEventListener('deviceorientationabsolute', handleOrientation, true);
+      window.addEventListener('deviceorientation', handleOrientation, true);
+      showToast(t('ready'));
+    }
+  }
+
+  // Geolocation & map
+  function initMap(){
+    if(map) return;
+    map = L.map('map', { attributionControl: false }).setView([0,0], 2);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+      maxZoom: 19
+    }).addTo(map);
+  }
+  function updatePositionOnMap(lat, lon){
+    if(!map) initMap();
+    map.setView([lat, lon], 14);
+    if(marker) marker.setLatLng([lat, lon]);
+    else marker = L.marker([lat, lon]).addTo(map);
+  }
+  function fetchLocation(){
+    if(!navigator.geolocation){ showToast(t('noGeo')); return; }
+    navigator.geolocation.getCurrentPosition(pos=>{
+      const lat = pos.coords.latitude, lon = pos.coords.longitude;
+      latEl.textContent = lat.toFixed(6); lonEl.textContent = lon.toFixed(6);
+      updatePositionOnMap(lat, lon);
+      if(northMode.value === 'true') tryFetchDeclination(lat, lon);
+    }, err=> { showToast('Geo error'); });
+  }
+
+  // Try fetch declination from NOAA geomag service (best-effort). If blocked by CORS, show error & allow manual entry.
+  async function tryFetchDeclination(lat, lon){
+    showToast(t('fetchDecl'));
+    // NOAA geomag web service (date param uses today)
+    const date = new Date().toISOString().slice(0,10);
+    const url = https://www.ngdc.noaa.gov/geomag-web/calculators/calculateDeclination?lat1=${lat}&lon1=${lon}&key=&startYear=${date}&resultFormat=json;
+    // Note: endpoint and params may change; this is best-effort. If CORS blocks, we catch and allow manual input.
+    try {
+      const resp = await fetch(url);
+      if(!resp.ok) throw new Error('badresp');
+      const data = await resp.json();
+      // Data structure varies. We try to find a numeric declination
+      let dec = null;
+      if(data.result && data.result[0] && data.result[0].declination) dec = parseFloat(data.result[0].declination);
+      // fallback parsing
+      if(dec === null && data && data[0] && data[0].declination) dec = parseFloat(data[0].declination);
+      if(dec === null) throw new Error('no-dec');
+      declination = dec;
+      declInput.value = declination.toFixed(2);
+      showToast('Declination: ' + declination.toFixed(2) + '°');
+    } catch (e){
+      // CORS or structure mismatch
+      showToast(t('declFail'));
+      console.warn('Declination fetch failed', e);
+    }
+  }
+
+  // Fullscreen toggle
+  fullscreenBtn.addEventListener('click', ()=> {
+    if(!document.fullscreenElement) document.documentElement.requestFullscreen().then(()=> showToast(t('fullscreen'))).catch(()=>{});
+    else document.exitFullscreen().then(()=> showToast(t('exitfs'))).catch(()=>{});
+  });
+
+  // UI hookups
+  document.getElementById('toggleMap').addEventListener('click', ()=>{
+    mapPanel.classList.toggle('hidden');
+    if(!mapPanel.classList.contains('hidden')) { fetchLocation(); setTimeout(()=> initMap(), 300); }
+  });
+
+  // Download menu
+  document.getElementById('downloadBtn').addEventListener('click', ()=> downloadMenu.classList.toggle('hidden'));
+  downloadMenu.querySelectorAll('button[data-type]').forEach(btn=>{
+    btn.addEventListener('click', ()=> download(btn.getAttribute('data-type')));
+  });
+  window.addEventListener('click', (e)=> { if(!e.target.closest('#downloadMenu') && !e.target.closest('#downloadBtn')) downloadMenu.classList.add('hidden'); });
+
+  // Copy
+  copyBtn.addEventListener('click', ()=> {
+    const text = ${directionText.textContent} • ${degreeText.textContent} • ${latEl.textContent||'—'}, ${lonEl.textContent||'—'};
+    navigator.clipboard.writeText(text).then(()=> showToast(t('copied')));
+  });
+
+  // Speak
+  speakBtn.addEventListener('click', ()=> speak(${directionText.textContent}, ${degreeText.textContent}));
+  testVoice.addEventListener('click', ()=> { const idx = voiceSel.value; if(voices[idx]){ const u = new SpeechSynthesisUtterance('This is a voice test.'); u.voice = voices[idx]; speechSynthesis.speak(u); } });
+
+  // Navigational / settings handlers
+  needleStyleSelect.addEventListener('change', ()=> { const s = needleStyleSelect.value; needle.classList.remove('classic','modern','neon'); needle.classList.add(s); localStorage.setItem('compass_needle', s); });
+  dialThemeSelect.addEventListener('change', ()=> { const t = dialThemeSelect.value; dial.classList.remove('theme-light','theme-dark','theme-wood','theme-metal'); dial.classList.add(t); localStorage.setItem('compass_dial', t); });
+  transSpeed.addEventListener('change', ()=> {
+    const v = transSpeed.value; let dur = '.28s';
+    if(v==='fast') dur='.12s'; if(v==='slow') dur='.6s';
+    needle.style.transitionDuration = dur; dial.style.transitionDuration = dur;
+    localStorage.setItem('compass_trans', v);
+  });
+
+  // Declination manual input
+  declInput.addEventListener('input', ()=> { declination = parseFloat(declInput.value) || 0; showToast('Declination set: ' + declination + '°'); });
+
+  fetchDeclBtn.addEventListener('click', ()=> {
+    if(!useGeo.checked){ showToast(t('noGeo')); return; }
+    if(navigator.geolocation){ navigator.geolocation.getCurrentPosition(p=> tryFetchDeclination(p.coords.latitude, p.coords.longitude), ()=> showToast(t('noGeo'))); }
+    else showToast(t('noGeo'));
+  });
+
+  // orientation start button: allow iOS permission via user interaction
+  document.body.addEventListener('click', function once(){ startOrientation(); document.body.removeEventListener('click', once); }, { once:true });
+
+  // History controls
+  clearHist.addEventListener('click', ()=> { history=[]; localStorage.removeItem('compass_history'); renderHistory(); showToast('History cleared'); });
+  exportHist.addEventListener('click', ()=> { if(!history.length) return showToast('No history'); triggerDownload(new Blob([JSON.stringify(history,null,2)],{type:'application/json'}),'compass-history.json'); showToast(t('download')); });
+
+  // Voice populate & init settings
+  function initSettings(){
+    // restore preferences
+    const ns = localStorage.getItem('compass_needle') || 'classic'; needleStyleSelect.value = ns; needle.classList.add(ns);
+    const dt = localStorage.getItem('compass_dial') || 'theme-light'; dialThemeSelect.value = dt; dial.classList.add(dt);
+    const ts = localStorage.getItem('compass_trans') || 'normal'; transSpeed.value = ts;
+    if(ts==='fast') needle.style.transitionDuration = '.12s'; else if(ts==='slow') needle.style.transitionDuration = '.6s';
+    const last = JSON.parse(localStorage.getItem('compass_last') || 'null'); if(last){ directionText.textContent = last.direction; degreeText.textContent = last.degrees + '°'; }
+    renderHistory();
+    // voice
+    populateVoices();
+    if(voiceSel.options.length>0) voiceSel.value = 0;
+  }
+  initSettings();
+
+  // populate voices on user interaction (some browsers require it)
+  window.addEventListener('click', ()=> { if(voiceSel.options.length===0) populateVoices(); }, { once:true });
+
+  // Map lazy init when shown (handled above)
+  // Attempt to get geolocation on load if allowed and useGeo checked
+  if(useGeo.checked && navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(p=> { latEl.textContent = p.coords.latitude.toFixed(6); lonEl.textContent = p.coords.longitude.toFixed(6); /* don't init map until user opens panel */ }, ()=>{});
+  }
+
+  // Render history initially
+  renderHistory();
+
+  // show ready toast
+  showToast(t('ready'));
+
+  // Expose some helpers (for debugging if needed)
+  window._compass = { setHeading, addHistory, history };
+
+})();
+</script>
+</body>
+</html>
