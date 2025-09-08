@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Case Converter - All Tools Hub</title>
+  <meta name="description" content="Convert text to uppercase, lowercase, title case, sentence case and more. Includes spell check, TTS, and export." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 font-sans">
+
+<!-- Header -->
+<header class="bg-white dark:bg-gray-800 shadow fixed w-full z-50">
+  <div class="max-w-7xl mx-auto flex justify-between items-center p-4">
+    <h1 class="text-2xl font-bold text-blue-600 dark:text-blue-400">All Tools Hub</h1>
+    <button id="darkToggle" class="text-sm px-3 py-1 border rounded hover:bg-gray-200 dark:hover:bg-gray-700">🌙</button>
+  </div>
+</header>
+
+<main class="pt-28 max-w-5xl mx-auto px-4">
+  <h2 class="text-3xl font-bold text-center mb-6">Case Converter Tool</h2>
+
+  <!-- Text Areas -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    <textarea id="inputText" spellcheck="true" placeholder="Enter your text here..." 
+      class="w-full h-60 p-4 border rounded-lg dark:bg-gray-800 dark:border-gray-600"></textarea>
+    <textarea id="outputText" readonly placeholder="Converted text will appear here..." 
+      class="w-full h-60 p-4 border rounded-lg dark:bg-gray-800 dark:border-gray-600"></textarea>
+  </div>
+
+  <!-- Actions -->
+  <div class="flex flex-wrap gap-3 justify-center mb-6">
+    <button onclick="convertText('upper')" class="btn">UPPERCASE</button>
+    <button onclick="convertText('lower')" class="btn">lowercase</button>
+    <button onclick="convertText('title')" class="btn">Title Case</button>
+    <button onclick="convertText('sentence')" class="btn">Sentence case</button>
+    <button onclick="convertText('alt')" class="btn">aLtErNaTiNg</button>
+    <button onclick="cleanText()" class="btn">Clean</button>
+    <button onclick="undoChange()" class="btn">Undo</button>
+    <button onclick="redoChange()" class="btn">Redo</button>
+    <button onclick="copyText()" class="btn">Copy</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="text-center mb-6">
+    <p id="stats" class="text-gray-600 dark:text-gray-300">Words: 0 | Characters: 0</p>
+  </div>
+
+  <!-- File & Export -->
+  <div class="flex flex-wrap gap-3 justify-center mb-6">
+    <input type="file" id="fileUpload" accept=".txt" class="hidden" />
+    <button onclick="document.getElementById('fileUpload').click()" class="btn">Upload TXT</button>
+    <button onclick="downloadFile('txt')" class="btn">Download TXT</button>
+    <button onclick="downloadFile('csv')" class="btn">Download CSV</button>
+    <button onclick="downloadFile('pdf')" class="btn">Download PDF</button>
+    <button onclick="downloadFile('json')" class="btn">Download JSON</button>
+    <button onclick="speakText()" class="btn">🔊 Read Aloud</button>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-gray-300 py-6 text-center mt-10">
+  © 2025 All Tools Hub | Contact: <a href="mailto:saadkhan0425@gmail.com" class="text-blue-400 hover:underline">saadkhan0425@gmail.com</a>
+</footer>
+
+<!-- Styles -->
+<style>
+  .btn { @apply bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700; }
+</style>
+
+<!-- Script -->
+<script>
+let history = [], redoStack = [];
+
+// Dark mode toggle
+document.getElementById("darkToggle").onclick = () => {
+  document.documentElement.classList.toggle("dark");
+  localStorage.theme = document.documentElement.classList.contains("dark") ? "dark" : "light";
+};
+if (localStorage.theme === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+  document.documentElement.classList.add("dark");
+}
+
+// Update stats
+function updateStats() {
+  let txt = document.getElementById("inputText").value;
+  let words = txt.trim() ? txt.trim().split(/\s+/).length : 0;
+  document.getElementById("stats").innerText = Words: ${words} | Characters: ${txt.length};
+}
+document.getElementById("inputText").addEventListener("input", () => {
+  updateStats();
+  saveState();
+});
+
+// Converters
+function convertText(type) {
+  let txt = document.getElementById("inputText").value;
+  let out = txt;
+  if (type === "upper") out = txt.toUpperCase();
+  else if (type === "lower") out = txt.toLowerCase();
+  else if (type === "title") out = txt.replace(/\w\S*/g, w => w[0].toUpperCase() + w.substring(1).toLowerCase());
+  else if (type === "sentence") out = txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase();
+  else if (type === "alt") out = txt.split("").map((c,i)=> i%2 ? c.toLowerCase(): c.toUpperCase()).join("");
+  document.getElementById("outputText").value = out;
+}
+
+// Cleaner
+function cleanText() {
+  let txt = document.getElementById("inputText").value.replace(/\s+/g," ").trim();
+  document.getElementById("outputText").value = txt;
+}
+
+// Undo / Redo
+function saveState() { history.push(document.getElementById("inputText").value); }
+function undoChange() {
+  if (history.length>1) { redoStack.push(history.pop()); document.getElementById("inputText").value = history[history.length-1]; updateStats(); }
+}
+function redoChange() {
+  if (redoStack.length>0) { let r=redoStack.pop(); history.push(r); document.getElementById("inputText").value = r; updateStats(); }
+}
+
+// Copy
+function copyText() {
+  navigator.clipboard.writeText(document.getElementById("outputText").value);
+  alert("Copied!");
+}
+
+// File Upload
+document.getElementById("fileUpload").addEventListener("change", e => {
+  let file = e.target.files[0]; if (!file) return;
+  let reader = new FileReader();
+  reader.onload = ev => document.getElementById("inputText").value = ev.target.result;
+  reader.readAsText(file);
+});
+
+// Export
+function downloadFile(type) {
+  let text = document.getElementById("outputText").value;
+  let blob, filename;
+  if (type==="txt") { blob=new Blob([text],{type:"text/plain"}); filename="converted.txt"; }
+  else if (type==="csv") { blob=new Blob([Text\n"${text.replace(/"/g,'""')}"],{type:"text/csv"}); filename="converted.csv"; }
+  else if (type==="json") { blob=new Blob([JSON.stringify({text:text})],{type:"application/json"}); filename="converted.json"; }
+  else if (type==="pdf") { alert("PDF export requires backend or external lib like jsPDF."); return; }
+  let link=document.createElement("a"); link.href=URL.createObjectURL(blob); link.download=filename; link.click();
+}
+
+// TTS
+function speakText() {
+  let msg = new SpeechSynthesisUtterance(document.getElementById("outputText").value);
+  speechSynthesis.speak(msg);
+}
+</script>
+</body>
+</html>
