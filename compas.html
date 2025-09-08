@@ -1,456 +1,195 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Compass — All Tools Hub</title>
-  <meta name="description" content="Live digital compass with rotating dial, needle styles, themes, exports, TTS, dark mode and multi-language support." />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- jsPDF for PDF export -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
-    :root { --theme-color: #2563eb; --bg: #ffffff; --card-bg:#ffffff; --muted:#6b7280; }
-    body{ -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; transition: background .25s, color .25s; }
-    .card{ background:var(--card-bg); border-radius:12px; padding:1rem; box-shadow:0 10px 30px rgba(2,6,23,0.06); transition: background .25s, color .25s, box-shadow .25s; }
-    .btn-theme{ background:var(--theme-color); color:#fff; }
-    .toast{ position:fixed; right:20px; bottom:20px; background:var(--theme-color); color:#fff; padding:10px 14px; border-radius:8px; opacity:0; transform:translateY(8px); transition:all .25s; z-index:60; }
-    .toast.show{ opacity:1; transform:translateY(0); }
-
-    /* Dial base */
-    .dial { width: 300px; height:300px; border-radius:50%; display:flex; align-items:center; justify-content:center; position:relative; transition: box-shadow .4s, background .4s, transform .3s; }
-    .dial-inner { width: 240px; height:240px; border-radius:50%; display:flex; align-items:center; justify-content:center; position:relative; transition: background .4s, box-shadow .4s; }
-    .north-mark { position:absolute; top:12px; left:50%; transform:translateX(-50%); font-weight:700; color:var(--theme-color); transition: color .25s; }
-
-    /* Needle base */
-    .needle { width:8px; height:110px; position:absolute; top:50%; transform-origin:50% 90%; border-radius:6px; transition: transform .25s cubic-bezier(.2,.9,.2,1), box-shadow .25s; box-shadow:0 10px 25px rgba(0,0,0,0.18); }
-    .needle::after { content:''; position:absolute; left:50%; top:-10px; transform:translateX(-50%); width:22px; height:22px; border-radius:50%; background: radial-gradient(#fff,#ccc); border:2px solid rgba(0,0,0,0.06); }
-
-    /* Needle styles */
-    .needle.classic { background: linear-gradient(#ef4444,#7f1d1d); }
-    .needle.modern  { background: linear-gradient(#3b82f6,#1e40af); }
-    .needle.neon    { background:linear-gradient(#06b6d4,#0891b2); box-shadow:0 0 12px rgba(6,182,212,0.7), 0 8px 30px rgba(6,182,212,0.25); }
-
-    /* Dial themes */
-    .dial.theme-light { background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.06), transparent 15%), linear-gradient(180deg,#ffffff,#f3f4f6); border:6px solid rgba(0,0,0,0.04); }
-    .dial.theme-dark  { background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.02), transparent 15%), linear-gradient(180deg,#0b1220,#071028); border:6px solid rgba(255,255,255,0.04); }
-    .dial.theme-wood  { background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.02), transparent 15%), linear-gradient(180deg,#b08968,#8b5e34); border:6px solid rgba(0,0,0,0.06); box-shadow: 0 12px 40px rgba(139,94,52,0.12); }
-    .dial.theme-metal { background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.05), transparent 20%), linear-gradient(180deg,#d1d5db,#9ca3af); border:6px solid rgba(0,0,0,0.06); box-shadow:0 12px 40px rgba(0,0,0,0.12); }
-
-    /* Animated transitions for theme change */
-    .dial, .dial-inner, .needle { transition: transform .28s ease-out, box-shadow .25s, background .35s, border-color .35s; }
-
-    /* Responsive adjustments */
-    @media (max-width:640px){
-      .dial { width: 220px; height:220px; }
-      .dial-inner { width:180px; height:180px; }
-      .needle { height:86px; width:6px; }
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      background: #f5f5f5;
+      color: #333;
+      text-align: center;
+    }
+    header, footer {
+      background: #222;
+      color: #fff;
+      padding: 1rem;
+    }
+    header a {
+      color: #4da6ff;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    .container { padding: 2rem; }
+    .dial {
+      width: 250px; height: 250px;
+      border: 6px solid #666;
+      border-radius: 50%;
+      margin: 1rem auto;
+      position: relative;
+      background: #fff;
+    }
+    .needle {
+      width: 6px; height: 100px;
+      background: red;
+      position: absolute;
+      top: 25px; left: 50%;
+      transform-origin: bottom;
+      transform: rotate(0deg);
+      transition: transform 0.3s ease;
+    }
+    .north {
+      position: absolute;
+      top: 5px; left: 50%;
+      transform: translateX(-50%);
+      font-weight: bold;
+    }
+    .controls { margin-top: 1.5rem; }
+    select, button {
+      padding: 0.5rem;
+      margin: 0.3rem;
     }
   </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans">
+<body>
 
-  <!-- Header -->
-  <header class="bg-white dark:bg-gray-800 shadow fixed w-full z-50">
-    <div class="max-w-6xl mx-auto flex items-center justify-between p-4">
-      <a href="/" id="homeLink" class="text-2xl font-bold text-blue-600 dark:text-blue-400">All Tools Hub</a>
-      <div class="flex items-center gap-3">
-        <select id="langSelect" class="p-1 rounded border dark:bg-gray-700 dark:border-gray-600 text-sm">
-          <option value="en">English</option>
-          <option value="ur">اردو</option>
-          <option value="ar">العربية</option>
-          <option value="fr">Français</option>
-          <option value="zh">中文</option>
-          <option value="hi">हिन्दी</option>
-        </select>
-        <button id="darkToggle" class="text-sm px-3 py-1 border rounded hover:bg-gray-200 dark:hover:bg-gray-700" title="Toggle theme">🌙</button>
-      </div>
-    </div>
-  </header>
+<header>
+  <a href="/">All Tools Hub</a>
+</header>
 
-  <!-- Main -->
-  <main class="pt-28 pb-10">
-    <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-6 items-start">
+<div class="container">
+  <h1>Compass Tool</h1>
+  <div id="dial" class="dial">
+    <div class="needle" id="needle"></div>
+    <div class="north">N</div>
+  </div>
+  <div>
+    <p id="direction">Direction: N</p>
+    <p id="degrees">0°</p>
+  </div>
 
-      <!-- Left: dial -->
-      <section class="card p-6 flex flex-col items-center gap-4">
-        <div id="dial" class="dial theme-light" role="img" aria-label="Compass dial">
-          <div class="dial-inner">
-            <div class="north-mark" id="northMark">N</div>
-            <div id="needle" class="needle classic" style="transform:rotate(0deg)"></div>
-          </div>
-        </div>
+  <div class="controls">
+    <label>Needle Style:
+      <select id="needleStyle">
+        <option value="red">Classic Red</option>
+        <option value="blue">Modern Blue</option>
+        <option value="cyan">Neon Cyan</option>
+      </select>
+    </label>
+    <label>Dial Theme:
+      <select id="dialTheme">
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+        <option value="wood">Wood</option>
+        <option value="metal">Metal</option>
+      </select>
+    </label>
+  </div>
 
-        <div class="text-center">
-          <div id="lblDirection" class="text-xs text-gray-500 dark:text-gray-400">Direction</div>
-          <div id="directionText" class="text-3xl font-bold mt-1">N</div>
-          <div id="degreeText" class="text-sm text-gray-600 dark:text-gray-300 mt-1">0°</div>
-        </div>
+  <div class="controls">
+    <button onclick="copyReading()">Copy</button>
+    <button onclick="downloadReading('txt')">Download TXT</button>
+    <button onclick="downloadReading('csv')">Download CSV</button>
+    <button onclick="downloadReading('json')">Download JSON</button>
+  </div>
+</div>
 
-        <div class="flex gap-2 flex-wrap justify-center mt-3">
-          <button id="copyBtn" class="px-4 py-2 rounded btn-theme text-sm">Copy</button>
+<footer>
+  Contact: <a href="mailto:saadkhan0425@gmail.com">saadkhan0425@gmail.com</a>
+</footer>
 
-          <div class="relative inline-block">
-            <button id="downloadBtn" class="px-4 py-2 rounded btn-theme text-sm">Download</button>
-            <div id="downloadMenu" class="hidden absolute right-0 mt-1 w-44 bg-white dark:bg-gray-700 rounded shadow-md overflow-hidden z-40">
-              <button class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600" onclick="downloadReading('txt')">📄 TXT</button>
-              <button class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600" onclick="downloadReading('csv')">📊 CSV</button>
-              <button class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600" onclick="downloadReading('json')">🗂 JSON</button>
-              <button class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600" onclick="downloadReading('pdf')">📑 PDF</button>
-            </div>
-          </div>
+<script>
+const needle = document.getElementById("needle");
+const dirText = document.getElementById("direction");
+const degText = document.getElementById("degrees");
 
-          <button id="speakBtn" class="px-4 py-2 rounded border text-sm">🔊 Speak</button>
-          <button id="permBtn" class="px-4 py-2 rounded border text-sm">Enable Sensors</button>
-        </div>
+function setHeading(deg) {
+  const d = (deg + 360) % 360;
+  needle.style.transform = rotate(${d}deg);
+  degText.textContent = d.toFixed(0) + "°";
+  dirText.textContent = "Direction: " + degToCardinal(d);
+}
 
-        <div class="mt-4 w-full">
-          <label class="text-sm mb-1 block">Calibration / Manual Fallback</label>
-          <input id="calibrateSlider" type="range" min="0" max="359" value="0" class="w-full" />
-        </div>
+function degToCardinal(deg) {
+  const dirs = ["N","NE","E","SE","S","SW","W","NW"];
+  return dirs[Math.round(deg/45)%8];
+}
 
-        <div class="text-xs mt-3 text-gray-600 dark:text-gray-300 text-center" id="hintText">
-          Allow device motion/orientation to use live compass. For iOS Safari press "Enable Sensors" and allow permission.
-        </div>
-      </section>
+// Use DeviceOrientation API if available
+if (window.DeviceOrientationEvent) {
+  if (typeof DeviceOrientationEvent.requestPermission === "function") {
+    // iOS requires permission
+    document.body.addEventListener("click", () => {
+      DeviceOrientationEvent.requestPermission().then(response => {
+        if (response === "granted") {
+          window.addEventListener("deviceorientation", handleOrientation);
+        } else {
+          alert("Permission denied for compass sensor.");
+        }
+      });
+    }, { once: true });
+  } else {
+    // Android
+    window.addEventListener("deviceorientationabsolute", handleOrientation);
+    window.addEventListener("deviceorientation", handleOrientation);
+  }
+} else {
+  // fallback: simulated rotation
+  let angle = 0;
+  setInterval(()=>{ angle=(angle+5)%360; setHeading(angle); },1000);
+}
 
-      <!-- Right: options + stats -->
-      <aside class="space-y-6">
-
-        <div class="card p-4">
-          <h3 class="font-semibold mb-2">Needle & Dial Styles</h3>
-          <div class="grid grid-cols-1 gap-3">
-            <div>
-              <label class="block text-sm mb-1">Needle Style</label>
-              <select id="needleStyle" class="p-2 rounded border w-full dark:bg-gray-700">
-                <option value="classic">Classic Red</option>
-                <option value="modern">Modern Blue</option>
-                <option value="neon">Neon Glow</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-sm mb-1">Dial Theme</label>
-              <select id="dialTheme" class="p-2 rounded border w-full dark:bg-gray-700">
-                <option value="theme-light">Light</option>
-                <option value="theme-dark">Dark</option>
-                <option value="theme-wood">Wood</option>
-                <option value="theme-metal">Metal</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-sm mb-1">Animated Transition</label>
-              <select id="transitionSpeed" class="p-2 rounded border w-full dark:bg-gray-700">
-                <option value="fast">Fast</option>
-                <option value="normal" selected>Normal</option>
-                <option value="slow">Slow</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div class="card p-4">
-          <h3 class="font-semibold mb-2">Last Saved Reading</h3>
-          <div class="text-sm text-gray-600 dark:text-gray-300 mb-3">Last reading is stored locally for quick restore:</div>
-          <div class="grid grid-cols-2 gap-2">
-            <div class="p-2 rounded bg-gray-100 dark:bg-gray-700">
-              <div class="text-xs opacity-70">Direction</div>
-              <div id="lastDirection" class="font-semibold">—</div>
-            </div>
-            <div class="p-2 rounded bg-gray-100 dark:bg-gray-700">
-              <div class="text-xs opacity-70">Degrees</div>
-              <div id="lastDegrees" class="font-semibold">—</div>
-            </div>
-          </div>
-          <div class="mt-3 flex gap-2">
-            <button id="restoreBtn" class="px-3 py-2 rounded btn-theme text-sm">Restore</button>
-            <button id="clearLastBtn" class="px-3 py-2 rounded border text-sm">Clear</button>
-          </div>
-        </div>
-
-        <div class="card p-4">
-          <h3 class="font-semibold mb-2">TTS & Voice</h3>
-          <div class="flex gap-2">
-            <select id="voiceSelect" class="p-2 rounded border flex-1 dark:bg-gray-700"></select>
-            <button id="testVoice" class="px-3 py-2 rounded border text-sm">Test</button>
-          </div>
-          <div class="text-sm mt-2 text-gray-600 dark:text-gray-300">
-            <label><input id="spokenToggle" type="checkbox" checked> Announce on change</label>
-          </div>
-        </div>
-
-        <div class="card p-4">
-          <h3 class="font-semibold mb-2">Options</h3>
-          <div class="flex flex-col gap-2 text-sm">
-            <label><input id="autoSaveToggle" type="checkbox" checked> Auto-save last reading</label>
-            <label><input id="useCompassAPI" type="checkbox" checked> Use Device Orientation API</label>
-          </div>
-        </div>
-
-      </aside>
-    </div>
-  </main>
-
-  <!-- Footer -->
-  <footer class="bg-gray-900 text-gray-300 py-6 text-center">
-    © 2025 <a href="/" class="text-blue-400 hover:underline">All Tools Hub</a> • Contact: <a href="mailto:saadkhan0425@gmail.com" class="text-blue-400 hover:underline">saadkhan0425@gmail.com</a>
-  </footer>
-
-  <!-- Toast -->
-  <div id="toast" class="toast">Ready</div>
-
-  <!-- Script -->
-  <script>
-  (function(){
-    // Elements
-    const needle = document.getElementById('needle');
-    const dial = document.getElementById('dial');
-    const directionText = document.getElementById('directionText');
-    const degreeText = document.getElementById('degreeText');
-    const copyBtn = document.getElementById('copyBtn');
-    const downloadBtn = document.getElementById('downloadBtn');
-    const downloadMenu = document.getElementById('downloadMenu');
-    const speakBtn = document.getElementById('speakBtn');
-    const permBtn = document.getElementById('permBtn');
-    const calibrateSlider = document.getElementById('calibrateSlider');
-    const lastDirection = document.getElementById('lastDirection');
-    const lastDegrees = document.getElementById('lastDegrees');
-    const restoreBtn = document.getElementById('restoreBtn');
-    const clearLastBtn = document.getElementById('clearLastBtn');
-    const autoSaveToggle = document.getElementById('autoSaveToggle');
-    const spokenToggle = document.getElementById('spokenToggle');
-    const voiceSelect = document.getElementById('voiceSelect');
-    const testVoice = document.getElementById('testVoice');
-    const langSelect = document.getElementById('langSelect');
-    const darkToggle = document.getElementById('darkToggle');
-    const needleStyle = document.getElementById('needleStyle');
-    const dialTheme = document.getElementById('dialTheme');
-    const transitionSpeed = document.getElementById('transitionSpeed');
-
-    const toast = document.getElementById('toast');
-
-    const i18n = {
-      en: { direction:'Direction', degrees:'Degrees', copy:'Copied', download:'Downloaded', enable:'Enable Sensors', permission:'Please allow device orientation permission', restore:'Restored', cleared:'Cleared', speakMsg: (d,deg)=>You are facing ${d}, ${deg} degrees. },
-      ur: { direction:'سمت', degrees:'درجے', copy:'کاپی ہوگیا', download:'ڈاؤن لوڈ ہوا', enable:'سینسر فعال کریں', permission:'براہ کرم ڈیوائس کی اجازت دیں', restore:'بحال', cleared:'صاف ہوا', speakMsg:(d,deg)=>آپ ${d} کی طرف ہیں، ${deg} ڈگری },
-      ar: { direction:'الاتجاه', degrees:'الدرجات', copy:'نسخ', download:'تم التنزيل', enable:'تمكين المستشعرات', permission:'الرجاء السماح بإذن الاتجاه', restore:'استعادة', cleared:'تم المسح', speakMsg:(d,deg)=>أنت تواجه ${d}، ${deg} درجة },
-      fr: { direction:'Direction', degrees:'Degrés', copy:'Copié', download:'Téléchargé', enable:'Activer capteurs', permission:'Veuillez autoriser l’orientation de l’appareil', restore:'Restauré', cleared:'Effacé', speakMsg:(d,deg)=>Vous faites face à ${d}, ${deg} degrés. },
-      zh: { direction:'方向', degrees:'度数', copy:'已复制', download:'已下载', enable:'启用传感器', permission:'请允许设备方向权限', restore:'已恢复', cleared:'已清除', speakMsg:(d,deg)=>您面向${d}，${deg}度。 },
-      hi: { direction:'दिशा', degrees:'डिग्री', copy:'कॉपी किया गया', download:'डाउनलोड हुआ', enable:'सेंसर्स सक्षम करें', permission:'कृपया डिवाइस अनुमति दें', restore:'पुनर्स्थापित', cleared:'साफ़ किया गया', speakMsg:(d,deg)=>आप ${d} की ओर हैं, ${deg} डिग्री। }
-    };
-
-    function t(key){ const lang = langSelect.value || 'en'; return (i18n[lang] && i18n[lang][key]) || (i18n.en && i18n.en[key]) || key; }
-
-    function showToast(msg){ toast.textContent = msg; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),1600); }
-
-    // Cardinal helper
-    function degToCardinal(deg){
-      let d = (deg % 360 + 360) % 360;
-      const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
-      const idx = Math.round(d / 22.5) % 16;
-      return dirs[idx];
+function handleOrientation(event) {
+  let heading;
+  if (event.webkitCompassHeading) {
+    heading = event.webkitCompassHeading; // iOS
+  } else {
+    heading = event.alpha; // Android
+    if (typeof event.absolute !== "undefined" && !event.absolute) {
+      heading = 360 - heading; // adjust
     }
+  }
+  if (heading != null) setHeading(heading);
+}
 
-    // Apply needle style
-    function applyNeedleStyle(style){
-      needle.classList.remove('classic','modern','neon');
-      needle.classList.add(style);
-      localStorage.setItem('compass_needle', style);
-    }
+// Needle style selector
+document.getElementById("needleStyle").addEventListener("change", e=>{
+  needle.style.background = e.target.value;
+});
 
-    // Apply dial theme
-    function applyDialTheme(theme){
-      dial.classList.remove('theme-light','theme-dark','theme-wood','theme-metal');
-      dial.classList.add(theme);
-      localStorage.setItem('compass_dial', theme);
-    }
+// Dial theme selector
+document.getElementById("dialTheme").addEventListener("change", e=>{
+  const dial = document.getElementById("dial");
+  const theme = e.target.value;
+  if(theme==="light") dial.style.background="#fff";
+  if(theme==="dark") dial.style.background="#222";
+  if(theme==="wood") dial.style.background="saddlebrown";
+  if(theme==="metal") dial.style.background="silver";
+});
 
-    // Apply transition speed
-    function applyTransitionSpeed(speed){
-      let duration = '.25s';
-      if(speed === 'fast') duration = '.12s';
-      if(speed === 'slow') duration = '.6s';
-      needle.style.transitionDuration = duration;
-      dial.style.transitionDuration = duration;
-      localStorage.setItem('compass_transition', speed);
-    }
+// Copy
+function copyReading(){
+  const text = dirText.textContent+" "+degText.textContent;
+  navigator.clipboard.writeText(text);
+  alert("Copied: "+text);
+}
 
-    // Set heading (rotates needle, updates UI)
-    function setHeading(deg){
-      const offset = parseFloat(calibrateSlider.value) || 0;
-      const final = (deg + offset + 360) % 360;
-      needle.style.transform = rotate(${final}deg);
-      degreeText.textContent = Math.round(final) + '°';
-      const card = degToCardinal(final);
-      directionText.textContent = card;
-      saveLast(card, Math.round(final));
-      if(spokenToggle.checked) speakDirection(card, Math.round(final));
-    }
+// Download
+function downloadReading(type){
+  const data = { direction: dirText.textContent, degrees: degText.textContent };
+  let blob;
+  if(type==="txt"){ blob=new Blob([JSON.stringify(data)],{type:"text/plain"}); }
+  if(type==="csv"){ blob=new Blob([direction,degrees\n${data.direction},${data.degrees}],{type:"text/csv"}); }
+  if(type==="json"){ blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"}); }
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="compass."+type;
+  a.click();
+}
+</script>
 
-    // Save last
-    function saveLast(dir, deg){
-      if(autoSaveToggle.checked){
-        localStorage.setItem('compass_last', JSON.stringify({direction:dir,degrees:deg,at:new Date().toISOString()}));
-      }
-      lastDirection.textContent = dir;
-      lastDegrees.textContent = deg + '°';
-    }
-
-    function restoreLast(){
-      const raw = localStorage.getItem('compass_last');
-      if(!raw){ showToast(t('cleared')); return; }
-      const obj = JSON.parse(raw);
-      directionText.textContent = obj.direction;
-      degreeText.textContent = obj.degrees + '°';
-      needle.style.transform = rotate(${obj.degrees}deg);
-      showToast(t('restore'));
-    }
-    function clearLast(){ localStorage.removeItem('compass_last'); lastDirection.textContent='—'; lastDegrees.textContent='—'; showToast(t('cleared')); }
-
-    // Copy reading
-    copyBtn.addEventListener('click', ()=> {
-      const txt = ${directionText.textContent} — ${degreeText.textContent};
-      navigator.clipboard.writeText(txt).then(()=> showToast(t('copy')));
-    });
-
-    // Download
-    downloadBtn.addEventListener('click', ()=> downloadMenu.classList.toggle('hidden'));
-    function downloadReading(type){
-      const dir = directionText.textContent;
-      const deg = degreeText.textContent.replace('°','') || '0';
-      const now = new Date().toISOString();
-      if(type==='txt'){ triggerDownload(new Blob([Direction: ${dir}\nDegrees: ${deg}\nWhen: ${now}],{type:'text/plain'}),'compass.txt'); }
-      else if(type==='csv'){ const csv = Direction,Degrees,When\n"${dir}",${deg},"${now}"; triggerDownload(new Blob([csv],{type:'text/csv'}),'compass.csv'); }
-      else if(type==='json'){ triggerDownload(new Blob([JSON.stringify({direction:dir,degrees:parseFloat(deg),when:now},null,2)],{type:'application/json'}),'compass.json'); }
-      else if(type==='pdf'){ try{ const { jsPDF } = window.jspdf; const doc = new jsPDF(); doc.setFontSize(18); doc.text('Compass Reading', 20, 25); doc.setFontSize(12); doc.text(Direction: ${dir}, 20, 40); doc.text(Degrees: ${deg}°, 20, 50); doc.text(When: ${now}, 20, 60); doc.save('compass.pdf'); }catch(e){ showToast('PDF export error'); } }
-      downloadMenu.classList.add('hidden'); showToast(t('download'));
-    }
-    function triggerDownload(blob, name){ const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click(); URL.revokeObjectURL(a.href); }
-
-    // TTS
-    let voices = [];
-    function populateVoices(){
-      voices = speechSynthesis.getVoices().sort((a,b)=>a.name.localeCompare(b.name));
-      voiceSelect.innerHTML = '';
-      voices.forEach((v,i)=> voiceSelect.appendChild(Object.assign(document.createElement('option'),{value:i,textContent: v.name + (v.lang? ' — ' + v.lang : '')})));
-    }
-    populateVoices();
-    if(speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = populateVoices;
-
-    function speakDirection(dir, deg){
-      if(!spokenToggle.checked) return;
-      const lang = langSelect.value || 'en';
-      const builder = (i18n[lang] && i18n[lang].speakMsg) ? i18n[lang].speakMsg : i18n['en'].speakMsg;
-      const text = builder(dir, deg);
-      const u = new SpeechSynthesisUtterance(text);
-      const idx = voiceSelect.value;
-      if(voices[idx]) u.voice = voices[idx];
-      speechSynthesis.cancel();
-      speechSynthesis.speak(u);
-    }
-    speakBtn.addEventListener('click', ()=> speakDirection(directionText.textContent, parseInt(degreeText.textContent) || 0));
-    testVoice.addEventListener('click', ()=> { const idx = voiceSelect.value; if(voices[idx]){ const u = new SpeechSynthesisUtterance('This is a voice test.'); u.voice = voices[idx]; speechSynthesis.speak(u);} });
-
-    // Device Orientation
-    function handleOrientationEvent(e){
-      let heading = null;
-      if(typeof e.webkitCompassHeading !== 'undefined' && e.webkitCompassHeading !== null){
-        heading = e.webkitCompassHeading; // iOS
-      } else if(e.absolute === true && typeof e.alpha === 'number'){
-        heading = 360 - e.alpha;
-      } else if(typeof e.alpha === 'number'){
-        heading = 360 - e.alpha;
-      }
-      if(heading !== null && !Number.isNaN(heading)) setHeading(heading);
-    }
-    function startCompass(){
-      if(!window.DeviceOrientationEvent){ showToast('Device orientation not supported — use slider'); return; }
-      if(typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function'){
-        DeviceOrientationEvent.requestPermission().then(permissionState=>{
-          if(permissionState === 'granted'){ window.addEventListener('deviceorientation', handleOrientationEvent, true); showToast('Compass active'); } else { showToast(t('permission')); }
-        }).catch(()=> showToast('Permission request failed'));
-      } else {
-        window.addEventListener('deviceorientation', handleOrientationEvent, true); showToast('Compass active');
-      }
-    }
-    permBtn.addEventListener('click', ()=> startCompass());
-
-    // Calibrate slider
-    calibrateSlider.addEventListener('input', ()=> {
-      const val = parseInt(calibrateSlider.value) || 0;
-      degreeText.textContent = val + '°';
-      directionText.textContent = degToCardinal(val);
-      needle.style.transform = rotate(${val}deg);
-    });
-
-    // Save / Restore last reading
-    restoreBtn.addEventListener('click', ()=> {
-      const raw = localStorage.getItem('compass_last');
-      if(!raw){ showToast('No saved reading'); return; }
-      const obj = JSON.parse(raw);
-      directionText.textContent = obj.direction;
-      degreeText.textContent = obj.degrees + '°';
-      needle.style.transform = rotate(${obj.degrees}deg);
-      showToast(t('restore'));
-    });
-    clearLastBtn.addEventListener('click', ()=> clearLast());
-
-    // Language & theme
-    langSelect.addEventListener('change', ()=> { applyLang(); localStorage.setItem('compass_lang', langSelect.value); });
-
-    function applyLang(){
-      const lang = langSelect.value || 'en';
-      document.getElementById('lblDirection').textContent = t('direction');
-      document.getElementById('hintText').textContent = t('permission');
-      // RTL support
-      const rtl = (lang === 'ar' || lang === 'ur');
-      document.documentElement.dir = rtl ? 'rtl' : 'ltr';
-    }
-    const savedLang = localStorage.getItem('compass_lang') || 'en';
-    langSelect.value = savedLang; applyLang();
-
-    // Theme toggle
-    darkToggle.addEventListener('click', ()=> {
-      const isDark = document.documentElement.classList.toggle('dark');
-      localStorage.setItem('compass_theme', isDark ? 'dark' : 'light');
-      darkToggle.textContent = isDark ? '☀' : '🌙';
-    });
-    (function initTheme(){ const saved = localStorage.getItem('compass_theme'); if(saved){ document.documentElement.classList.toggle('dark', saved==='dark'); darkToggle.textContent = saved==='dark' ? '☀' : '🌙'; } else { const prefers = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches; document.documentElement.classList.toggle('dark', prefers); darkToggle.textContent = prefers ? '☀' : '🌙'; } })();
-
-    // Needle & dial settings: restore saved
-    function initStyles(){
-      const savedNeedle = localStorage.getItem('compass_needle') || 'classic';
-      const savedDial = localStorage.getItem('compass_dial') || 'theme-light';
-      const savedTrans = localStorage.getItem('compass_transition') || 'normal';
-      needleStyle.value = savedNeedle;
-      dialTheme.value = savedDial;
-      transitionSpeed.value = savedTrans;
-      applyNeedleStyle(savedNeedle);
-      applyDialTheme(savedDial);
-      applyTransitionSpeed(savedTrans);
-    }
-    needleStyle.addEventListener('change', ()=> applyNeedleStyle(needleStyle.value));
-    dialTheme.addEventListener('change', ()=> applyDialTheme(dialTheme.value));
-    transitionSpeed.addEventListener('change', ()=> applyTransitionSpeed(transitionSpeed.value));
-
-    // Auto restore last reading
-    (function loadLast(){
-      const raw = localStorage.getItem('compass_last');
-      if(raw){ const obj = JSON.parse(raw); lastDirection.textContent = obj.direction; lastDegrees.textContent = obj.degrees + '°'; } else { lastDirection.textContent = '—'; lastDegrees.textContent = '—'; }
-    })();
-
-    // Download menu hide on outside click
-    window.addEventListener('click', (e)=> { if(!e.target.closest('#downloadMenu') && !e.target.closest('#downloadBtn')) downloadMenu.classList.add('hidden'); });
-
-    // Initialize voices on first interaction
-    window.addEventListener('click', ()=> { if(voiceSelect.options.length === 0) populateVoices(); }, { once:true });
-
-    // show initial toast
-    setTimeout(()=> showToast('Compass ready — press "Enable Sensors" on mobile.'), 600);
-
-    // Expose small helpers
-    window.setHeading = setHeading;
-    // Initialize styles and voices
-    initStyles(); populateVoices();
-
-  })();
-  </script>
 </body>
 </html>
