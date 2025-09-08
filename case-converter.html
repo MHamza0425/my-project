@@ -1,155 +1,836 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Case Converter - All Tools Hub</title>
-  <meta name="description" content="Convert text to uppercase, lowercase, title case, sentence case and more. Includes spell check, TTS, and export." />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>All Tools Hub — Case Converter</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config = {darkMode: 'class'}</script>
+<style>
+  :root{--theme-color:#2563eb}
+  .btn-theme{background:var(--theme-color);color:white}
+  .glass{background:rgba(255,255,255,0.06);backdrop-filter:blur(6px)}
+  textarea, .box{resize:none}
+  .toast{position:fixed;right:20px;bottom:20px;padding:10px 14px;border-radius:8px;background:var(--theme-color);color:#fff;opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none;z-index:60}
+  .toast.show{opacity:1;transform:translateY(0);pointer-events:auto}
+  .file-drop{border:2px dashed rgba(0,0,0,0.08); transition:all .2s}
+  .file-drop.drag{background: rgba(37,99,235,0.06); border-color: rgba(37,99,235,0.6)}
+  .kbd{background:#111827;color:#fff;padding:2px 6px;border-radius:6px;font-size:12px}
+  .btn-outline{border:1px solid rgba(0,0,0,0.08)}
+  /* small helpers */
+  .min-h-200{min-height:200px}
+  /* table style */
+  table th, table td {padding:0.5rem 0.75rem}
+  th.sortable{cursor:pointer}
+</style>
 </head>
-<body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 font-sans">
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col">
 
 <!-- Header -->
-<header class="bg-white dark:bg-gray-800 shadow fixed w-full z-50">
-  <div class="max-w-7xl mx-auto flex justify-between items-center p-4">
-    <h1 class="text-2xl font-bold text-blue-600 dark:text-blue-400">All Tools Hub</h1>
-    <button id="darkToggle" class="text-sm px-3 py-1 border rounded hover:bg-gray-200 dark:hover:bg-gray-700">🌙</button>
+<header class="fixed top-0 inset-x-0 z-50 bg-white dark:bg-gray-800 shadow">
+  <div class="max-w-6xl mx-auto flex items-center justify-between p-4">
+    <div class="flex items-center gap-3">
+      <h1 class="text-2xl font-bold" style="color:var(--theme-color)">All Tools Hub</h1>
+      <span class="text-sm opacity-70">/ Case Converter</span>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <select id="langSelect" class="p-1 rounded border dark:bg-gray-700 dark:border-gray-600 text-sm">
+        <option value="en">English</option>
+        <option value="ur">اردو</option>
+        <option value="ar">العربية</option>
+        <option value="fr">Français</option>
+        <option value="zh">中文</option>
+        <option value="hi">हिन्दी</option>
+      </select>
+
+      <button id="darkToggle" title="Toggle theme" class="p-2 rounded border dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">🌙</button>
+    </div>
   </div>
 </header>
 
-<main class="pt-28 max-w-5xl mx-auto px-4">
-  <h2 class="text-3xl font-bold text-center mb-6">Case Converter Tool</h2>
+<main class="flex-grow pt-28 pb-10 px-4">
+  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-6">
 
-  <!-- Text Areas -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-    <textarea id="inputText" spellcheck="true" placeholder="Enter your text here..." 
-      class="w-full h-60 p-4 border rounded-lg dark:bg-gray-800 dark:border-gray-600"></textarea>
-    <textarea id="outputText" readonly placeholder="Converted text will appear here..." 
-      class="w-full h-60 p-4 border rounded-lg dark:bg-gray-800 dark:border-gray-600"></textarea>
-  </div>
+    <!-- Main Tool Card -->
+    <section class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
 
-  <!-- Actions -->
-  <div class="flex flex-wrap gap-3 justify-center mb-6">
-    <button onclick="convertText('upper')" class="btn">UPPERCASE</button>
-    <button onclick="convertText('lower')" class="btn">lowercase</button>
-    <button onclick="convertText('title')" class="btn">Title Case</button>
-    <button onclick="convertText('sentence')" class="btn">Sentence case</button>
-    <button onclick="convertText('alt')" class="btn">aLtErNaTiNg</button>
-    <button onclick="cleanText()" class="btn">Clean</button>
-    <button onclick="undoChange()" class="btn">Undo</button>
-    <button onclick="redoChange()" class="btn">Redo</button>
-    <button onclick="copyText()" class="btn">Copy</button>
-  </div>
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h2 id="toolTitle" class="text-2xl font-bold" style="color:var(--theme-color)">Case Converter</h2>
+          <p class="text-sm opacity-70 mt-1">Convert text to UPPERCASE, lowercase, Title Case, Sentence case, alternating case and more.</p>
+        </div>
 
-  <!-- Stats -->
-  <div class="text-center mb-6">
-    <p id="stats" class="text-gray-600 dark:text-gray-300">Words: 0 | Characters: 0</p>
-  </div>
+        <div class="flex gap-2">
+          <button id="undoBtn" class="px-3 py-2 rounded btn-outline text-sm">↶ Undo</button>
+          <button id="redoBtn" class="px-3 py-2 rounded btn-outline text-sm">↷ Redo</button>
+        </div>
+      </div>
 
-  <!-- File & Export -->
-  <div class="flex flex-wrap gap-3 justify-center mb-6">
-    <input type="file" id="fileUpload" accept=".txt" class="hidden" />
-    <button onclick="document.getElementById('fileUpload').click()" class="btn">Upload TXT</button>
-    <button onclick="downloadFile('txt')" class="btn">Download TXT</button>
-    <button onclick="downloadFile('csv')" class="btn">Download CSV</button>
-    <button onclick="downloadFile('pdf')" class="btn">Download PDF</button>
-    <button onclick="downloadFile('json')" class="btn">Download JSON</button>
-    <button onclick="speakText()" class="btn">🔊 Read Aloud</button>
+      <!-- File drop + textareas -->
+      <div id="fileDrop" class="mt-4 p-3 rounded file-drop">
+        <div class="flex items-center gap-4">
+          <div class="flex-1">
+            <textarea id="inputText" class="w-full p-3 rounded min-h-200 bg-gray-50 dark:bg-gray-900 dark:border-gray-700" placeholder="Paste or type your text here..." spellcheck="true"></textarea>
+          </div>
+          <div class="w-1/3 hidden md:block">
+            <label class="block mb-1 font-semibold">Preview / Converted</label>
+            <textarea id="outputText" class="w-full p-3 rounded min-h-200 bg-gray-100 dark:bg-gray-800" readonly></textarea>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between mt-3 gap-3 flex-wrap">
+          <div class="flex items-center gap-2">
+            <button class="px-3 py-2 rounded btn-theme text-sm" onclick="applyCase('upper')">UPPERCASE</button>
+            <button class="px-3 py-2 rounded btn-theme text-sm" onclick="applyCase('lower')">lowercase</button>
+            <button class="px-3 py-2 rounded btn-theme text-sm" onclick="applyCase('title')">Title Case</button>
+            <button class="px-3 py-2 rounded btn-theme text-sm" onclick="applyCase('sentence')">Sentence case</button>
+            <button class="px-3 py-2 rounded btn-theme text-sm" onclick="applyCase('alt')">aLtErNaTiNg</button>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button id="pasteClean" class="px-3 py-2 rounded btn-outline text-sm">📋 Paste Clean</button>
+            <button id="ttsBtn" class="px-3 py-2 rounded btn-outline text-sm">🔊 Read Aloud</button>
+            <button id="copyBtn" class="px-3 py-2 rounded btn-outline text-sm">📋 Copy</button>
+          </div>
+        </div>
+
+        <!-- row 2 actions -->
+        <div class="flex items-center justify-between mt-3 gap-3 flex-wrap">
+          <div class="flex items-center gap-2">
+            <button class="px-3 py-2 rounded btn-outline text-sm" onclick="removeExtraSpaces()">Remove Extra Spaces</button>
+            <button class="px-3 py-2 rounded btn-outline text-sm" onclick="removeBlankLines()">Remove Blank Lines</button>
+            <button class="px-3 py-2 rounded btn-outline text-sm" onclick="toTitleCustom()">Title Case (smart)</button>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <div class="relative inline-block">
+              <button onclick="toggleDownloadMenu()" class="px-3 py-2 rounded btn-theme text-sm">⬇ Download</button>
+              <div id="downloadMenu" class="hidden absolute right-0 mt-1 w-40 bg-white dark:bg-gray-700 rounded shadow-md overflow-hidden">
+                <button class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600" onclick="downloadTxt()">Download .txt</button>
+                <button class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600" onclick="downloadCsv()">Download .csv</button>
+                <button class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600" onclick="downloadJson()">Download .json</button>
+              </div>
+            </div>
+
+            <button class="px-3 py-2 rounded bg-red-600 text-white text-sm" onclick="clearText()">Clear</button>
+          </div>
+        </div>
+
+        <!-- Find & Replace / Custom rules -->
+        <div class="mt-4 grid md:grid-cols-2 gap-3">
+          <div class="p-3 rounded bg-gray-50 dark:bg-gray-900">
+            <div class="flex gap-2 items-center">
+              <input id="findInput" placeholder="Find" class="flex-1 p-2 rounded border dark:bg-gray-800 dark:border-gray-700" />
+              <input id="replaceInput" placeholder="Replace with" class="flex-1 p-2 rounded border dark:bg-gray-800 dark:border-gray-700" />
+              <button onclick="findReplace()" class="px-3 py-2 rounded btn-theme text-sm">Replace All</button>
+            </div>
+            <div class="text-xs mt-2 opacity-70">Tip: use exact match. Regex not supported (for safety).</div>
+          </div>
+
+          <div class="p-3 rounded bg-gray-50 dark:bg-gray-900">
+            <label class="block font-semibold mb-2">Custom Rules (one per line: FIND => REPL)</label>
+            <textarea id="rulesArea" class="w-full p-2 rounded h-28 dark:bg-gray-800 dark:border-gray-700" placeholder="e.g. AI => AI
+html => HTML"></textarea>
+            <div class="flex gap-2 mt-2">
+              <button class="px-3 py-2 rounded btn-outline text-sm" onclick="applyCustomRules()">Apply Rules</button>
+              <button class="px-3 py-2 rounded btn-outline text-sm" onclick="saveRules()">Save Rules</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Compare option -->
+        <div class="mt-4">
+          <label class="inline-flex items-center gap-2"><input type="checkbox" id="enableCompare"> <span>Enable side-by-side compare</span></label>
+          <div id="compareWrap" class="mt-3 hidden grid md:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-sm opacity-80">Original</label>
+              <textarea id="compareLeft" class="w-full p-2 rounded h-36 dark:bg-gray-800 dark:border-gray-700"></textarea>
+            </div>
+            <div>
+              <label class="block text-sm opacity-80">Converted</label>
+              <textarea id="compareRight" class="w-full p-2 rounded h-36 dark:bg-gray-800 dark:border-gray-700" readonly></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Drag & drop / Upload -->
+        <div class="mt-4 flex items-center gap-3">
+          <label class="cursor-pointer inline-flex items-center gap-2 px-3 py-2 rounded btn-outline">
+            Upload .txt
+            <input id="fileInput" type="file" accept=".txt" class="hidden" />
+          </label>
+
+          <div class="text-sm opacity-70">Drag & drop a .txt file here to load text</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Right column: tools, stats, spell check, TTS, autosave etc. -->
+    <aside class="space-y-6">
+
+      <!-- Inline counters -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
+        <h3 class="font-semibold mb-2">Quick Stats</h3>
+        <div class="grid grid-cols-3 gap-3 text-center">
+          <div class="p-2 bg-gray-100 dark:bg-gray-700 rounded">
+            <div id="statWords" class="text-xl font-bold">0</div>
+            <div class="text-xs opacity-70">Words</div>
+          </div>
+          <div class="p-2 bg-gray-100 dark:bg-gray-700 rounded">
+            <div id="statChars" class="text-xl font-bold">0</div>
+            <div class="text-xs opacity-70">Characters</div>
+          </div>
+          <div class="p-2 bg-gray-100 dark:bg-gray-700 rounded">
+            <div id="statCharsNoSpace" class="text-xl font-bold">0</div>
+            <div class="text-xs opacity-70">Chars (no spaces)</div>
+          </div>
+        </div>
+
+        <div class="mt-3 grid grid-cols-2 gap-2 text-sm">
+          <div class="p-2 rounded bg-gray-50 dark:bg-gray-900">
+            <div class="opacity-70">Sentences</div>
+            <div id="statSentences" class="font-semibold">0</div>
+          </div>
+          <div class="p-2 rounded bg-gray-50 dark:bg-gray-900">
+            <div class="opacity-70">Paragraphs</div>
+            <div id="statParagraphs" class="font-semibold">0</div>
+          </div>
+        </div>
+
+        <div class="mt-3 text-sm">
+          <div>Reading time: <span id="statReading">0 min</span></div>
+          <div class="mt-1">Speaking time: <span id="statSpeaking">0 min</span></div>
+        </div>
+      </div>
+
+      <!-- Spellcheck -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
+        <div class="flex items-center justify-between">
+          <h3 class="font-semibold">Spell Checker</h3>
+          <button class="px-2 py-1 rounded btn-outline text-sm" onclick="runSpellCheck()">Check</button>
+        </div>
+        <div id="spellResults" class="mt-3 text-sm space-y-2"></div>
+        <div class="mt-3 text-xs opacity-70">Uses an offline dictionary for suggestions. For best results use common English words. See notes in UI.</div>
+      </div>
+
+      <!-- Text-to-Speech -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
+        <h3 class="font-semibold mb-2">Read Aloud (TTS)</h3>
+        <div class="flex gap-2 items-center">
+          <select id="voiceSelect" class="p-2 rounded border dark:bg-gray-700 dark:border-gray-600 text-sm flex-1"></select>
+          <button class="px-3 py-2 rounded btn-theme text-sm" onclick="speakText()">Play</button>
+        </div>
+        <div class="mt-2 text-sm opacity-70">Adjust volume and rate in browser speech controls (if supported).</div>
+      </div>
+
+      <!-- Auto-save / share / drafts -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
+        <h3 class="font-semibold mb-2">Auto Save & Share</h3>
+        <div class="flex gap-2">
+          <button class="px-3 py-2 rounded btn-outline text-sm" onclick="saveDraft()">Save Draft</button>
+          <button class="px-3 py-2 rounded btn-theme text-sm" onclick="loadDraft()">Load Draft</button>
+          <button class="px-3 py-2 rounded btn-outline text-sm" onclick="clearDraft()">Clear Draft</button>
+        </div>
+        <div class="mt-3">
+          <button class="px-3 py-2 rounded btn-theme text-sm" onclick="copyShareLink()">🔗 Copy Share Link</button>
+        </div>
+      </div>
+
+      <!-- Settings -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
+        <h3 class="font-semibold mb-2">Options</h3>
+        <div class="flex flex-col gap-2 text-sm">
+          <label><input id="autoSaveToggle" type="checkbox" checked> Auto save to browser</label>
+          <label><input id="smartTitle" type="checkbox" checked> Smart Title Case (keep acronyms)</label>
+          <label><input id="detectCase" type="checkbox" checked> Smart Case Detection (shows suggestion)</label>
+        </div>
+      </div>
+
+    </aside>
   </div>
 </main>
 
 <!-- Footer -->
-<footer class="bg-gray-900 text-gray-300 py-6 text-center mt-10">
-  © 2025 All Tools Hub | Contact: <a href="mailto:saadkhan0425@gmail.com" class="text-blue-400 hover:underline">saadkhan0425@gmail.com</a>
+<footer class="bg-gray-900 text-gray-300 p-4 text-center">
+  📧 Contact: <a href="mailto:saadkhan0425@gmail.com" style="color:var(--theme-color)">saadkhan0425@gmail.com</a>
 </footer>
 
-<!-- Styles -->
-<style>
-  .btn { @apply bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700; }
-</style>
+<!-- Toast -->
+<div id="toast" class="toast">Done</div>
 
 <!-- Script -->
 <script>
-let history = [], redoStack = [];
+/* =======================
+   CASE CONVERTER FULL JS
+   ======================= */
 
-// Dark mode toggle
-document.getElementById("darkToggle").onclick = () => {
-  document.documentElement.classList.toggle("dark");
-  localStorage.theme = document.documentElement.classList.contains("dark") ? "dark" : "light";
-};
-if (localStorage.theme === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
-  document.documentElement.classList.add("dark");
+const inputText = document.getElementById('inputText');
+const outputText = document.getElementById('outputText');
+const compareLeft = document.getElementById('compareLeft');
+const compareRight = document.getElementById('compareRight');
+const enableCompare = document.getElementById('enableCompare');
+const downloadMenu = document.getElementById('downloadMenu');
+const fileDrop = document.getElementById('fileDrop');
+const toast = document.getElementById('toast');
+const undoBtn = document.getElementById('undoBtn');
+const redoBtn = document.getElementById('redoBtn');
+const statWords = document.getElementById('statWords');
+const statChars = document.getElementById('statChars');
+const statCharsNoSpace = document.getElementById('statCharsNoSpace');
+const statSentences = document.getElementById('statSentences');
+const statParagraphs = document.getElementById('statParagraphs');
+const statReading = document.getElementById('statReading');
+const statSpeaking = document.getElementById('statSpeaking');
+const spellResults = document.getElementById('spellResults');
+
+let undoStack = [];
+let redoStack = [];
+let autoSaveTimer = null;
+let autoSaveToggle = document.getElementById('autoSaveToggle');
+let smartTitle = document.getElementById('smartTitle');
+let detectCase = document.getElementById('detectCase');
+
+// Basic word-cleaner
+function tokensFromText(text){
+  return (text.toLowerCase().match(/[^\s.,!?;:"'()[\]{}<>/_+=*^%$#@\\|-]+/g) || []);
 }
 
-// Update stats
-function updateStats() {
-  let txt = document.getElementById("inputText").value;
-  let words = txt.trim() ? txt.trim().split(/\s+/).length : 0;
-  document.getElementById("stats").innerText = Words: ${words} | Characters: ${txt.length};
+// ------------------ Undo/Redo ------------------
+function pushUndo(state){
+  undoStack.push(state);
+  if(undoStack.length>50) undoStack.shift();
+  redoStack = [];
+  updateUndoRedoButtons();
 }
-document.getElementById("inputText").addEventListener("input", () => {
+function updateUndoRedoButtons(){
+  undoBtn.disabled = undoStack.length===0;
+  redoBtn.disabled = redoStack.length===0;
+}
+undoBtn.addEventListener('click', ()=>{
+  if(!undoStack.length) return;
+  const cur = inputText.value;
+  redoStack.push(cur);
+  const prev = undoStack.pop();
+  inputText.value = prev;
+  syncAll();
+  updateUndoRedoButtons();
+});
+redoBtn.addEventListener('click', ()=>{
+  if(!redoStack.length) return;
+  const cur = inputText.value;
+  undoStack.push(cur);
+  const next = redoStack.pop();
+  inputText.value = next;
+  syncAll();
+  updateUndoRedoButtons();
+});
+
+// ------------------ Auto expand ------------------
+function autoExpand(el){
+  el.style.height = 'auto';
+  el.style.height = (el.scrollHeight)+'px';
+}
+
+// ------------------ Show toast ------------------
+function showToast(msg){
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(()=>toast.classList.remove('show'),2000);
+}
+
+// ------------------ Case conversions ------------------
+function applyCase(mode){
+  pushUndo(inputText.value);
+  let text = inputText.value;
+  let out = text;
+  if(mode==='upper') out = text.toUpperCase();
+  else if(mode==='lower') out = text.toLowerCase();
+  else if(mode==='title') out = toTitleCase(text, smartTitle.checked);
+  else if(mode==='sentence') out = toSentenceCase(text);
+  else if(mode==='alt') out = toAlternating(text);
+  inputText.value = out;
+  syncAll();
+  showToast('Converted');
+}
+
+function toTitleCase(str, smart){
+  // simple Title Case with smart rule for small words
+  if(!str) return '';
+  const small = ['a','an','the','and','or','but','for','nor','on','at','to','from','by','of','in'];
+  return str.split(/\s+/).map((w, i) => {
+    if(smart){
+      // keep common acronyms uppercase
+      if(/^[A-Z0-9]{2,}$/.test(w)) return w;
+      // preserve words like "eBay" not handled — basic approach
+    }
+    const lw = w.toLowerCase();
+    if(i>0 && small.includes(lw)) return lw;
+    return lw.charAt(0).toUpperCase()+lw.slice(1);
+  }).join(' ');
+}
+
+function toSentenceCase(str){
+  // capitalize first letter of each sentence
+  return str.replace(/([^.!?][.!?])/g, (m)=>{
+    if(!m.trim()) return m;
+    return m.trim().charAt(0).toUpperCase() + m.trim().slice(1) + (m.endsWith(' ') ? ' ' : (m.endsWith('\n') ? '\n' : (m.match(/[.!?]$/) ? '' : '')));
+  }).replace(/\s+/g,' ').trim();
+}
+
+function toAlternating(str){
+  let out='';
+  let upper=true;
+  for(let ch of str){
+    if(/[a-zA-Z]/.test(ch)){
+      out += upper ? ch.toUpperCase() : ch.toLowerCase();
+      upper = !upper;
+    } else out += ch;
+  }
+  return out;
+}
+
+// smart Title custom (try to preserve acronyms)
+function toTitleCustom(){
+  pushUndo(inputText.value);
+  inputText.value = toTitleCase(inputText.value, true);
+  syncAll();
+  showToast('Smart title applied');
+}
+
+// ------------------ Cleaners ------------------
+function removeExtraSpaces(){
+  pushUndo(inputText.value);
+  inputText.value = inputText.value.replace(/[ \t]{2,}/g,' ').replace(/[ ]+\n/g,'\n');
+  syncAll();
+  showToast('Extra spaces removed');
+}
+function removeBlankLines(){
+  pushUndo(inputText.value);
+  inputText.value = inputText.value.split('\n').filter(r=>r.trim().length>0).join('\n');
+  syncAll();
+  showToast('Blank lines removed');
+}
+
+// ------------------ Find & Replace ------------------
+function findReplace(){
+  const find = document.getElementById('findInput').value;
+  const replace = document.getElementById('replaceInput').value;
+  if(!find){ showToast('Enter text to find'); return; }
+  pushUndo(inputText.value);
+  // simple literal replace, global
+  const escaped = find.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const re = new RegExp(escaped,'g');
+  inputText.value = inputText.value.replace(re, replace);
+  syncAll();
+  showToast('Replaced all');
+}
+
+// ------------------ Custom rules ------------------
+function parseRules(){
+  const raw = document.getElementById('rulesArea').value.split('\n').map(r=>r.trim()).filter(Boolean);
+  const list = [];
+  raw.forEach(line=>{
+    const parts = line.split('=>');
+    if(parts.length===2){
+      list.push({find: parts[0].trim(), replace: parts[1].trim()});
+    }
+  });
+  return list;
+}
+function applyCustomRules(){
+  const rules = parseRules();
+  if(!rules.length) { showToast('No rules'); return; }
+  pushUndo(inputText.value);
+  let txt = inputText.value;
+  rules.forEach(r=>{
+    const esc = r.find.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    txt = txt.replace(new RegExp(esc,'g'), r.replace);
+  });
+  inputText.value = txt;
+  syncAll();
+  showToast('Rules applied');
+}
+function saveRules(){
+  localStorage.setItem('case_rules', document.getElementById('rulesArea').value);
+  showToast('Rules saved');
+}
+
+// ------------------ Compare ------------------
+enableCompare.addEventListener('change', ()=>{
+  document.getElementById('compareWrap').classList.toggle('hidden', !enableCompare.checked);
+  if(enableCompare.checked){
+    document.getElementById('compareWrap').classList.remove('hidden');
+    compareLeft.value = inputText.value;
+    compareRight.value = outputText.value;
+  }
+});
+
+// ------------------ File Upload & Drag drop ------------------
+document.getElementById('fileInput').addEventListener('change', (e)=>{
+  const f = e.target.files[0];
+  if(!f) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{ pushUndo(inputText.value); inputText.value = reader.result; syncAll(); showToast('File loaded'); }
+  reader.readAsText(f);
+});
+
+fileDrop.addEventListener('dragover', (e)=>{ e.preventDefault(); fileDrop.classList.add('drag'); });
+fileDrop.addEventListener('dragleave', ()=> fileDrop.classList.remove('drag'));
+fileDrop.addEventListener('drop', (e)=>{
+  e.preventDefault(); fileDrop.classList.remove('drag');
+  const f = e.dataTransfer.files[0];
+  if(!f) return;
+  if(f.type && !f.type.includes('text')){ showToast('Only text files allowed'); return; }
+  const reader = new FileReader();
+  reader.onload = ()=>{ pushUndo(inputText.value); inputText.value = reader.result; syncAll(); showToast('File loaded'); }
+  reader.readAsText(f);
+});
+
+// ------------------ Copy / Clear / Download ------------------
+document.getElementById('copyBtn').addEventListener('click', ()=>{ navigator.clipboard.writeText(inputText.value).then(()=>showToast('Copied'));});
+function clearText(){ pushUndo(inputText.value); inputText.value=''; syncAll(); showToast('Cleared'); }
+
+function toggleDownloadMenu(){
+  downloadMenu.classList.toggle('hidden');
+}
+window.addEventListener('click', (e)=>{ if(!e.target.closest('#downloadMenu') && !e.target.closest('[onclick*="toggleDownloadMenu"]')) downloadMenu.classList.add('hidden'); });
+
+function downloadTxt(){
+  const blob = new Blob([inputText.value], {type:'text/plain'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'text.txt'; a.click();
+  showToast('TXT downloaded');
+}
+function downloadCsv(){
+  const csv = "text"\n"${(inputText.value||'').replace(/"/g,'""')}";
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'text.csv'; a.click();
+  showToast('CSV downloaded');
+}
+function downloadJson(){
+  const data = {text: inputText.value, exportedAt: new Date().toISOString()};
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'text.json'; a.click();
+  showToast('JSON downloaded');
+}
+
+// ------------------ Text-to-Speech ------------------
+const voiceSelect = document.getElementById('voiceSelect');
+let voices = [];
+function populateVoices(){
+  voices = speechSynthesis.getVoices().sort((a,b)=>a.name.localeCompare(b.name));
+  voiceSelect.innerHTML = '';
+  voices.forEach((v,i)=> voiceSelect.appendChild(Object.assign(document.createElement('option'), {value:i, textContent: v.name + (v.lang? ' — ' + v.lang : '')})));
+}
+populateVoices();
+if(speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = populateVoices;
+
+function speakText(){
+  const txt = inputText.value;
+  if(!txt) { showToast('No text'); return; }
+  const utter = new SpeechSynthesisUtterance(txt);
+  const idx = voiceSelect.value;
+  if(voices[idx]) utter.voice = voices[idx];
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utter);
+}
+
+// ------------------ Auto save / Draft ------------------
+function saveDraft(){
+  const payload = {
+    text: inputText.value,
+    rules: document.getElementById('rulesArea').value,
+    savedAt: new Date().toISOString()
+  };
+  localStorage.setItem('case_draft', JSON.stringify(payload));
+  showToast('Draft saved');
+}
+function loadDraft(){
+  const raw = localStorage.getItem('case_draft');
+  if(!raw) { showToast('No draft'); return; }
+  const p = JSON.parse(raw);
+  pushUndo(inputText.value);
+  inputText.value = p.text || '';
+  document.getElementById('rulesArea').value = p.rules || '';
+  syncAll();
+  showToast('Draft loaded');
+}
+function clearDraft(){ localStorage.removeItem('case_draft'); showToast('Draft cleared'); }
+
+// auto-save toggle
+setInterval(()=>{
+  if(autoSaveToggle.checked){
+    localStorage.setItem('case_autosave', inputText.value);
+  }
+}, 60000); // every minute
+
+// restore auto-save at load
+window.addEventListener('load', ()=>{
+  const saved = localStorage.getItem('case_autosave');
+  if(saved && saved.length>0){
+    inputText.value = saved;
+  }
+});
+
+// Copy Share Link (encode text into URL)
+function copyShareLink(){
+  const text = inputText.value;
+  if(!text) { showToast('No text'); return; }
+  const blob = btoa(unescape(encodeURIComponent(text)));
+  const url = location.origin + location.pathname + '?share=' + encodeURIComponent(blob);
+  navigator.clipboard.writeText(url).then(()=> showToast('Share link copied'));
+}
+// on load, check share param
+(function loadFromShare(){
+  try {
+    const params = new URLSearchParams(location.search);
+    if(params.has('share')){
+      const b = params.get('share');
+      inputText.value = decodeURIComponent(escape(atob(b)));
+    }
+  } catch(e){}
+})();
+
+// ------------------ Quick Stats ------------------
+function updateStats(){
+  const txt = inputText.value;
+  const trimmed = txt.trim();
+  const words = tokensFromText(trimmed).length;
+  const chars = trimmed.length;
+  const charsNoSpace = trimmed.replace(/\s+/g,'').length;
+  const sentences = (trimmed.match(/[^.!?]+[.!?]*/g)||[]).filter(s=>s.trim().length>0).length;
+  const paragraphs = trimmed.split(/\n+/).filter(p=>p.trim().length>0).length || 0;
+  statWords.textContent = words;
+  statChars.textContent = chars;
+  statCharsNoSpace.textContent = charsNoSpace;
+  statSentences.textContent = sentences;
+  statParagraphs.textContent = paragraphs;
+  statReading.textContent = Math.max(1, Math.ceil(words/200)) + ' min';
+  statSpeaking.textContent = Math.max(1, Math.ceil(words/130)) + ' min';
+  // preview output
+  outputText.value = txt;
+  if(enableCompare.checked){
+    compareLeft.value = txt;
+    compareRight.value = outputText.value;
+  }
+}
+
+// ------------------ Sync all (on content change) ------------------
+function syncAll(){
+  autoExpand(inputText);
+  autoExpand(outputText);
   updateStats();
-  saveState();
+  pushAutoSaveTimer();
+}
+
+// event listeners
+inputText.addEventListener('input', ()=> { pushUndo(inputText.value); syncAll(); checkSmartCase(); });
+window.addEventListener('resize', ()=> autoExpand(inputText));
+
+// ------------------ Paste Clean: strip formatting when pasting
+document.getElementById('pasteClean').addEventListener('click', ()=> {
+  navigator.clipboard.readText().then(txt=>{
+    pushUndo(inputText.value);
+    // remove windows special characters, control chars
+    const cleaned = txt.replace(/\r\n/g,'\n').replace(/\u00A0/g,' ');
+    inputText.value += (inputText.value && !inputText.value.endsWith('\n') ? '\n' : '') + cleaned;
+    syncAll(); showToast('Pasted cleaned text');
+  }).catch(()=> showToast('Clipboard not available'));
 });
 
-// Converters
-function convertText(type) {
-  let txt = document.getElementById("inputText").value;
-  let out = txt;
-  if (type === "upper") out = txt.toUpperCase();
-  else if (type === "lower") out = txt.toLowerCase();
-  else if (type === "title") out = txt.replace(/\w\S*/g, w => w[0].toUpperCase() + w.substring(1).toLowerCase());
-  else if (type === "sentence") out = txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase();
-  else if (type === "alt") out = txt.split("").map((c,i)=> i%2 ? c.toLowerCase(): c.toUpperCase()).join("");
-  document.getElementById("outputText").value = out;
+// ------------------ Smart Case Detection
+function checkSmartCase(){
+  if(!detectCase.checked) return;
+  const t = inputText.value;
+  if(!t) return;
+  const letters = t.replace(/[^A-Za-z]/g,'');
+  if(!letters) return;
+  const upperCount = (letters.match(/[A-Z]/g)||[]).length;
+  const lowerCount = (letters.match(/[a-z]/g)||[]).length;
+  if(upperCount > lowerCount && upperCount/letters.length > 0.7){
+    // mostly uppercase
+    // show suggestion bar (simple toast)
+    showToast('Detected mostly UPPERCASE. Try "lowercase" or "Title Case"');
+  }
 }
 
-// Cleaner
-function cleanText() {
-  let txt = document.getElementById("inputText").value.replace(/\s+/g," ").trim();
-  document.getElementById("outputText").value = txt;
+// ------------------ Spellchecker (offline, limited dictionary)
+//
+// Note: This is a simple offline spell suggestion using a small-wordlist and Damerau-Levenshtein.
+// For full production spellcheck, integrate a server-side spellcheck or browser extension.
+const smallDict = [
+  "the","be","to","of","and","a","in","that","have","i","it","for","not","on","with","he","as","you","do","at",
+  "this","but","his","by","from","they","we","say","her","she","or","an","will","my","one","all","would","there",
+  "their","what","so","up","out","if","about","who","get","which","go","me","when","make","can","like","time","no","just",
+  "him","know","take","people","into","year","your","good","some","could","them","see","other","than","then","now","look",
+  "only","come","its","over","think","also","back","after","use","two","how","our","work","first","well","way","even","new",
+  "want","because","any","these","give","day","most","us"
+];
+// you can expand smallDict later with more words
+
+function damerauLevenshtein(a,b){
+  // simple implementation
+  const da = {};
+  const INF = a.length + b.length;
+  const d = Array(a.length+2).fill(0).map(()=>Array(b.length+2).fill(0));
+  d[0][0] = INF;
+  for(let i=0;i<=a.length;i++){ d[i+1][1]=i; d[i+1][0]=INF; }
+  for(let j=0;j<=b.length;j++){ d[1][j+1]=j; d[0][j+1]=INF; }
+  for(let i=1;i<=a.length;i++){
+    let db = 0;
+    for(let j=1;j<=b.length;j++){
+      const i1 = da[b[j-1]] || 0;
+      const j1 = db;
+      let cost = 1;
+      if(a[i-1] === b[j-1]){ cost = 0; db = j; }
+      d[i+1][j+1] = Math.min(
+        d[i][j] + cost,
+        d[i+1][j] + 1,
+        d[i][j+1] + 1,
+        d[i1][j1] + (i - i1 -1) + 1 + (j - j1 -1)
+      );
+    }
+    da[a[i-1]] = i;
+  }
+  return d[a.length+1][b.length+1];
 }
 
-// Undo / Redo
-function saveState() { history.push(document.getElementById("inputText").value); }
-function undoChange() {
-  if (history.length>1) { redoStack.push(history.pop()); document.getElementById("inputText").value = history[history.length-1]; updateStats(); }
-}
-function redoChange() {
-  if (redoStack.length>0) { let r=redoStack.pop(); history.push(r); document.getElementById("inputText").value = r; updateStats(); }
+function runSpellCheck(){
+  spellResults.innerHTML = '';
+  const text = inputText.value;
+  const tokens = tokensFromText(text);
+  const unique = [...new Set(tokens)];
+  const mistakes = [];
+  unique.forEach(w=>{
+    if(smallDict.includes(w)) return;
+    // if word length small, skip
+    if(w.length <= 2) return;
+    // check if close to any dict word
+    let best = {word:null,dist:999};
+    for(let dword of smallDict){
+      const dist = damerauLevenshtein(w, dword);
+      if(dist < best.dist){ best = {word:dword, dist}; }
+    }
+    if(best.dist <= 2){
+      mistakes.push({word:w, suggest:best.word, dist:best.dist});
+    } else {
+      // mark as unknown but don't suggest
+      // mistakes.push({word:w, suggest:null, dist:best.dist});
+    }
+  });
+  if(!mistakes.length){ spellResults.textContent = 'No obvious issues (using offline suggestions).'; return; }
+  mistakes.slice(0,50).forEach(m=>{
+    const row = document.createElement('div'); row.className='flex items-center gap-2';
+    row.innerHTML = `<div class="font-mono">${m.word}</div>
+      <div class="text-xs opacity-80">suggest: <b>${m.suggest || '—'}</b></div>
+      <div class="ml-auto flex gap-2">
+        ${m.suggest ? <button class="px-2 py-1 rounded text-sm btn-outline" onclick="applySuggestion('${m.word}','${m.suggest}')">Apply</button> : ''}
+      </div>`;
+    spellResults.appendChild(row);
+  });
 }
 
-// Copy
-function copyText() {
-  navigator.clipboard.writeText(document.getElementById("outputText").value);
-  alert("Copied!");
+function applySuggestion(from, to){
+  pushUndo(inputText.value);
+  const esc = from.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  inputText.value = inputText.value.replace(new RegExp('\\b'+esc+'\\b','g'), to);
+  syncAll();
+  showToast(Replaced ${from} → ${to});
 }
 
-// File Upload
-document.getElementById("fileUpload").addEventListener("change", e => {
-  let file = e.target.files[0]; if (!file) return;
-  let reader = new FileReader();
-  reader.onload = ev => document.getElementById("inputText").value = ev.target.result;
-  reader.readAsText(file);
-});
+// ------------------ Spelling note: user can expand dictionary via UI (not implemented UI yet)
+// You can later modify smallDict variable or load a larger list.
 
-// Export
-function downloadFile(type) {
-  let text = document.getElementById("outputText").value;
-  let blob, filename;
-  if (type==="txt") { blob=new Blob([text],{type:"text/plain"}); filename="converted.txt"; }
-  else if (type==="csv") { blob=new Blob([Text\n"${text.replace(/"/g,'""')}"],{type:"text/csv"}); filename="converted.csv"; }
-  else if (type==="json") { blob=new Blob([JSON.stringify({text:text})],{type:"application/json"}); filename="converted.json"; }
-  else if (type==="pdf") { alert("PDF export requires backend or external lib like jsPDF."); return; }
-  let link=document.createElement("a"); link.href=URL.createObjectURL(blob); link.download=filename; link.click();
+// ------------------ Smart auto-save timer
+function pushAutoSaveTimer(){ if(autoSaveTimer) clearTimeout(autoSaveTimer); autoSaveTimer = setTimeout(()=>{ if(autoSaveToggle.checked) localStorage.setItem('case_autosave', inputText.value); }, 1500); }
+
+// ------------------ Smart case detection already above: checkSmartCase()
+
+// ------------------ I18N / multi-language UI (English placeholders & labels)
+const langSelect = document.getElementById('langSelect');
+const i18n = {
+  en: {title:'Case Converter', copy:'Copy', clear:'Clear', pasteClean:'Paste Clean', downloaded:'Downloaded'},
+  ur: {title:'کیس کنورٹر', copy:'کاپی', clear:'صاف کریں', pasteClean:'پیسٹ صاف کریں', downloaded:'ڈاؤن لوڈ ہوا'},
+  ar: {title:'محول الحالات', copy:'نسخ', clear:'مسح', pasteClean:'لصق نظيف', downloaded:'تم التنزيل'},
+  fr: {title:'Convertisseur de casse', copy:'Copier', clear:'Effacer', pasteClean:'Coller sans format', downloaded:'Téléchargé'},
+  zh: {title:'大小写转换器', copy:'复制', clear:'清除', pasteClean:'粘贴为纯文本', downloaded:'已下载'},
+  hi: {title:'केस कन्वर्टर', copy:'कॉपी', clear:'साफ़ करें', pasteClean:'पेस्ट क्लीन', downloaded:'डाउनलोड हुआ'}
+};
+function applyLanguage(lang){
+  document.getElementById('toolTitle').textContent = i18n[lang]?.title || i18n.en.title;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ const key = el.getAttribute('data-i18n'); if(i18n[lang] && i18n[lang][key]) el.textContent = i18n[lang][key]; });
+  // RTL support
+  const rtl = (lang==='ar' || lang==='ur');
+  document.documentElement.dir = rtl ? 'rtl' : 'ltr';
+  inputText.style.textAlign = rtl ? 'right' : 'left';
+}
+langSelect.addEventListener('change', ()=>{ localStorage.setItem('case_lang', langSelect.value); applyLanguage(langSelect.value); });
+const savedLang = localStorage.getItem('case_lang') || 'en';
+langSelect.value = savedLang;
+applyLanguage(savedLang);
+
+// ------------------ Theme
+const darkToggleBtn = document.getElementById('darkToggle');
+function setTheme(isDark){
+  if(isDark){ document.documentElement.classList.add('dark'); localStorage.setItem('case_theme','dark'); darkToggleBtn.textContent='☀'; } 
+  else { document.documentElement.classList.remove('dark'); localStorage.setItem('case_theme','light'); darkToggleBtn.textContent='🌙'; }
+}
+darkToggleBtn.addEventListener('click', ()=> setTheme(!document.documentElement.classList.contains('dark')));
+(function initTheme(){ const saved = localStorage.getItem('case_theme'); if(saved) setTheme(saved==='dark'); else setTheme(window.matchMedia('(prefers-color-scheme: dark)').matches); })();
+
+// ------------------ Initialization
+function init(){
+  autoExpand(inputText); autoExpand(outputText);
+  updateStats();
+  populateVoices();
+  // rules load
+  const rules = localStorage.getItem('case_rules'); if(rules) document.getElementById('rulesArea').value = rules;
+  // restore autosave
+  const autos = localStorage.getItem('case_autosave'); if(autos) inputText.value = autos;
+  // initial push
+  pushUndo(inputText.value);
+  updateUndoRedoButtons();
+}
+init();
+
+// small helper to populate voice select earlier
+function populateVoices(){
+  const select = document.getElementById('voiceSelect');
+  select.innerHTML = '';
+  const vList = speechSynthesis.getVoices();
+  vList.forEach((v,i)=>{ const opt = document.createElement('option'); opt.value = i; opt.textContent = v.name + (v.lang ? ' — '+v.lang : ''); select.appendChild(opt); });
+}
+if(speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = populateVoices;
+
+// ------------------ final sync function
+function syncAll(){
+  autoExpand(inputText); autoExpand(outputText); updateStats();
 }
 
-// TTS
-function speakText() {
-  let msg = new SpeechSynthesisUtterance(document.getElementById("outputText").value);
-  speechSynthesis.speak(msg);
-}
+// ------------------ expose some functions globally for buttons inline handlers
+window.applyCase = applyCase;
+window.toTitleCustom = toTitleCustom;
+window.removeExtraSpaces = removeExtraSpaces;
+window.removeBlankLines = removeBlankLines;
+window.findReplace = findReplace;
+window.applyCustomRules = applyCustomRules;
+window.saveRules = saveRules;
+window.downloadTxt = downloadTxt;
+window.downloadCsv = downloadCsv;
+window.downloadJson = downloadJson;
+window.toggleDownloadMenu = toggleDownloadMenu;
+window.clearText = clearText;
+window.copyShareLink = copyShareLink;
+window.copyText = ()=>{ navigator.clipboard.writeText(inputText.value).then(()=>showToast('Copied'))};
+window.runSpellCheck = runSpellCheck;
+window.applySuggestion = applySuggestion;
+window.saveDraft = saveDraft;
+window.loadDraft = loadDraft;
+window.clearDraft = clearDraft;
+window.speakText = speakText;
+window.downloadFrequencyCSV = ()=> showToast('Not used in case converter');
+
 </script>
 </body>
 </html>
